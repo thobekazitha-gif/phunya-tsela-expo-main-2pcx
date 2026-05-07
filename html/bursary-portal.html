@@ -1,0 +1,340 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Bursary Portal — Phunya Tsela</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;600;700;800&family=DM+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --primary: #d97706;
+    --primary-dark: #b45309;
+    --yellow: #f59e0b;
+    --bg: #fafaf9;
+    --card: #ffffff;
+    --border: #e5e7eb;
+    --text: #111827;
+    --muted: #6b7280;
+    --success: #10b981;
+    --radius: 12px;
+    --radius-lg: 16px;
+    --radius-xl: 20px;
+  }
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: 'DM Sans', sans-serif; background: var(--bg); color: var(--text); min-height: 100vh; }
+  h1, h2, h3, h4 { font-family: 'Sora', sans-serif; }
+
+  /* ── Hero ── */
+  .hero { background: linear-gradient(135deg, var(--primary) 0%, var(--yellow) 100%); color: white; padding: 48px 16px 40px; }
+  .hero-inner { max-width: 800px; margin: 0 auto; }
+  .back-btn { display: inline-flex; align-items: center; gap: 6px; color: rgba(255,255,255,.8); font-size: 14px; font-weight: 600; text-decoration: none; margin-bottom: 24px; border: none; background: none; cursor: pointer; transition: color .2s; }
+  .back-btn:hover { color: white; }
+  .hero-title-row { display: flex; align-items: center; gap: 16px; }
+  .hero-icon { width: 56px; height: 56px; border-radius: 16px; background: rgba(255,255,255,.2); display: flex; align-items: center; justify-content: center; font-size: 28px; flex-shrink: 0; }
+  .hero h1 { font-size: clamp(24px,5vw,36px); font-weight: 800; }
+  .hero .sub { color: rgba(255,255,255,.8); font-size: 14px; margin-top: 2px; }
+
+  /* ── Main ── */
+  .main { max-width: 800px; margin: 0 auto; padding: 40px 16px; }
+
+  /* NSFAS banner */
+  .nsfas-banner { background: #fffbeb; border: 1px solid #fcd34d; border-radius: var(--radius-lg); padding: 16px; margin-bottom: 32px; display: flex; gap: 12px; }
+  .nsfas-banner .icon { font-size: 24px; flex-shrink: 0; }
+  .nsfas-banner .title { font-weight: 800; color: #92400e; font-size: 14px; margin-bottom: 4px; }
+  .nsfas-banner p { font-size: 13px; color: #b45309; }
+  .nsfas-banner a { color: var(--primary-dark); font-weight: 700; }
+
+  /* Filters */
+  .filters { display: grid; gap: 10px; grid-template-columns: 1fr; margin-bottom: 20px; }
+  @media(min-width:600px){ .filters { grid-template-columns: 1fr 1fr 1fr; } }
+  .search-wrap { position: relative; }
+  .search-icon { position: absolute; left: 12px; top: 50%; transform: translateY(-50%); font-size: 16px; pointer-events: none; }
+  .search-input { width: 100%; padding: 10px 12px 10px 36px; border-radius: var(--radius-lg); border: 1px solid var(--border); background: white; font-size: 14px; font-family: 'DM Sans', sans-serif; outline: none; transition: border-color .2s; }
+  .search-input:focus { border-color: var(--primary); box-shadow: 0 0 0 3px #fde68a44; }
+  .filter-select { width: 100%; padding: 10px 12px; border-radius: var(--radius-lg); border: 1px solid var(--border); background: white; font-size: 14px; font-family: 'DM Sans', sans-serif; outline: none; cursor: pointer; transition: border-color .2s; }
+  .filter-select:focus { border-color: var(--primary); }
+
+  .results-count { font-size: 13px; color: var(--muted); margin-bottom: 16px; }
+  .results-count span { color: var(--primary); font-weight: 600; }
+
+  /* Bursary cards */
+  .bursary-list { display: grid; gap: 14px; }
+  .bursary-card { background: white; border: 1px solid var(--border); border-radius: var(--radius-lg); padding: 20px; cursor: pointer; transition: all .2s; }
+  .bursary-card:hover { border-color: var(--primary); box-shadow: 0 4px 20px #0001; }
+  .card-top { display: flex; align-items: flex-start; justify-content: space-between; gap: 12px; flex-wrap: wrap; margin-bottom: 14px; }
+  .card-name { font-size: 16px; font-weight: 700; }
+  .card-provider { font-size: 13px; color: var(--muted); margin-top: 2px; }
+  .badge-row { display: flex; gap: 8px; flex-wrap: wrap; }
+  .badge { padding: 3px 10px; border-radius: 99px; font-size: 11px; font-weight: 700; }
+  .badge-full    { background: #fef3c7; color: #92400e; }
+  .badge-partial { background: #fef9c3; color: #713f12; }
+  .badge-merit   { background: #ffedd5; color: #9a3412; }
+  .badge-sector  { background: #f3f4f6; color: #374151; }
+  .card-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 8px; }
+  .card-field-label { font-size: 10px; font-weight: 800; text-transform: uppercase; letter-spacing: .06em; color: var(--muted); margin-bottom: 3px; }
+  .card-field-value { font-size: 13px; color: var(--text); }
+  .card-hint { font-size: 12px; color: var(--primary); font-weight: 600; margin-top: 8px; }
+
+  /* Empty */
+  .empty { text-align: center; padding: 60px 20px; color: var(--muted); }
+  .empty .emoji { font-size: 40px; margin-bottom: 12px; }
+
+  /* Notice */
+  .notice { margin-top: 32px; background: #f3f4f6; border-radius: var(--radius-lg); padding: 20px; font-size: 13px; color: var(--muted); }
+  .notice strong { color: var(--text); }
+
+  /* ── Modal ── */
+  .modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,.55); z-index: 100; display: none; align-items: center; justify-content: center; padding: 16px; backdrop-filter: blur(4px); }
+  .modal-overlay.open { display: flex; }
+  .modal { background: white; border-radius: var(--radius-xl); max-width: 500px; width: 100%; max-height: 90vh; overflow-y: auto; box-shadow: 0 24px 80px rgba(0,0,0,.3); animation: scaleIn .2s ease both; }
+  @keyframes scaleIn { from { opacity:0; transform:scale(.95) translateY(16px); } to { opacity:1; transform:none; } }
+  .modal-header { background: linear-gradient(135deg, var(--primary), var(--yellow)); color: white; padding: 24px; border-radius: var(--radius-xl) var(--radius-xl) 0 0; }
+  .modal-header-top { display: flex; align-items: flex-start; justify-content: space-between; gap: 12px; margin-bottom: 12px; }
+  .modal-close { padding: 8px; border-radius: 10px; background: rgba(255,255,255,.2); border: none; color: white; font-size: 18px; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: background .2s; flex-shrink: 0; }
+  .modal-close:hover { background: rgba(255,255,255,.3); }
+  .modal-title { font-size: 20px; font-weight: 800; line-height: 1.2; }
+  .modal-provider { font-size: 13px; opacity: .8; margin-top: 4px; }
+  .modal-badges { display: flex; gap: 8px; flex-wrap: wrap; }
+  .modal-badge { padding: 3px 12px; border-radius: 99px; font-size: 11px; font-weight: 700; background: rgba(255,255,255,.2); color: white; }
+  .modal-body { padding: 24px; }
+  .modal-body > * + * { margin-top: 20px; }
+  .field-label { font-size: 10px; font-weight: 800; text-transform: uppercase; letter-spacing: .08em; color: var(--muted); margin-bottom: 6px; }
+  .field-text { font-size: 14px; color: var(--text); line-height: 1.6; }
+  .value-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+  .value-box { background: #fffbeb; border: 1px solid #fcd34d; border-radius: var(--radius); padding: 12px; }
+  .value-box .lbl { font-size: 10px; font-weight: 800; text-transform: uppercase; letter-spacing: .06em; color: #b45309; margin-bottom: 4px; }
+  .value-box .val { font-size: 13px; font-weight: 600; color: var(--text); }
+  .fields-wrap { display: flex; flex-wrap: wrap; gap: 8px; }
+  .field-tag { padding: 4px 10px; border-radius: 8px; font-size: 12px; font-weight: 600; background: #fff7ed; color: var(--primary); border: 1px solid #fcd34d; }
+  .req-box { background: #f9fafb; border-radius: var(--radius); padding: 14px; font-size: 13px; color: var(--text); line-height: 1.6; }
+  .apply-btn { display: flex; align-items: center; justify-content: center; gap: 8px; width: 100%; padding: 14px; border-radius: var(--radius-lg); background: var(--primary); color: white; font-family: 'Sora', sans-serif; font-weight: 800; font-size: 14px; text-decoration: none; transition: filter .2s; box-shadow: 0 4px 16px #d9770644; }
+  .apply-btn:hover { filter: brightness(1.08); }
+  .more-link { text-align: center; font-size: 12px; color: var(--muted); }
+  .more-link a { color: var(--primary); font-weight: 700; }
+</style>
+<script src="auth.js"></script>
+<script>
+  (function() {
+    Auth.requireAuth();
+  })();
+</script>
+
+</head>
+<body>
+
+<!-- Hero -->
+<div class="hero">
+  <div class="hero-inner">
+    <button class="back-btn" onclick="window.history.back()">← Back to Home</button>
+    <div class="hero-title-row">
+      <div class="hero-icon">📚</div>
+      <div>
+        <h1>Bursary Portal</h1>
+        <p class="sub">South African Bursaries &amp; Funding Opportunities</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Main -->
+<div class="main">
+
+  <!-- NSFAS Banner -->
+  <div class="nsfas-banner">
+    <span class="icon">💡</span>
+    <div>
+      <div class="title">Start with NSFAS</div>
+      <p>If your household income is R350 000/year or less, apply for <strong>NSFAS</strong> first — it covers tuition, accommodation, food, and transport at all public universities and TVET colleges.
+        <a href="https://www.nsfas.org.za" target="_blank" rel="noopener">Apply at nsfas.org.za →</a>
+      </p>
+    </div>
+  </div>
+
+  <!-- Filters -->
+  <div class="filters">
+    <div class="search-wrap">
+      <span class="search-icon">🔍</span>
+      <input type="text" class="search-input" id="searchInput" placeholder="Search bursaries..." oninput="renderBursaries()">
+    </div>
+    <select class="filter-select" id="sectorSelect" onchange="renderBursaries()">
+      <option>All Sectors</option>
+      <option>Mining</option>
+      <option>Banking / Finance</option>
+      <option>Engineering</option>
+      <option>Education</option>
+      <option>Science &amp; Research</option>
+      <option>Social Services</option>
+      <option>Retail / Commerce</option>
+      <option>Energy / Petrochemicals</option>
+      <option>Energy</option>
+      <option>Accounting / Finance</option>
+      <option>Government</option>
+      <option>Defence / Engineering</option>
+      <option>Transport / Logistics</option>
+    </select>
+    <select class="filter-select" id="tierSelect" onchange="renderBursaries()">
+      <option>All Types</option>
+      <option>Full Bursary</option>
+      <option>Partial Bursary</option>
+      <option>Merit-based</option>
+    </select>
+  </div>
+
+  <p class="results-count" id="resultsCount"></p>
+
+  <div class="bursary-list" id="bursaryList"></div>
+
+  <div class="notice">
+    <strong>⚠️ Important Notice</strong><br>
+    Bursary deadlines and values may change annually. Always verify details directly on the provider's official website. Phunya Tsela does not process bursary applications — we connect you with funding sources. You can view other available bursaries at <a href="https://www.zabursaries.co.za/" target="_blank" rel="noopener" style="color:var(--primary)">zabursaries.co.za</a>.
+  </div>
+</div>
+
+<!-- Modal -->
+<div class="modal-overlay" id="modal" onclick="closeModal(event)">
+  <div class="modal" onclick="event.stopPropagation()">
+    <div class="modal-header">
+      <div class="modal-header-top">
+        <div>
+          <div class="modal-title" id="mTitle"></div>
+          <div class="modal-provider" id="mProvider"></div>
+        </div>
+        <button class="modal-close" onclick="closeModal()">✕</button>
+      </div>
+      <div class="modal-badges" id="mBadges"></div>
+    </div>
+    <div class="modal-body">
+      <div id="mAboutWrap">
+        <div class="field-label">About This Bursary</div>
+        <div class="field-text" id="mAbout"></div>
+      </div>
+      <div class="value-grid">
+        <div class="value-box"><div class="lbl">Value</div><div class="val" id="mValue"></div></div>
+        <div class="value-box"><div class="lbl">Deadline</div><div class="val" id="mDeadline"></div></div>
+      </div>
+      <div>
+        <div class="field-label">Fields of Study</div>
+        <div class="fields-wrap" id="mFields"></div>
+      </div>
+      <div>
+        <div class="field-label">Requirements</div>
+        <div class="req-box" id="mReqs"></div>
+      </div>
+      <a href="#" target="_blank" rel="noopener" id="mApplyBtn" class="apply-btn">Apply Now at Official Website ↗</a>
+      <p class="more-link">More bursaries at <a href="https://www.zabursaries.co.za/" target="_blank" rel="noopener">zabursaries.co.za</a></p>
+    </div>
+  </div>
+</div>
+
+<script>
+const BURSARIES = [
+  { name:"NSFAS Bursary", provider:"National Student Financial Aid Scheme", sector:"Government", value:"Full tuition + accommodation + food + transport allowances", fieldOfStudy:["All fields at public universities and TVET colleges"], requirements:"Household income ≤ R350 000/year; SA citizen; accepted at public HEI or TVET", deadline:"November each year (apply early)", link:"https://www.nsfas.org.za", tier:"full", description:"NSFAS is government-funded financial aid for students who cannot afford higher education. It covers tuition, accommodation, meals, transport, and a personal care allowance at all public universities and TVET colleges in South Africa." },
+  { name:"Funza Lushaka Bursary", provider:"Department of Basic Education", sector:"Education", value:"Full tuition + stipend", fieldOfStudy:["BEd","PGCE","Education"], requirements:"SA citizen; studying towards teaching; agree to teach at public school after graduation", deadline:"August/September (check annually)", link:"https://www.funzalushaka.doe.gov.za", tier:"full", description:"The Funza Lushaka Bursary Programme is a multi-year bursary for students who intend to become teachers at public schools. Recipients must teach at a public school for the same number of years as the bursary was received." },
+  { name:"Anglo American Bursary", provider:"Anglo American Platinum", sector:"Mining", value:"Full tuition + accommodation + living allowance", fieldOfStudy:["Mining Engineering","Mechanical Engineering","Electrical Engineering","Geology","Metallurgy"], requirements:"SA citizen; Maths 70%+; Physical Sciences 60%+; from mining communities preferred", deadline:"31 August each year", link:"https://www.angloamerican.com/careers/students-and-graduates", tier:"full", description:"Anglo American offers comprehensive bursaries for students in engineering and science fields, with preference given to students from communities near their mining operations. The bursary includes vacation work opportunities and a potential job offer upon graduation." },
+  { name:"Sasol Bursary", provider:"Sasol Limited", sector:"Energy / Petrochemicals", value:"Full tuition + accommodation + laptop", fieldOfStudy:["Chemical Engineering","Mechanical Engineering","Electrical Engineering","Chemistry","IT","Finance"], requirements:"SA citizen; Maths 80%+; Physical Sciences 70%+; APS 35+", deadline:"31 August each year", link:"https://www.sasol.com/careers/student-opportunities", tier:"full", description:"Sasol's bursary programme covers full tuition, accommodation, meals, a laptop, and a book allowance. Bursary holders are expected to do vacation work at Sasol during university holidays and may be offered employment after graduation." },
+  { name:"Eskom Bursary", provider:"Eskom Holdings", sector:"Energy", value:"Full tuition + monthly allowance", fieldOfStudy:["Electrical Engineering","Mechanical Engineering","Civil Engineering","Chemistry","Finance","IT"], requirements:"SA citizen; Maths 70%+; Physical Sciences 60%+", deadline:"31 July each year", link:"https://www.eskom.co.za/career-student-opportunities/", tier:"full", description:"Eskom offers full bursaries to students in engineering and related fields. The programme includes mentorship, vacation work placements, and potential employment after graduation within Eskom's national operations." },
+  { name:"Armscor Bursary", provider:"Armscor (Armaments Corporation of SA)", sector:"Defence / Engineering", value:"Full tuition + accommodation + allowances", fieldOfStudy:["Electrical Engineering","Mechanical Engineering","Computer Science","Physics","Chemistry"], requirements:"SA citizen; Maths 70%+; Physical Sciences 65%+; security clearance required", deadline:"31 August each year", link:"https://www.armscor.co.za/careers", tier:"full", description:"Armscor provides bursaries for students in defence-related engineering and science disciplines. Recipients receive full financial support and may be required to complete vacation work and post-graduation employment with Armscor." },
+  { name:"ABSA Bank Bursary", provider:"ABSA Group", sector:"Banking / Finance", value:"Partial tuition + mentoring + vacation work", fieldOfStudy:["BCom","Finance","Accounting","IT","Economics"], requirements:"SA citizen; Maths 60%+; strong academic record", deadline:"August each year", link:"https://www.absa.co.za/careers", tier:"partial", description:"ABSA's bursary programme supports students in commerce and IT fields with financial assistance, mentoring from ABSA professionals, and vacation work opportunities. This can lead to graduate placement within the ABSA Group." },
+  { name:"Nedbank Bursary", provider:"Nedbank Group", sector:"Banking / Finance", value:"Full tuition + vacation work", fieldOfStudy:["BCom Accounting","Finance","IT","Actuarial Science","Economics"], requirements:"SA citizen; Maths 70%+; Accounting 60%+; strong academic record", deadline:"31 August each year", link:"https://www.nedbank.co.za/careers", tier:"full", description:"Nedbank's bursary programme covers full tuition fees for qualifying students in financial and technology disciplines. It includes structured vacation work exposure, mentoring, and a potential graduate recruitment pathway." },
+  { name:"FNB Bursary Programme", provider:"First National Bank (FirstRand)", sector:"Banking / Finance", value:"Full tuition + internship opportunity", fieldOfStudy:["BCom","IT","Engineering","Data Science","Finance"], requirements:"SA citizen; Maths 65%+; high academic achiever", deadline:"September each year", link:"https://www.fnb.co.za/careers", tier:"full", description:"FNB offers full bursaries to top-performing students. The programme includes access to FNB's innovative tech environment, internship placements, mentorship from senior FNB employees, and opportunities to join the FNB graduate programme." },
+  { name:"Thuthuka Bursary Fund", provider:"South African Institute of Chartered Accountants (SAICA)", sector:"Accounting / Finance", value:"Full tuition + accommodation + personal development support", fieldOfStudy:["BCom Accounting (CA pathway)"], requirements:"Black African or Coloured SA student; Maths 60%+; Accounting 50%+", deadline:"August each year", link:"https://www.saica.co.za/thuthuka", tier:"full", description:"The Thuthuka Bursary Fund supports Black African and Coloured students on the Chartered Accountancy (CA) pathway. It offers full financial support plus a structured support programme including tutoring, life skills training, and mentoring." },
+  { name:"Assmang Bursary", provider:"Assmang Proprietary Limited", sector:"Mining", value:"Full tuition + accommodation allowance", fieldOfStudy:["Mining Engineering","Metallurgy","Chemical Engineering","Mechanical Engineering","Finance"], requirements:"SA citizen; from Northern Cape or John Taolo Gaetsewe district preferred; Maths 60%+", deadline:"30 September each year", link:"https://www.assmang.co.za", tier:"full", description:"Assmang offers bursaries primarily to students from communities near their manganese and iron ore operations in the Northern Cape. The bursary covers full tuition, accommodation, and includes structured vacation work at their mines." },
+  { name:"Harmony Gold Bursary", provider:"Harmony Gold Mining", sector:"Mining", value:"Full tuition + accommodation", fieldOfStudy:["Mining Engineering","Geology","Metallurgical Engineering","Electrical Engineering"], requirements:"SA citizen; from mining communities preferred; Maths 60%+; Physical Sciences 60%+", deadline:"31 August each year", link:"https://www.harmony.co.za/careers", tier:"full", description:"Harmony Gold Mining provides bursaries for students in mining-related disciplines, with priority given to students from host communities. Recipients are expected to complete vacation work at Harmony operations." },
+  { name:"SPAR Group Bursary", provider:"SPAR South Africa", sector:"Retail / Commerce", value:"Partial tuition", fieldOfStudy:["BCom","Accounting","Supply Chain","Logistics","Marketing"], requirements:"SA citizen; Maths 50%+; from SPAR trading areas preferred", deadline:"September each year", link:"https://www.spar.co.za/careers", tier:"partial", description:"SPAR offers partial bursaries to students in commerce-related fields, particularly those from communities near SPAR distribution centres." },
+  { name:"Capitec Bank Bursary", provider:"Capitec Bank", sector:"Banking / Finance", value:"Tuition + vacation work opportunity", fieldOfStudy:["BCom","Finance","Actuarial Science","Statistics","IT"], requirements:"SA citizen; Maths 70%+; excellent academic record", deadline:"September each year", link:"https://www.capitecbank.co.za/careers", tier:"partial", description:"Capitec Bank's bursary supports students in quantitative and financial disciplines. Recipients gain exposure to Capitec's innovative banking culture through vacation work, with the possibility of joining the graduate programme." },
+  { name:"SASSA / Social Development Bursary", provider:"Department of Social Development", sector:"Social Services", value:"Full tuition", fieldOfStudy:["Social Work","Psychology","Child & Youth Care"], requirements:"SA citizen; financial need; commit to work in public sector after graduation", deadline:"September each year", link:"https://www.dsd.gov.za", tier:"full", description:"The Department of Social Development funds bursaries for students in social work and related fields. Recipients are required to work in the public sector for a period equal to the duration of the bursary upon graduation." },
+  { name:"DSI/NRF Scarce Skills Bursary", provider:"Dept of Science & Innovation / NRF", sector:"Science & Research", value:"Full tuition + research stipend", fieldOfStudy:["All STEM disciplines","Postgrad research","Honours","Masters","PhD"], requirements:"SA citizen; excellent academic record; research-focused", deadline:"Various — check NRF website", link:"https://www.nrf.ac.za", tier:"merit", description:"The NRF offers a range of bursaries and scholarships for undergraduate and postgraduate students in STEM. The programme aims to develop South Africa's research capacity." },
+  { name:"Standard Bank Bursary", provider:"Standard Bank Group", sector:"Banking / Finance", value:"Full tuition + vacation work", fieldOfStudy:["BCom","Accounting","IT","Engineering","Law","Data Science"], requirements:"SA citizen; strong academic record; Maths 65%+", deadline:"August each year", link:"https://www.standardbank.co.za/careers", tier:"full", description:"Standard Bank offers comprehensive bursaries to top students across multiple disciplines. The programme includes mentorship, structured vacation work, and potential graduate employment." },
+  { name:"De Beers Group Bursary", provider:"De Beers Group", sector:"Mining", value:"Full tuition + allowances + vacation work", fieldOfStudy:["Mining Engineering","Geology","Mechanical Engineering","Electrical Engineering","Metallurgy"], requirements:"SA citizen; from De Beers operating communities preferred; strong Maths and Science", deadline:"31 August each year", link:"https://www.debeersgroup.com/careers", tier:"full", description:"De Beers provides bursaries for students in mining and engineering disciplines, with a focus on students from communities near their diamond mining operations." },
+  { name:"Investec Bursary", provider:"Investec Bank", sector:"Banking / Finance", value:"Full tuition + vacation work + mentoring", fieldOfStudy:["BCom","Actuarial Science","Engineering","IT","Finance"], requirements:"SA citizen; strong academic record; Maths 80%+", deadline:"August each year", link:"https://www.investec.com/en_za/careers/students-and-graduates.html", tier:"merit", description:"Investec offers merit-based bursaries to exceptional students. Recipients gain exposure to Investec's distinctive culture through vacation work, mentorship programmes, and development workshops." },
+  { name:"Transnet Bursary", provider:"Transnet SOC Ltd", sector:"Transport / Logistics", value:"Full tuition + allowances", fieldOfStudy:["Civil Engineering","Electrical Engineering","Mechanical Engineering","Industrial Engineering","Logistics"], requirements:"SA citizen; Maths 65%+; Physical Sciences 60%+", deadline:"31 August each year", link:"https://www.transnet.net/careers", tier:"full", description:"Transnet bursaries are available for students in engineering and logistics disciplines. The programme includes structured vacation work at Transnet's freight rail, pipeline, port, and engineering operations nationwide." },
+];
+
+function tierBadgeClass(t) { return t === "full" ? "badge-full" : t === "partial" ? "badge-partial" : "badge-merit"; }
+function tierLabel(t) { return t === "full" ? "Full Bursary" : t === "partial" ? "Partial Bursary" : "Merit-based"; }
+
+function getFiltered() {
+  const search = document.getElementById("searchInput").value.toLowerCase();
+  const sector = document.getElementById("sectorSelect").value;
+  const tier   = document.getElementById("tierSelect").value;
+  return BURSARIES.filter(b => {
+    const ms = !search || b.name.toLowerCase().includes(search) || b.provider.toLowerCase().includes(search) || b.fieldOfStudy.some(f => f.toLowerCase().includes(search));
+    const mx = sector === "All Sectors" || b.sector === sector;
+    const mt = tier === "All Types" || (tier === "Full Bursary" && b.tier === "full") || (tier === "Partial Bursary" && b.tier === "partial") || (tier === "Merit-based" && b.tier === "merit");
+    return ms && mx && mt;
+  });
+}
+
+function renderBursaries() {
+  const filtered = getFiltered();
+  document.getElementById("resultsCount").innerHTML = `Showing ${filtered.length} of ${BURSARIES.length} bursaries — <span>click any card for full details</span>`;
+  const list = document.getElementById("bursaryList");
+  if (filtered.length === 0) {
+    list.innerHTML = `<div class="empty"><div class="emoji">📚</div><p>No bursaries match your search. Try different filters.</p></div>`;
+    return;
+  }
+  list.innerHTML = filtered.map((b, i) => `
+    <div class="bursary-card" onclick="openModal(${i})">
+      <div class="card-top">
+        <div>
+          <div class="card-name">${b.name}</div>
+          <div class="card-provider">${b.provider}</div>
+        </div>
+        <div class="badge-row">
+          <span class="badge ${tierBadgeClass(b.tier)}">${tierLabel(b.tier)}</span>
+          <span class="badge badge-sector">${b.sector}</span>
+        </div>
+      </div>
+      <div class="card-grid">
+        <div>
+          <div class="card-field-label">Value</div>
+          <div class="card-field-value">${b.value}</div>
+        </div>
+        <div>
+          <div class="card-field-label">Deadline</div>
+          <div class="card-field-value">📅 ${b.deadline}</div>
+        </div>
+      </div>
+      <div class="card-hint">Click to view full details →</div>
+    </div>
+  `).join("");
+
+  // Store filtered for modal
+  window._filteredBursaries = filtered;
+}
+
+function openModal(idx) {
+  const b = (window._filteredBursaries || [])[idx];
+  if (!b) return;
+
+  document.getElementById("mTitle").textContent = b.name;
+  document.getElementById("mProvider").textContent = b.provider;
+  document.getElementById("mBadges").innerHTML = `
+    <span class="modal-badge">${tierLabel(b.tier)}</span>
+    <span class="modal-badge">${b.sector}</span>
+  `;
+  const aboutWrap = document.getElementById("mAboutWrap");
+  const mAbout = document.getElementById("mAbout");
+  if (b.description) { aboutWrap.style.display = "block"; mAbout.textContent = b.description; }
+  else { aboutWrap.style.display = "none"; }
+  document.getElementById("mValue").textContent = b.value;
+  document.getElementById("mDeadline").textContent = "📅 " + b.deadline;
+  document.getElementById("mFields").innerHTML = b.fieldOfStudy.map(f => `<span class="field-tag">${f}</span>`).join("");
+  document.getElementById("mReqs").textContent = b.requirements;
+  document.getElementById("mApplyBtn").href = b.link;
+
+  document.getElementById("modal").classList.add("open");
+  document.body.style.overflow = "hidden";
+}
+
+function closeModal(e) {
+  if (e && e.target !== document.getElementById("modal")) return;
+  document.getElementById("modal").classList.remove("open");
+  document.body.style.overflow = "";
+}
+
+renderBursaries();
+</script>
+</body>
+</html>

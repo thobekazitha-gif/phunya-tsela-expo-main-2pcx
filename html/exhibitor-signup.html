@@ -1,0 +1,946 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Apply to Exhibit — Phunya Tsela Career Expo 2026</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --primary:       #d97706;
+    --primary-dark:  #b45309;
+    --yellow:        #f59e0b;
+    --yellow-light:  #fffbeb;
+    --yellow-border: #fde68a;
+    --bg:            #fafaf9;
+    --card:          #ffffff;
+    --border:        #e5e7eb;
+    --text:          #111827;
+    --muted:         #6b7280;
+    --muted-light:   #f3f4f6;
+    --success:       #10b981;
+    --error:         #ef4444;
+    --radius:        12px;
+    --radius-lg:     16px;
+    --radius-xl:     20px;
+  }
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  html { scroll-behavior: smooth; }
+  body {
+    font-family: 'Plus Jakarta Sans', sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    min-height: 100vh;
+  }
+  h1,h2,h3,h4 { font-family: 'Space Grotesk', sans-serif; }
+
+  /* ── Header ── */
+  .site-header {
+    position: fixed; top: 0; left: 0; right: 0; z-index: 50;
+    background: white; border-bottom: 1px solid var(--border);
+    box-shadow: 0 1px 8px rgba(0,0,0,.08);
+  }
+  .header-inner {
+    max-width: 1200px; margin: 0 auto;
+    padding: 0 24px; height: 68px;
+    display: flex; align-items: center; justify-content: space-between;
+  }
+  .logo-link { display: flex; align-items: center; text-decoration: none; }
+  .header-logo { height: 42px; object-fit: contain; }
+  .btn-outline-sm {
+    display: inline-flex; align-items: center; gap: 6px;
+    font-size: 13px; font-weight: 600; padding: 8px 16px;
+    border-radius: var(--radius); border: 1px solid var(--border);
+    background: transparent; color: var(--text); cursor: pointer;
+    text-decoration: none; transition: background .2s;
+    font-family: 'Plus Jakarta Sans', sans-serif;
+  }
+  .btn-outline-sm:hover { background: var(--muted-light); }
+
+  /* ── Page ── */
+  main { padding-top: 68px; }
+
+  .page-wrap {
+    max-width: 760px; margin: 0 auto;
+    padding: 40px 20px 80px;
+  }
+
+  /* ── Gold hero card ── */
+  .hero-card {
+    position: relative; border-radius: 24px;
+    overflow: hidden; margin-bottom: 36px;
+    box-shadow: 0 12px 48px rgba(217,119,6,.3);
+  }
+  .hero-card-bg {
+    position: absolute; inset: 0;
+    background: linear-gradient(135deg, #d97706 0%, #f59e0b 50%, #b45309 100%);
+  }
+  .hero-card-pattern {
+    position: absolute; inset: 0; opacity: .08;
+    background-image: repeating-linear-gradient(45deg, #fff 0, #fff 1px, transparent 0, transparent 50%);
+    background-size: 12px 12px;
+  }
+  .hero-card-inner {
+    position: relative; z-index: 1;
+    text-align: center; padding: 48px 32px 40px;
+  }
+  .hero-logo { height: 52px; margin: 0 auto 20px; display: block; filter: brightness(0) invert(1); }
+  .hero-badge {
+    display: inline-block; padding: 4px 16px; border-radius: 99px;
+    background: rgba(255,255,255,.2); border: 1px solid rgba(255,255,255,.3);
+    font-size: 10px; font-weight: 800; letter-spacing: .12em;
+    text-transform: uppercase; color: rgba(255,255,255,.9);
+    margin-bottom: 14px;
+  }
+  .hero-card h1 {
+    font-size: clamp(26px,4vw,36px); font-weight: 700;
+    color: white; margin-bottom: 10px;
+    text-shadow: 0 2px 8px rgba(0,0,0,.15);
+  }
+  .hero-card p { font-size: 14px; color: rgba(255,255,255,.85); max-width: 480px; margin: 0 auto 20px; line-height: 1.6; }
+  .hero-event-pill {
+    display: inline-block; padding: 8px 20px; border-radius: 12px;
+    background: rgba(255,255,255,.15); border: 1px solid rgba(255,255,255,.3);
+    backdrop-filter: blur(4px);
+    font-size: 14px; font-weight: 700; color: white;
+  }
+
+  /* ── Form sections ── */
+  .form-section {
+    background: white; border: 1px solid #fde68a;
+    border-radius: var(--radius-xl); padding: 28px;
+    margin-bottom: 20px;
+    box-shadow: 0 2px 12px rgba(217,119,6,.06);
+  }
+  .section-header {
+    display: flex; align-items: center; gap: 12px;
+    padding-bottom: 16px; margin-bottom: 24px;
+    border-bottom: 2px solid #fde68a;
+  }
+  .section-number {
+    min-width: 36px; height: 36px; border-radius: 99px;
+    padding: 0 8px;
+    background: linear-gradient(135deg, var(--yellow), var(--primary));
+    color: white; font-weight: 800; font-size: 13px;
+    display: flex; align-items: center; justify-content: center;
+    flex-shrink: 0; box-shadow: 0 4px 12px rgba(217,119,6,.35);
+  }
+  .section-icon { font-size: 20px; }
+  .section-title { font-size: 17px; font-weight: 700; color: var(--text); }
+
+  /* ── Fields ── */
+  .field-group { margin-bottom: 20px; }
+  .field-group:last-child { margin-bottom: 0; }
+  .field-label {
+    display: block; font-size: 13px; font-weight: 700;
+    color: #374151; margin-bottom: 7px;
+  }
+  .field-label .req { color: var(--error); margin-left: 3px; }
+  .field-input, .field-select, .field-textarea {
+    width: 100%; padding: 11px 14px;
+    border: 1px solid #fde68a; border-radius: var(--radius-lg);
+    background: white; font-size: 14px;
+    font-family: 'Plus Jakarta Sans', sans-serif; color: var(--text);
+    outline: none; transition: border-color .2s, box-shadow .2s;
+  }
+  .field-input::placeholder, .field-textarea::placeholder { color: #9ca3af; }
+  .field-input:focus, .field-select:focus, .field-textarea:focus {
+    border-color: var(--primary);
+    box-shadow: 0 0 0 3px rgba(217,119,6,.15);
+  }
+  .field-select { appearance: none; cursor: pointer; }
+  .field-textarea { resize: vertical; min-height: 90px; }
+
+  .field-row { display: grid; gap: 16px; grid-template-columns: 1fr 1fr; }
+  @media(max-width:560px) { .field-row { grid-template-columns: 1fr; } }
+
+  /* ── Radio group ── */
+  .radio-group { display: flex; flex-wrap: wrap; gap: 10px; }
+  .radio-label {
+    display: flex; align-items: center; gap: 8px;
+    padding: 8px 16px; border-radius: var(--radius-lg);
+    border: 1px solid #fde68a; background: white;
+    cursor: pointer; font-size: 13px; font-weight: 600;
+    color: #4b5563; transition: all .15s;
+    user-select: none;
+  }
+  .radio-label:hover { border-color: var(--primary); color: var(--primary); }
+  .radio-label.selected { border-color: var(--primary); background: var(--yellow-light); color: var(--primary-dark); box-shadow: 0 1px 6px rgba(217,119,6,.2); }
+  .radio-label input { position: absolute; opacity: 0; pointer-events: none; }
+  .radio-dot {
+    width: 16px; height: 16px; border-radius: 50%;
+    border: 2px solid #d1d5db; display: flex; align-items: center;
+    justify-content: center; flex-shrink: 0; transition: border-color .15s;
+  }
+  .radio-label.selected .radio-dot { border-color: var(--primary); }
+  .radio-dot-inner {
+    width: 8px; height: 8px; border-radius: 50%;
+    background: var(--primary); display: none;
+  }
+  .radio-label.selected .radio-dot-inner { display: block; }
+
+  /* ── Checkbox group ── */
+  .checkbox-group { display: flex; flex-wrap: wrap; gap: 10px; }
+  .check-label {
+    display: flex; align-items: center; gap: 8px;
+    padding: 8px 16px; border-radius: var(--radius-lg);
+    border: 1px solid #fde68a; background: white;
+    cursor: pointer; font-size: 13px; font-weight: 600;
+    color: #4b5563; transition: all .15s; user-select: none;
+  }
+  .check-label:hover { border-color: var(--primary); color: var(--primary); }
+  .check-label.checked { border-color: var(--primary); background: var(--yellow-light); color: var(--primary-dark); box-shadow: 0 1px 6px rgba(217,119,6,.2); }
+  .check-label input { position: absolute; opacity: 0; pointer-events: none; }
+  .check-box {
+    width: 16px; height: 16px; border-radius: 4px;
+    border: 2px solid #d1d5db; display: flex; align-items: center;
+    justify-content: center; flex-shrink: 0; transition: all .15s;
+    font-size: 10px; color: white;
+  }
+  .check-label.checked .check-box { background: var(--primary); border-color: var(--primary); }
+
+  /* Conditional fields */
+  .conditional { display: none; }
+  .conditional.show { display: block; }
+
+  /* ── File drop zone ── */
+  .drop-zone {
+    border: 2px dashed #fde68a; border-radius: var(--radius-xl);
+    padding: 32px 20px; text-align: center; cursor: pointer;
+    transition: all .2s; background: white;
+  }
+  .drop-zone:hover, .drop-zone.dragging { border-color: var(--primary); background: var(--yellow-light); }
+  .drop-zone .dz-icon { font-size: 28px; margin-bottom: 10px; }
+  .drop-zone .dz-main { font-size: 14px; font-weight: 600; color: #374151; }
+  .drop-zone .dz-main span { color: var(--primary); text-decoration: underline; }
+  .drop-zone .dz-sub { font-size: 12px; color: var(--muted); margin-top: 4px; }
+  .drop-zone .dz-file { font-size: 13px; font-weight: 700; color: var(--primary); }
+
+  /* ── Terms checkbox ── */
+  .terms-wrap {
+    border: 1px solid #fde68a; border-radius: var(--radius-lg);
+    padding: 16px; cursor: pointer; transition: all .2s; display: flex; gap: 12px; align-items: flex-start;
+  }
+  .terms-wrap:hover { border-color: var(--primary); }
+  .terms-wrap.checked { border-color: var(--primary); background: var(--yellow-light); box-shadow: 0 1px 6px rgba(217,119,6,.2); }
+  .terms-box {
+    width: 20px; height: 20px; border-radius: 6px;
+    border: 2px solid #d1d5db; display: flex; align-items: center;
+    justify-content: center; flex-shrink: 0; margin-top: 1px;
+    font-size: 12px; color: white; transition: all .2s;
+  }
+  .terms-wrap.checked .terms-box { background: var(--primary); border-color: var(--primary); }
+  .terms-text { font-size: 13px; font-weight: 600; color: #374151; line-height: 1.5; }
+
+  .terms-box-content {
+    background: #fffbeb; border: 1px solid #fde68a;
+    border-radius: var(--radius-lg); padding: 18px 20px;
+    font-size: 13px; color: #4b5563; line-height: 1.7;
+    margin-bottom: 16px;
+  }
+  .terms-box-content ul { list-style: disc; padding-left: 20px; display: flex; flex-direction: column; gap: 6px; }
+  .terms-box-content strong { color: var(--text); }
+  .terms-sub-heading {
+    font-size: 12px; font-weight: 800; text-transform: uppercase;
+    letter-spacing: .06em; color: var(--primary-dark);
+    margin: 16px 0 8px; display: block;
+  }
+  .terms-sub-heading:first-of-type { margin-top: 0; }
+
+  /* ── Placement notice ── */
+  .placement-notice {
+    display: flex; gap: 16px; align-items: flex-start;
+    background: #f0fdf4; border: 1px solid #86efac;
+    border-radius: var(--radius-lg); padding: 18px 20px;
+    margin-bottom: 20px;
+  }
+  .placement-notice-icon { font-size: 24px; flex-shrink: 0; margin-top: 2px; }
+  .placement-notice-title { font-size: 14px; font-weight: 800; color: #166534; margin-bottom: 4px; }
+  .placement-notice-body { font-size: 13px; color: #15803d; line-height: 1.6; }
+
+  /* ── Submit ── */
+  .submit-btn {
+    width: 100%; height: 56px; border-radius: var(--radius-xl);
+    background: linear-gradient(135deg, var(--yellow) 0%, var(--primary) 100%);
+    color: white; font-family: 'Space Grotesk', sans-serif;
+    font-weight: 700; font-size: 16px; border: none; cursor: pointer;
+    box-shadow: 0 6px 24px rgba(217,119,6,.4);
+    transition: transform .15s, box-shadow .15s, filter .2s;
+    display: flex; align-items: center; justify-content: center; gap: 10px;
+  }
+  .submit-btn:hover:not(:disabled) { transform: translateY(-2px); box-shadow: 0 10px 32px rgba(217,119,6,.5); filter: brightness(1.05); }
+  .submit-btn:active { transform: translateY(0); }
+  .submit-btn:disabled { opacity: .7; cursor: not-allowed; }
+  .submit-note { text-align: center; font-size: 12px; color: var(--muted); margin-top: 10px; }
+
+  /* ── Error state ── */
+  .error-banner {
+    background: #fef2f2; border: 1px solid #fecaca;
+    border-radius: var(--radius-lg); padding: 12px 16px;
+    font-size: 13px; color: #b91c1c; margin-bottom: 20px;
+    display: none;
+  }
+  .error-banner.show { display: block; }
+
+  /* ── Success screen ── */
+  #successScreen {
+    display: none; flex-direction: column; align-items: center;
+    justify-content: center; min-height: 60vh; text-align: center;
+    padding: 40px 20px;
+  }
+  #successScreen.show { display: flex; }
+  .success-icon {
+    width: 88px; height: 88px; border-radius: 50%;
+    background: linear-gradient(135deg, var(--yellow), var(--primary));
+    display: flex; align-items: center; justify-content: center;
+    font-size: 40px; margin-bottom: 24px;
+    box-shadow: 0 12px 40px rgba(217,119,6,.35);
+    animation: popIn .4s cubic-bezier(.175,.885,.32,1.275) both;
+  }
+  @keyframes popIn { from { opacity:0; transform:scale(.6); } to { opacity:1; transform:scale(1); } }
+  #successScreen h2 { font-size: 28px; font-weight: 700; margin-bottom: 10px; }
+  #successScreen p { font-size: 15px; color: var(--muted); max-width: 400px; margin-bottom: 6px; }
+  .btn-primary-lg {
+    display: inline-flex; align-items: center; gap: 8px;
+    background: linear-gradient(135deg, var(--yellow), var(--primary));
+    color: white; font-family: 'Space Grotesk', sans-serif;
+    font-weight: 700; font-size: 15px; padding: 14px 32px;
+    border-radius: var(--radius-lg); border: none; cursor: pointer;
+    margin-top: 24px; box-shadow: 0 6px 20px rgba(217,119,6,.35);
+    text-decoration: none; transition: filter .2s;
+  }
+  .btn-primary-lg:hover { filter: brightness(1.08); }
+</style>
+</head>
+<body>
+
+<!-- ── Header ── -->
+<header class="site-header">
+  <div class="header-inner">
+    <a href="index.html" class="logo-link">
+      <img src="src/assets/logos/29.png" alt="Phunya Tsela" class="header-logo" />
+    </a>
+    <a href="exhibitors.html" class="btn-outline-sm">← Exhibitor Directory</a>
+  </div>
+</header>
+
+<main>
+  <!-- ── Success Screen ── -->
+  <div id="successScreen">
+    <div class="success-icon">✓</div>
+    <h2>Application Received!</h2>
+    <p>Thank you, <strong id="successName"></strong>. Your expression of interest to exhibit at <strong>Phunya Tsela 24–25 June 2026</strong> has been submitted.</p>
+    <p style="font-size:13px;">Our team will be in touch shortly with your exhibitor pack.</p>
+    <a href="exhibitors.html" class="btn-primary-lg">← View Exhibitors</a>
+  </div>
+
+  <!-- ── Form ── -->
+  <div class="page-wrap" id="formWrap">
+
+    <!-- Hero card -->
+    <div class="hero-card">
+      <div class="hero-card-bg"></div>
+      <div class="hero-card-pattern"></div>
+      <div class="hero-card-inner">
+        <img src="src/assets/logos/29.png" alt="Phunya Tsela" class="hero-logo" />
+        <div class="hero-badge">Exhibitor Registration</div>
+        <h1>Sign Up to Exhibit</h1>
+        <p>Complete the form below to express your interest in exhibiting at our next show.</p>
+        <div class="hero-event-pill">📅 Phunya Tsela — 24–25 June 2026</div>
+      </div>
+    </div>
+
+    <!-- Error banner -->
+    <div class="error-banner" id="errorBanner"></div>
+
+    <!-- ── Section 1: Organisation ── -->
+    <div class="form-section">
+      <div class="section-header">
+        <div class="section-number">1</div>
+        <span class="section-icon">🏢</span>
+        <span class="section-title">Organisation Details</span>
+      </div>
+      <div class="field-group">
+        <label class="field-label">Organisation / Institution Name <span class="req">*</span></label>
+        <input type="text" id="orgName" class="field-input" placeholder="e.g. Department of Education" />
+      </div>
+      <div class="field-group">
+        <label class="field-label">Physical Address</label>
+        <input type="text" id="physicalAddress" class="field-input" placeholder="Street address, City" />
+      </div>
+      <div class="field-group">
+        <label class="field-label">Organisation Type <span class="req">*</span></label>
+        <div class="radio-group" id="orgTypeGroup" data-name="orgType">
+          <!-- Rendered by JS -->
+        </div>
+      </div>
+    </div>
+
+    <!-- ── Section 2: Contact ── -->
+    <div class="form-section">
+      <div class="section-header">
+        <div class="section-number">2</div>
+        <span class="section-icon">👤</span>
+        <span class="section-title">Contact Person</span>
+      </div>
+      <div class="field-row">
+        <div class="field-group">
+          <label class="field-label">Full Name <span class="req">*</span></label>
+          <input type="text" id="contactName" class="field-input" placeholder="Full name" />
+        </div>
+        <div class="field-group">
+          <label class="field-label">Email Address <span class="req">*</span></label>
+          <input type="email" id="email" class="field-input" placeholder="email@organisation.co.za" />
+        </div>
+        <div class="field-group">
+          <label class="field-label">Phone <span class="req">*</span></label>
+          <input type="tel" id="phone" class="field-input" placeholder="+27 xx xxx xxxx" />
+        </div>
+        <div class="field-group">
+          <label class="field-label">Alternative Phone</label>
+          <input type="tel" id="altPhone" class="field-input" placeholder="+27 xx xxx xxxx" />
+        </div>
+      </div>
+    </div>
+
+    <!-- ── Section 3: Stand Preferences ── -->
+    <div class="form-section">
+      <div class="section-header">
+        <div class="section-number">3</div>
+        <span class="section-icon">📍</span>
+        <span class="section-title">Exhibitor Preferences</span>
+      </div>
+      <div class="field-group">
+        <label class="field-label">Do you require a stand? <span class="req">*</span></label>
+        <div class="radio-group" id="requiresStandGroup" data-name="requiresStand"></div>
+      </div>
+      <div class="conditional" id="standDetailsWrap">
+        <div class="field-group">
+          <label class="field-label">Stand Type</label>
+          <div class="radio-group" id="standTypeGroup" data-name="standType"></div>
+        </div>
+        <div class="field-group">
+          <label class="field-label">Name on Fascia</label>
+          <input type="text" id="fasciaName" class="field-input" placeholder="As it should appear on signage" />
+        </div>
+      </div>
+      <div class="field-group">
+        <label class="field-label">Products / Services on Display</label>
+        <textarea id="productsServices" class="field-textarea" placeholder="Briefly describe what you'll be showcasing..."></textarea>
+      </div>
+      <div class="field-group">
+        <label class="field-label">Do you need a Power Outlet?</label>
+        <div class="radio-group" id="powerOutletGroup" data-name="powerOutlet"></div>
+      </div>
+    </div>
+
+    <!-- ── Payment Intent ── -->
+    <div class="form-section">
+      <div class="section-header">
+        <div class="section-number">💳</div>
+        <span class="section-icon">💳</span>
+        <span class="section-title">Payment Intent</span>
+      </div>
+      <div class="field-group" style="margin-bottom:0">
+        <label class="field-label" for="paymentIntent">How would you like to proceed with your booking? <span class="req">*</span></label>
+        <div style="position:relative;">
+          <select id="paymentIntent" class="field-select" onchange="formState.paymentIntent = this.value">
+            <option value="">— Please select an option —</option>
+            <option value="immediate-invoice">Immediate Invoice</option>
+            <option value="require-quotation">Require Quotation First</option>
+            <option value="sponsorship-enquiry">Sponsorship Package Enquiry</option>
+            <option value="pledge-model">Pledge Model (Bursary / Activation Commitment)</option>
+          </select>
+          <div style="pointer-events:none;position:absolute;right:14px;top:50%;transform:translateY(-50%);color:var(--muted);font-size:12px;">▼</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── Section 4: Sponsorship ── -->
+    <div class="form-section">
+      <div class="section-header">
+        <div class="section-number">4</div>
+        <span class="section-icon">⭐</span>
+        <span class="section-title">Sponsorship Options</span>
+      </div>
+      <div class="field-group">
+        <label class="field-label">Are you participating as a sponsor?</label>
+        <div class="radio-group" id="isSponsorGroup" data-name="isSponsor"></div>
+      </div>
+      <div class="field-group">
+        <label class="field-label">Sponsorship Tier</label>
+        <div class="radio-group" id="sponsorTierGroup" data-name="sponsorTier"></div>
+      </div>
+      <div class="field-group">
+        <label class="field-label">Focus Areas</label>
+        <div class="checkbox-group" id="focusAreasGroup" data-name="focusAreas"></div>
+      </div>
+      <div class="field-group">
+        <label class="field-label">PO / Reference Number</label>
+        <input type="text" id="poRefNumber" class="field-input" placeholder="Purchase order or reference number" />
+      </div>
+      <div class="field-group">
+        <label class="field-label">Request / Signed MOU</label>
+        <div class="drop-zone" id="mouDrop" data-field="mouFile">
+          <div class="dz-icon">📎</div>
+          <div class="dz-main">Drag and Drop (or) <span>Choose Files</span></div>
+          <div class="dz-sub">Upload MOU or Request Letter (PDF, DOC)</div>
+        </div>
+        <input type="file" id="mouFile" accept=".pdf,.doc,.docx" style="display:none" />
+      </div>
+    </div>
+
+    <!-- ── Section 5: Participation ── -->
+    <div class="form-section">
+      <div class="section-header">
+        <div class="section-number">5</div>
+        <span class="section-icon">🏆</span>
+        <span class="section-title">Participation Options</span>
+      </div>
+      <div class="field-group">
+        <label class="field-label">Would you like to participate in?</label>
+        <div class="checkbox-group" id="participationGroup" data-name="participation"></div>
+      </div>
+    </div>
+
+    <!-- ── Section 6: Billing & Invoicing ── -->
+    <div class="form-section">
+      <div class="section-header">
+        <div class="section-number">6</div>
+        <span class="section-icon">🧾</span>
+        <span class="section-title">Billing &amp; Invoicing Details</span>
+      </div>
+      <div class="field-group">
+        <label class="field-label">Company Legal Name <span class="req">*</span></label>
+        <input type="text" id="companyLegalName" class="field-input" placeholder="Registered legal name" />
+      </div>
+      <div class="field-group">
+        <label class="field-label">Trading Name <span style="font-weight:400;color:var(--muted)">(if different)</span></label>
+        <input type="text" id="tradingName" class="field-input" placeholder="Trading / brand name" />
+      </div>
+      <div class="field-row">
+        <div class="field-group">
+          <label class="field-label">VAT Number <span style="font-weight:400;color:var(--muted)">(if applicable)</span></label>
+          <input type="text" id="vatNumber" class="field-input" placeholder="e.g. 4123456789" />
+        </div>
+        <div class="field-group">
+          <label class="field-label">Company Registration Number</label>
+          <input type="text" id="companyRegNumber" class="field-input" placeholder="e.g. 2005/123456/07" />
+        </div>
+      </div>
+      <div class="field-row">
+        <div class="field-group">
+          <label class="field-label">Billing Contact Person <span class="req">*</span></label>
+          <input type="text" id="billingContact" class="field-input" placeholder="Full name" />
+        </div>
+        <div class="field-group">
+          <label class="field-label">Billing Email Address <span class="req">*</span></label>
+          <input type="email" id="billingEmail" class="field-input" placeholder="accounts@organisation.co.za" />
+        </div>
+        <div class="field-group">
+          <label class="field-label">Billing Phone Number <span class="req">*</span></label>
+          <input type="tel" id="billingPhone" class="field-input" placeholder="+27 xx xxx xxxx" />
+        </div>
+        <div class="field-group">
+          <label class="field-label">Accounts Payable Contact <span style="font-weight:400;color:var(--muted)">(if different)</span></label>
+          <input type="text" id="apContact" class="field-input" placeholder="Name &amp; email / phone" />
+        </div>
+      </div>
+      <div class="field-group">
+        <label class="field-label">Purchase Order Number <span style="font-weight:400;color:var(--muted)">(if required)</span></label>
+        <input type="text" id="poNumber" class="field-input" placeholder="PO number from your finance department" />
+      </div>
+      <div class="field-row">
+        <div class="field-group">
+          <label class="field-label">Physical Address</label>
+          <textarea id="billingPhysical" class="field-textarea" style="min-height:72px" placeholder="Street address, City, Province, Code"></textarea>
+        </div>
+        <div class="field-group">
+          <label class="field-label">Postal Address <span style="font-weight:400;color:var(--muted)">(if different)</span></label>
+          <textarea id="billingPostal" class="field-textarea" style="min-height:72px" placeholder="PO Box / postal address"></textarea>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── Section 7: Representatives ── -->
+    <div class="form-section">
+      <div class="section-header">
+        <div class="section-number">7</div>
+        <span class="section-icon">👥</span>
+        <span class="section-title">Representatives Attending</span>
+      </div>
+      <div class="field-group">
+        <label class="field-label">Full Names of Representatives</label>
+        <textarea id="repNames" class="field-textarea" placeholder="List all representative names, one per line"></textarea>
+      </div>
+      <div class="field-group">
+        <label class="field-label">Dietary Requirements</label>
+        <div class="checkbox-group" id="dietaryGroup" data-name="dietary"></div>
+      </div>
+      <div class="field-group">
+        <label class="field-label">Travel / Accommodation Assistance Required?</label>
+        <div class="radio-group" id="travelAssistanceGroup" data-name="travelAssistance"></div>
+      </div>
+    </div>
+
+    <!-- ── Section 8: Uploads ── -->
+    <div class="form-section">
+      <div class="section-header">
+        <div class="section-number">8</div>
+        <span class="section-icon">⬆️</span>
+        <span class="section-title">Uploads</span>
+      </div>
+      <div class="field-group">
+        <label class="field-label">Upload Logo</label>
+        <div class="drop-zone" id="logoDrop" data-field="logoFile">
+          <div class="dz-icon">🖼️</div>
+          <div class="dz-main">Drag and Drop (or) <span>Choose Files</span></div>
+          <div class="dz-sub">PNG, JPG, SVG — your organisation logo</div>
+        </div>
+        <input type="file" id="logoFile" accept="image/*,.svg" style="display:none" />
+      </div>
+      <div class="field-group">
+        <label class="field-label">Upload Company Profile or Supporting Docs</label>
+        <div class="drop-zone" id="profileDrop" data-field="profileFile">
+          <div class="dz-icon">📄</div>
+          <div class="dz-main">Drag and Drop (or) <span>Choose Files</span></div>
+          <div class="dz-sub">PDF, DOC — company profile, brochure or supporting documents</div>
+        </div>
+        <input type="file" id="profileFile" accept=".pdf,.doc,.docx" style="display:none" />
+      </div>
+    </div>
+
+    <!-- ── Section 9: Terms ── -->
+    <div class="form-section">
+      <div class="section-header">
+        <div class="section-number">9</div>
+        <span class="section-icon">📋</span>
+        <span class="section-title">Terms &amp; POPIA Compliance</span>
+      </div>
+      <div class="terms-box-content">
+        <p style="font-weight:700;color:#111827;margin-bottom:14px;">By submitting this form, I confirm and agree that:</p>
+
+        <p class="terms-sub-heading">📦 Booking &amp; Payment</p>
+        <ul>
+          <li>I am applying to exhibit at the Phunya Tsela Career Expo 2026.</li>
+          <li>I understand that exhibition space is limited and allocated on a <strong>first-confirmed, first-served basis</strong>.</li>
+          <li>I acknowledge that participation is subject to a confirmed booking fee of <strong>R15,000 (excl. VAT)</strong> for a 2-day exhibition stand.</li>
+          <li>I understand that my stand is only secured upon receipt of payment or an approved written commitment.</li>
+        </ul>
+
+        <p class="terms-sub-heading">🤝 Commitment &amp; Cancellations</p>
+        <ul>
+          <li>Once my booking is confirmed, I commit to participate fully.</li>
+          <li>I understand that cancellations after confirmation may result in the <strong>full booking fee being retained</strong> to cover planning, allocation, and operational costs.</li>
+        </ul>
+
+        <p class="terms-sub-heading">📸 Branding &amp; Media Use</p>
+        <ul>
+          <li>I authorise the organisers to use my organisation's name, logo, and event images for reporting, media, and public interest communication purposes.</li>
+        </ul>
+
+        <p class="terms-sub-heading">🔒 Data Protection</p>
+        <ul>
+          <li>I agree to the processing of my information in line with the <strong>Protection of Personal Information Act (POPIA)</strong>.</li>
+        </ul>
+      </div>
+      <div class="terms-wrap" id="termsWrap" onclick="toggleTerms()">
+        <div class="terms-box" id="termsBox"></div>
+        <span class="terms-text">Yes, I agree to all terms and POPIA compliance requirements above.</span>
+      </div>
+    </div>
+
+    <!-- ── Section 10: Confirmation ── -->
+    <div class="form-section">
+      <div class="section-header">
+        <div class="section-number">10</div>
+        <span class="section-icon">✅</span>
+        <span class="section-title">Confirmation</span>
+      </div>
+      <div class="field-group">
+        <label class="field-label">Do you require a certificate or letter of participation?</label>
+        <div class="radio-group" id="requiresCertificateGroup" data-name="requiresCertificate"></div>
+      </div>
+    </div>
+
+    <!-- Placement notice -->
+    <div class="placement-notice">
+      <div class="placement-notice-icon">⏳</div>
+      <div>
+        <p class="placement-notice-title">Submissions do not guarantee placement</p>
+        <p class="placement-notice-body">Due to high demand and limited exhibition space, a member of our team will confirm your allocation and issue an invoice within <strong>24–48 hours</strong> of receiving your application.</p>
+      </div>
+    </div>
+
+    <!-- Submit -->
+    <button class="submit-btn" id="submitBtn" onclick="handleSubmit()">
+      Submit Application →
+    </button>
+    <p class="submit-note">Your information is protected under POPIA. We will never share your details without consent.</p>
+
+  </div><!-- /page-wrap -->
+</main>
+
+<script>
+// ── Form state ────────────────────────────────────────────────────────────────
+var formState = {
+  orgType: '', requiresStand: '', standType: '', powerOutlet: '',
+  isSponsor: '', sponsorTier: '', focusAreas: [],
+  participation: [], dietary: [], travelAssistance: '',
+  requiresCertificate: '',
+  termsAgreed: false,
+  mouFile: null, logoFile: null, profileFile: null,
+};
+
+// ── Radio / Checkbox definitions ──────────────────────────────────────────────
+var RADIO_DEFS = {
+  orgType:              ["Government Department","SOE","Private Company","TVET/University","NGO/NPO","Other"],
+  requiresStand:        ["Yes","No"],
+  standType:            ["Standard 3x2","Shared Booth","Own Setup"],
+  powerOutlet:          ["Yes","No"],
+  isSponsor:            ["Yes","No"],
+  sponsorTier:          ["Platinum","Gold","Silver","Bronze","Community","Custom"],
+  travelAssistance:     ["Yes","No"],
+  requiresCertificate:  ["Yes","No"],
+};
+var CHECKBOX_DEFS = {
+  focusAreas:    ["Bursaries","Branding","Workshop","Media Exposure","Product Placement","Other"],
+  participation: ["Pre-Expo Teachers Training Workshop","Youth Masterclass","On-site Media Interview"],
+  dietary:       ["Allergic to Nuts","Halaal","Sea Food","Lactose Free","None"],
+};
+
+// ── Build radio groups ────────────────────────────────────────────────────────
+function buildRadioGroups() {
+  Object.keys(RADIO_DEFS).forEach(function(name) {
+    var wrap = document.getElementById(name + 'Group');
+    if (!wrap) return;
+    var options = RADIO_DEFS[name];
+    wrap.innerHTML = options.map(function(opt) {
+      return '<label class="radio-label" data-value="' + esc(opt) + '" onclick="selectRadio(this, \'' + name + '\')">' +
+        '<div class="radio-dot"><div class="radio-dot-inner"></div></div>' +
+        esc(opt) +
+        '</label>';
+    }).join('');
+  });
+}
+
+function buildCheckboxGroups() {
+  Object.keys(CHECKBOX_DEFS).forEach(function(name) {
+    var wrap = document.getElementById(name + 'Group');
+    if (!wrap) return;
+    var options = CHECKBOX_DEFS[name];
+    wrap.innerHTML = options.map(function(opt) {
+      return '<label class="check-label" data-value="' + esc(opt) + '" onclick="toggleCheckbox(this, \'' + name + '\')">' +
+        '<div class="check-box">✓</div>' +
+        esc(opt) +
+        '</label>';
+    }).join('');
+  });
+}
+
+function selectRadio(label, name) {
+  var group = document.getElementById(name + 'Group');
+  group.querySelectorAll('.radio-label').forEach(function(l) { l.classList.remove('selected'); });
+  label.classList.add('selected');
+  formState[name] = label.dataset.value;
+
+  // Show/hide stand details
+  if (name === 'requiresStand') {
+    var cond = document.getElementById('standDetailsWrap');
+    if (cond) cond.classList.toggle('show', label.dataset.value === 'Yes');
+  }
+}
+
+function toggleCheckbox(label, name) {
+  label.classList.toggle('checked');
+  var val = label.dataset.value;
+  var arr = formState[name];
+  if (label.classList.contains('checked')) {
+    if (!arr.includes(val)) arr.push(val);
+  } else {
+    formState[name] = arr.filter(function(v) { return v !== val; });
+  }
+}
+
+function toggleTerms() {
+  formState.termsAgreed = !formState.termsAgreed;
+  var wrap = document.getElementById('termsWrap');
+  var box  = document.getElementById('termsBox');
+  wrap.classList.toggle('checked', formState.termsAgreed);
+  box.textContent = formState.termsAgreed ? '✓' : '';
+}
+
+// ── Drop zones ────────────────────────────────────────────────────────────────
+function initDropZone(dropId, inputId, stateKey) {
+  var drop  = document.getElementById(dropId);
+  var input = document.getElementById(inputId);
+
+  drop.addEventListener('click', function() { input.click(); });
+  drop.addEventListener('dragover', function(e) { e.preventDefault(); drop.classList.add('dragging'); });
+  drop.addEventListener('dragleave', function() { drop.classList.remove('dragging'); });
+  drop.addEventListener('drop', function(e) {
+    e.preventDefault(); drop.classList.remove('dragging');
+    var f = e.dataTransfer.files[0];
+    if (f) setFile(drop, stateKey, f);
+  });
+  input.addEventListener('change', function() {
+    if (input.files[0]) setFile(drop, stateKey, input.files[0]);
+  });
+}
+
+function setFile(drop, stateKey, file) {
+  formState[stateKey] = file;
+  drop.querySelector('.dz-main').innerHTML = '<span class="dz-file">📎 ' + esc(file.name) + '</span>';
+  drop.querySelector('.dz-sub').textContent = '';
+}
+
+// ── Validation ────────────────────────────────────────────────────────────────
+function showError(msg) {
+  var banner = document.getElementById('errorBanner');
+  banner.textContent = '⚠️ ' + msg;
+  banner.classList.add('show');
+  banner.scrollIntoView({ behavior: 'smooth', block: 'center' });
+}
+function clearError() {
+  document.getElementById('errorBanner').classList.remove('show');
+}
+
+// ── Submit → Formspree ────────────────────────────────────────────────────────
+function handleSubmit() {
+  clearError();
+
+  // ── Required field validation ──
+  var orgName     = document.getElementById('orgName').value.trim();
+  var contactName = document.getElementById('contactName').value.trim();
+  var email       = document.getElementById('email').value.trim();
+  var phone       = document.getElementById('phone').value.trim();
+
+  if (!orgName)                 { showError('Please enter your organisation name.'); return; }
+  if (!formState.orgType)       { showError('Please select an organisation type.'); return; }
+  if (!contactName)             { showError('Please enter the contact person\'s name.'); return; }
+  if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) { showError('Please enter a valid email address.'); return; }
+  if (!phone)                   { showError('Please enter a phone number.'); return; }
+  if (!formState.requiresStand) { showError('Please indicate if you require a stand.'); return; }
+  if (!formState.termsAgreed)   { showError('Please agree to the Terms and POPIA compliance to continue.'); return; }
+
+  // ── Build FormData for Formspree ──
+  var fd = new FormData();
+
+  // Formspree uses the "email" key as the reply-to address
+  fd.append('email', email);
+
+  // Section 1 — Organisation
+  fd.append('Organisation Name',     orgName);
+  fd.append('Physical Address',      document.getElementById('physicalAddress').value.trim());
+  fd.append('Organisation Type',     formState.orgType);
+
+  // Section 2 — Contact
+  fd.append('Contact Name',          contactName);
+  fd.append('Phone',                 phone);
+  fd.append('Alternative Phone',     document.getElementById('altPhone').value.trim());
+
+  // Section 3 — Stand Preferences
+  fd.append('Requires Stand',        formState.requiresStand);
+  fd.append('Stand Type',            formState.standType || '—');
+  fd.append('Fascia Name',           document.getElementById('fasciaName').value.trim());
+  fd.append('Products / Services',   document.getElementById('productsServices').value.trim());
+  fd.append('Power Outlet',          formState.powerOutlet || '—');
+
+  // Payment Intent
+  fd.append('Payment Intent',        document.getElementById('paymentIntent').value || '—');
+
+  // Section 4 — Sponsorship
+  fd.append('Is Sponsor',            formState.isSponsor || '—');
+  fd.append('Sponsor Tier',          formState.sponsorTier || '—');
+  fd.append('Focus Areas',           formState.focusAreas.length ? formState.focusAreas.join(', ') : '—');
+  fd.append('PO / Reference Number', document.getElementById('poRefNumber').value.trim());
+  if (formState.mouFile)    fd.append('MOU File',     formState.mouFile,     formState.mouFile.name);
+
+  // Section 5 — Participation
+  fd.append('Participation Options', formState.participation.length ? formState.participation.join(', ') : '—');
+
+  // Section 6 — Billing
+  fd.append('Company Legal Name',    document.getElementById('companyLegalName').value.trim());
+  fd.append('Trading Name',          document.getElementById('tradingName').value.trim());
+  fd.append('VAT Number',            document.getElementById('vatNumber').value.trim());
+  fd.append('Company Reg Number',    document.getElementById('companyRegNumber').value.trim());
+  fd.append('Billing Contact',       document.getElementById('billingContact').value.trim());
+  fd.append('Billing Email',         document.getElementById('billingEmail').value.trim());
+  fd.append('Billing Phone',         document.getElementById('billingPhone').value.trim());
+  fd.append('AP Contact',            document.getElementById('apContact').value.trim());
+  fd.append('PO Number',             document.getElementById('poNumber').value.trim());
+  fd.append('Billing Physical',      document.getElementById('billingPhysical').value.trim());
+  fd.append('Billing Postal',        document.getElementById('billingPostal').value.trim());
+
+  // Section 7 — Representatives
+  fd.append('Representatives',       document.getElementById('repNames').value.trim());
+  fd.append('Dietary Requirements',  formState.dietary.length ? formState.dietary.join(', ') : '—');
+  fd.append('Travel Assistance',     formState.travelAssistance || '—');
+
+  // Section 8 — File uploads
+  if (formState.logoFile)    fd.append('Logo File',    formState.logoFile,    formState.logoFile.name);
+  if (formState.profileFile) fd.append('Profile File', formState.profileFile, formState.profileFile.name);
+
+  // Sections 9 & 10
+  fd.append('Terms & POPIA Agreed',    'Yes');
+  fd.append('Requires Certificate',    formState.requiresCertificate || '—');
+
+  // ── Disable button & show loading state ──
+  var btn = document.getElementById('submitBtn');
+  btn.disabled = true;
+  btn.innerHTML = '<span style="display:inline-flex;align-items:center;gap:8px"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="animation:spin 1s linear infinite"><path d="M21 12a9 9 0 1 1-6.219-8.56"/></svg> Submitting…</span>';
+
+  // ── POST to Formspree ──
+  fetch('https://formspree.io/f/mvzlqydv', {
+    method:  'POST',
+    body:    fd,
+    headers: { 'Accept': 'application/json' }
+  })
+  .then(function(res) {
+    if (res.ok) {
+      // ✅ Success — show thank-you screen
+      document.getElementById('successName').textContent = contactName;
+      document.getElementById('formWrap').style.display  = 'none';
+      document.getElementById('successScreen').classList.add('show');
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    } else {
+      // ❌ Formspree returned an error
+      return res.json().then(function(data) {
+        var msg = (data && data.errors)
+          ? data.errors.map(function(e) { return e.message; }).join(', ')
+          : 'Submission failed. Please try again or email us directly.';
+        showError(msg);
+        btn.disabled = false;
+        btn.innerHTML = 'Submit Application →';
+      });
+    }
+  })
+  .catch(function() {
+    showError('Network error — please check your connection and try again.');
+    btn.disabled = false;
+    btn.innerHTML = 'Submit Application →';
+  });
+}
+
+// ── Init ─────────────────────────────────────────────────────────────────────
+document.addEventListener('DOMContentLoaded', function() {
+  buildRadioGroups();
+  buildCheckboxGroups();
+  initDropZone('mouDrop',     'mouFile',     'mouFile');
+  initDropZone('logoDrop',    'logoFile',    'logoFile');
+  initDropZone('profileDrop', 'profileFile', 'profileFile');
+});
+
+function esc(str) {
+  return String(str)
+    .replace(/&/g,'&amp;').replace(/</g,'&lt;')
+    .replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+</script>
+<style>
+  @keyframes spin { to { transform: rotate(360deg); } }
+</style>
+</body>
+</html>

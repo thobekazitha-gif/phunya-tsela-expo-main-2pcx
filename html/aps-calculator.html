@@ -1,0 +1,555 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>APS Calculator — Phunya Tsela</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;600;700;800&family=DM+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<script src="auth.js"></script>
+<script>
+  // ── AUTH GUARD ──
+  (function() {
+    var user = Auth.requireAuth();
+    window.__ptUser = user;
+  })();
+</script>
+<style>
+  :root {
+    --primary: #d97706;
+    --primary-dark: #b45309;
+    --yellow: #f59e0b;
+    --bg: #fafaf9;
+    --card: #ffffff;
+    --border: #e5e7eb;
+    --text: #111827;
+    --muted: #6b7280;
+    --success: #10b981;
+    --info: #3b82f6;
+    --radius: 12px;
+    --radius-lg: 16px;
+    --radius-xl: 20px;
+  }
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: 'DM Sans', sans-serif; background: var(--bg); color: var(--text); min-height: 100vh; }
+  h1, h2, h3, h4 { font-family: 'Sora', sans-serif; }
+
+  /* User bar */
+  .user-bar { background: rgba(0,0,0,.15); padding: 8px 16px; }
+  .user-bar-inner { max-width: 800px; margin: 0 auto; display: flex; align-items: center; justify-content: space-between; font-size: 12px; color: rgba(255,255,255,.85); }
+  .logout-btn { background: rgba(255,255,255,.2); border: none; color: white; font-size: 12px; font-weight: 700; padding: 4px 10px; border-radius: 6px; cursor: pointer; transition: background .2s; }
+  .logout-btn:hover { background: rgba(255,255,255,.3); }
+
+  /* ── Header ── */
+  .hero { background: linear-gradient(135deg, var(--primary) 0%, var(--yellow) 100%); color: white; padding: 32px 16px 40px; }
+  .hero-inner { max-width: 800px; margin: 0 auto; }
+  .back-btn { display: inline-flex; align-items: center; gap: 6px; color: rgba(255,255,255,0.8); font-size: 14px; font-weight: 600; text-decoration: none; margin-bottom: 24px; border: none; background: none; cursor: pointer; transition: color .2s; }
+  .back-btn:hover { color: white; }
+  .hero-title-row { display: flex; align-items: center; gap: 16px; margin-bottom: 8px; }
+  .hero-icon { width: 56px; height: 56px; border-radius: 16px; background: rgba(255,255,255,0.2); display: flex; align-items: center; justify-content: center; font-size: 28px; flex-shrink: 0; }
+  .hero h1 { font-size: clamp(24px,5vw,36px); font-weight: 800; }
+  .hero .sub { color: rgba(255,255,255,0.8); font-size: 14px; margin-top: 2px; }
+
+  /* ── Main ── */
+  .main { max-width: 800px; margin: 0 auto; padding: 40px 16px; }
+
+  .info-box { background: #fffbeb; border: 1px solid #fcd34d; border-radius: var(--radius-lg); padding: 16px; margin-bottom: 32px; display: flex; gap: 12px; align-items: flex-start; }
+  .info-box .icon { font-size: 20px; flex-shrink: 0; margin-top: 2px; }
+  .info-box p { font-size: 14px; color: var(--primary-dark); }
+
+  .section-title { font-size: 18px; font-weight: 700; margin-bottom: 16px; }
+
+  .aps-scale { display: grid; grid-template-columns: repeat(7, 1fr); gap: 6px; margin-bottom: 40px; }
+  .aps-cell { border-radius: 10px; padding: 10px 4px; text-align: center; border: 1px solid; }
+  .aps-cell.high { background: #ecfdf5; border-color: #6ee7b7; }
+  .aps-cell.mid  { background: #eff6ff; border-color: #93c5fd; }
+  .aps-cell.low  { background: #f9fafb; border-color: #d1d5db; }
+  .aps-cell .pts { font-size: 20px; font-weight: 800; color: var(--text); }
+  .aps-cell .rng { font-size: 10px; color: var(--muted); margin-top: 2px; }
+
+  .math-toggle { display: flex; gap: 12px; margin-bottom: 8px; }
+  .math-btn { flex: 1; padding: 12px 16px; border-radius: var(--radius-lg); border: 2px solid var(--border); font-family: 'Sora', sans-serif; font-weight: 600; font-size: 14px; cursor: pointer; background: white; color: var(--muted); transition: all .2s; }
+  .math-btn.active { border-color: var(--primary); background: #fff7ed; color: var(--primary); }
+  .math-warn { font-size: 12px; color: var(--muted); margin-top: 8px; margin-bottom: 32px; }
+
+  .subject-grid { display: grid; gap: 10px; grid-template-columns: 1fr; margin-bottom: 32px; }
+  @media(min-width:600px){ .subject-grid { grid-template-columns: 1fr 1fr; } }
+
+  .subject-row { display: flex; align-items: center; gap: 12px; padding: 12px; border-radius: var(--radius-lg); border: 1px solid var(--border); background: white; transition: border-color .2s; }
+  .subject-row.required { border-color: #fcd34d; background: #fffbeb; }
+  .subject-info { flex: 1; min-width: 0; }
+  .subject-name { font-size: 14px; font-weight: 600; color: var(--text); }
+  .subject-req { font-size: 11px; color: var(--primary); margin-top: 2px; }
+  .mark-input { width: 64px; text-align: center; border: 1px solid var(--border); border-radius: 8px; padding: 6px 8px; font-size: 14px; font-weight: 700; background: white; font-family: 'Sora', sans-serif; outline: none; transition: border-color .2s; }
+  .mark-input:focus { border-color: var(--primary); box-shadow: 0 0 0 3px #fde68a55; }
+  .pts-badge { width: 28px; height: 28px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 12px; font-weight: 800; color: white; transition: all .3s; }
+  .pts-badge.high { background: var(--success); }
+  .pts-badge.mid  { background: var(--info); }
+  .pts-badge.low  { background: #9ca3af; }
+  .pts-badge.hidden { opacity: 0; }
+
+  .calc-btn { width: 100%; height: 56px; border-radius: var(--radius-lg); background: var(--yellow); color: white; font-family: 'Sora', sans-serif; font-size: 16px; font-weight: 800; border: none; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 10px; box-shadow: 0 4px 20px #f59e0b55; margin-bottom: 40px; transition: transform .15s, box-shadow .15s; }
+  .calc-btn:hover { transform: translateY(-2px); box-shadow: 0 8px 28px #f59e0b66; }
+  .calc-btn:active { transform: translateY(0); }
+
+  /* ── Results ── */
+  #results { display: none; }
+  #results.show { display: block; animation: fadeUp .5s ease both; }
+  @keyframes fadeUp { from { opacity:0; transform:translateY(20px); } to { opacity:1; transform:translateY(0); } }
+
+  .score-card { background: linear-gradient(135deg, var(--primary) 0%, var(--yellow) 100%); border-radius: var(--radius-xl); padding: 40px; text-align: center; color: white; margin-bottom: 32px; box-shadow: 0 8px 40px #d9770655; }
+  .score-label { font-size: 14px; font-weight: 600; opacity: .8; margin-bottom: 4px; }
+  .score-number { font-family: 'Sora', sans-serif; font-size: 88px; font-weight: 900; line-height: 1; }
+  .score-sub { font-size: 13px; opacity: .75; margin-top: 4px; }
+  .score-msg { margin-top: 16px; font-size: 15px; font-weight: 600; }
+
+  .faculty-tabs { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 24px; }
+  .faculty-tab { padding: 6px 14px; border-radius: 99px; font-size: 12px; font-weight: 700; border: none; cursor: pointer; background: #f3f4f6; color: var(--muted); transition: all .2s; }
+  .faculty-tab.active { background: var(--primary); color: white; }
+
+  .results-heading { font-size: 20px; font-weight: 800; margin-bottom: 20px; }
+  .results-heading span { font-size: 14px; font-weight: 400; color: var(--muted); }
+
+  .course-cards { display: grid; gap: 14px; margin-bottom: 40px; }
+  .course-card { background: white; border: 1px solid var(--border); border-radius: var(--radius-lg); padding: 20px; cursor: pointer; transition: all .2s; }
+  .course-card:hover { border-color: var(--primary); box-shadow: 0 4px 20px #0001; }
+  .course-top { display: flex; align-items: flex-start; justify-content: space-between; gap: 12px; flex-wrap: wrap; margin-bottom: 8px; }
+  .course-name { font-size: 15px; font-weight: 700; color: var(--text); }
+  .course-meta { font-size: 12px; color: var(--muted); margin-top: 2px; }
+  .aps-pill { padding: 4px 10px; border-radius: 99px; font-size: 12px; font-weight: 700; white-space: nowrap; }
+  .aps-pill.green { background: #d1fae5; color: #065f46; }
+  .aps-pill.blue  { background: #dbeafe; color: #1e40af; }
+  .aps-pill.amber { background: #fff7ed; color: var(--primary); }
+  .course-desc { font-size: 13px; color: var(--muted); }
+  .course-hint { font-size: 12px; color: var(--primary); font-weight: 600; margin-top: 8px; opacity: 0; transition: opacity .2s; }
+  .course-card:hover .course-hint { opacity: 1; }
+
+  .empty-state { text-align: center; padding: 60px 20px; color: var(--muted); }
+  .empty-state .emoji { font-size: 48px; margin-bottom: 12px; }
+
+  .funding-section { background: linear-gradient(135deg, #ecfdf5, #f0fdf4); border: 1px solid #a7f3d0; border-radius: var(--radius-xl); padding: 24px; margin-bottom: 32px; }
+  .funding-header { display: flex; align-items: center; gap: 14px; margin-bottom: 20px; }
+  .funding-icon { width: 44px; height: 44px; border-radius: 12px; background: var(--success); display: flex; align-items: center; justify-content: center; font-size: 20px; flex-shrink: 0; }
+  .funding-title { font-size: 18px; font-weight: 800; color: #065f46; }
+  .funding-sub { font-size: 13px; color: #059669; margin-top: 2px; }
+  .bursary-grid { display: grid; gap: 10px; grid-template-columns: 1fr; }
+  @media(min-width:600px){ .bursary-grid { grid-template-columns: 1fr 1fr; } }
+  .bursary-link { display: flex; align-items: center; justify-content: space-between; gap: 10px; background: white; border: 1px solid #a7f3d0; border-radius: var(--radius); padding: 12px 16px; text-decoration: none; transition: all .2s; }
+  .bursary-link:hover { border-color: var(--success); box-shadow: 0 2px 12px #0001; }
+  .bursary-name { font-size: 13px; font-weight: 700; color: #065f46; }
+  .bursary-desc { font-size: 11px; color: var(--muted); margin-top: 2px; }
+  .ext-icon { font-size: 14px; color: #6ee7b7; flex-shrink: 0; }
+  .funding-more { text-align: center; font-size: 12px; color: #059669; margin-top: 12px; }
+  .funding-more a { color: #065f46; font-weight: 700; text-decoration: underline; }
+
+  /* ── Modal ── */
+  .modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.6); z-index: 100; display: none; align-items: center; justify-content: center; padding: 16px; backdrop-filter: blur(4px); }
+  .modal-overlay.open { display: flex; }
+  .modal { background: white; border-radius: var(--radius-xl); max-width: 500px; width: 100%; max-height: 90vh; overflow-y: auto; box-shadow: 0 24px 80px rgba(0,0,0,0.3); animation: scaleIn .2s ease both; }
+  @keyframes scaleIn { from { opacity:0; transform:scale(.95) translateY(16px); } to { opacity:1; transform:none; } }
+  .modal-header { background: linear-gradient(135deg, var(--primary), var(--yellow)); color: white; padding: 24px; border-radius: var(--radius-xl) var(--radius-xl) 0 0; position: relative; }
+  .modal-close { position: absolute; top: 16px; right: 16px; width: 32px; height: 32px; border-radius: 50%; background: rgba(255,255,255,0.2); border: none; color: white; font-size: 18px; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: background .2s; }
+  .modal-close:hover { background: rgba(255,255,255,0.3); }
+  .modal-faculty-tag { display: inline-block; font-size: 10px; font-weight: 800; letter-spacing: .05em; text-transform: uppercase; background: rgba(255,255,255,0.2); padding: 3px 10px; border-radius: 99px; margin-bottom: 8px; }
+  .modal-title { font-size: 20px; font-weight: 800; }
+  .modal-duration { font-size: 13px; opacity: .8; margin-top: 4px; }
+  .modal-body { padding: 24px; }
+  .modal-body > * + * { margin-top: 20px; }
+  .detail-label { font-size: 10px; font-weight: 800; letter-spacing: .08em; text-transform: uppercase; color: var(--muted); margin-bottom: 6px; }
+  .detail-text { font-size: 14px; color: var(--text); }
+  .aps-compare { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; }
+  .nsfas-badge { display: flex; align-items: center; gap: 8px; background: #ecfdf5; border: 1px solid #6ee7b7; border-radius: 10px; padding: 8px 14px; font-size: 13px; font-weight: 600; color: #065f46; }
+  .uni-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+  .uni-tag { display: flex; align-items: center; justify-content: space-between; gap: 6px; background: #eff6ff; border: 1px solid #93c5fd; border-radius: 10px; padding: 8px 12px; font-size: 12px; font-weight: 700; color: #1e40af; text-decoration: none; transition: all .2s; }
+  .uni-tag:hover { background: #dbeafe; border-color: #3b82f6; }
+  .funding-btns { display: flex; gap: 10px; flex-direction: column; }
+  @media(min-width:480px){ .funding-btns { flex-direction: row; } }
+  .funding-btn { flex: 1; display: flex; align-items: center; justify-content: center; gap: 8px; padding: 10px 16px; border-radius: 10px; font-size: 13px; font-weight: 800; border: none; cursor: pointer; text-decoration: none; transition: filter .2s; }
+  .funding-btn:hover { filter: brightness(1.1); }
+  .funding-btn.amber { background: #f59e0b; color: white; }
+  .funding-btn.primary { background: var(--primary); color: white; }
+  .close-modal-btn { width: 100%; padding: 12px; border-radius: var(--radius); border: 1px solid var(--border); background: white; font-weight: 700; font-family: 'Sora', sans-serif; font-size: 14px; cursor: pointer; transition: background .2s; }
+  .close-modal-btn:hover { background: #f3f4f6; }
+
+  .funding-cta { background: #fffbeb; border: 1px solid #fcd34d; border-radius: var(--radius-lg); padding: 16px; }
+  .funding-cta h4 { font-size: 14px; font-weight: 800; color: #92400e; margin-bottom: 4px; }
+  .funding-cta p { font-size: 12px; color: #b45309; margin-bottom: 12px; }
+</style>
+</head>
+<body>
+
+<!-- ── Hero ── -->
+<div class="hero">
+  <div class="user-bar">
+    <div class="user-bar-inner">
+      <span id="userGreeting"></span>
+      <button class="logout-btn" onclick="Auth.logout(); window.location.href='login.html'">Sign Out</button>
+    </div>
+  </div>
+  <div class="hero-inner">
+    <button class="back-btn" onclick="window.history.back()">← Back to Home</button>
+    <div class="hero-title-row">
+      <div class="hero-icon">🧮</div>
+      <div>
+        <h1>APS Calculator</h1>
+        <p class="sub">Admission Point Score — South African Standard</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ── Main ── -->
+<div class="main">
+  <div class="info-box">
+    <span class="icon">ℹ️</span>
+    <p><strong>How APS is calculated:</strong> Your 6 best subjects (excluding Life Orientation) are scored on a 1–7 scale based on your percentage. Maximum APS = 42.</p>
+  </div>
+
+  <h2 class="section-title">APS Points Scale</h2>
+  <div class="aps-scale" id="apsScale"></div>
+
+  <h2 class="section-title">Mathematics Type</h2>
+  <div class="math-toggle">
+    <button class="math-btn active" id="btnMaths" onclick="setMath('mathematics')">Mathematics (Pure)</button>
+    <button class="math-btn" id="btnLit" onclick="setMath('mathematical_literacy')">Mathematical Literacy</button>
+  </div>
+  <p class="math-warn" id="mathWarn" style="display:none">⚠️ Maths Literacy limits access to Engineering, Medicine, BSc, and most BCom degrees.</p>
+
+  <h2 class="section-title">Enter Your Grade 12 Marks</h2>
+  <div class="subject-grid" id="subjectGrid"></div>
+
+  <button class="calc-btn" onclick="calculateAPS()">
+    🧮 Calculate My APS &amp; View Eligible Courses
+  </button>
+
+  <!-- Results -->
+  <div id="results">
+    <div class="score-card">
+      <div class="score-label">Your APS Score</div>
+      <div class="score-number" id="scoreNum">0</div>
+      <div class="score-sub">out of 42 (best 6 subjects, excl. Life Orientation)</div>
+      <div class="score-msg" id="scoreMsg"></div>
+    </div>
+
+    <div class="faculty-tabs" id="facultyTabs"></div>
+    <h2 class="results-heading" id="resultsHeading"></h2>
+    <div class="course-cards" id="courseCards"></div>
+
+    <div class="funding-section">
+      <div class="funding-header">
+        <div class="funding-icon">💵</div>
+        <div>
+          <div class="funding-title">Apply for Funding</div>
+          <div class="funding-sub">Don't let finances stop you — explore bursaries you may qualify for</div>
+        </div>
+      </div>
+      <div class="bursary-grid" id="bursaryGrid"></div>
+      <p class="funding-more">Also visit our <a href="bursary-portal.html">Bursary Portal</a> for a full list of available bursaries</p>
+    </div>
+  </div>
+</div>
+
+<!-- ── Course Modal ── -->
+<div class="modal-overlay" id="modal" onclick="closeModal(event)">
+  <div class="modal" onclick="event.stopPropagation()">
+    <div class="modal-header">
+      <button class="modal-close" onclick="closeModal()">✕</button>
+      <div class="modal-faculty-tag" id="mFaculty"></div>
+      <div class="modal-title" id="mTitle"></div>
+      <div class="modal-duration" id="mDuration"></div>
+    </div>
+    <div class="modal-body">
+      <div><div class="detail-label">APS Requirement</div><div class="aps-compare" id="mAps"></div></div>
+      <div><div class="detail-label">About This Course</div><div class="detail-text" id="mDesc"></div></div>
+      <div><div class="detail-label">📋 Subject Requirements</div><div class="detail-text" id="mSubReq"></div></div>
+      <div id="mNsfas"></div>
+      <div><div class="detail-label">🎓 Universities Offering This Course</div><div class="uni-grid" id="mUnis"></div></div>
+      <div class="funding-cta">
+        <h4>💰 Need Funding?</h4>
+        <p>This course qualifies for NSFAS and several private bursaries. Click below to explore your options.</p>
+        <div class="funding-btns">
+          <a href="bursary-portal.html" class="funding-btn amber">📖 Apply for NSFAS</a>
+          <a href="bursary-portal.html" class="funding-btn primary">💵 Apply for Private Bursaries</a>
+        </div>
+      </div>
+      <button class="close-modal-btn" onclick="closeModal()">Close</button>
+    </div>
+  </div>
+</div>
+
+<script>
+// ── User greeting ─────────────────────────────────────────────────────────────
+window.addEventListener('DOMContentLoaded', function() {
+  var user = window.__ptUser;
+  if (user) document.getElementById('userGreeting').textContent = 'Hi, ' + user.firstName + ' 👋';
+});
+
+// ── Data ──────────────────────────────────────────────────────────────────────
+const APS_TABLE = [
+  { range:"80-100", points:7 }, { range:"70-79", points:6 }, { range:"60-69", points:5 },
+  { range:"50-59", points:4 }, { range:"40-49", points:3 }, { range:"30-39", points:2 }, { range:"0-29", points:1 },
+];
+
+function getAPSPoints(mark) {
+  if (mark >= 80) return 7; if (mark >= 70) return 6; if (mark >= 60) return 5;
+  if (mark >= 50) return 4; if (mark >= 40) return 3; if (mark >= 30) return 2; return 1;
+}
+
+const SUBJECTS_CORE = [
+  { id:"home_language",            name:"Home Language",              required:true },
+  { id:"first_additional_language",name:"First Additional Language",  required:true },
+  { id:"life_orientation",         name:"Life Orientation",           required:true },
+];
+const SUBJECTS_MATHS = {
+  mathematics:           { id:"mathematics",           name:"Mathematics (Pure)",   required:false },
+  mathematical_literacy: { id:"mathematical_literacy", name:"Mathematical Literacy", required:false },
+};
+const ELECTIVES = [
+  { id:"physical_sciences",      name:"Physical Sciences"       },
+  { id:"life_sciences",          name:"Life Sciences"           },
+  { id:"accounting",             name:"Accounting"              },
+  { id:"business_studies",       name:"Business Studies"        },
+  { id:"economics",              name:"Economics"               },
+  { id:"history",                name:"History"                 },
+  { id:"geography",              name:"Geography"               },
+  { id:"information_technology", name:"Information Technology"  },
+  { id:"computer_applications",  name:"Computer Applications Technology" },
+  { id:"agricultural_sciences",  name:"Agricultural Sciences"   },
+  { id:"tourism",                name:"Tourism"                 },
+  { id:"consumer_studies",       name:"Consumer Studies"        },
+  { id:"dramatic_arts",          name:"Dramatic Arts"           },
+  { id:"music",                  name:"Music"                   },
+  { id:"visual_arts",            name:"Visual Arts"             },
+];
+
+const BURSARY_PORTALS = [
+  { name:"NSFAS",                       url:"https://www.nsfas.org.za/content/apply.html",                         desc:"National Student Financial Aid Scheme" },
+  { name:"Funza Lushaka",               url:"https://www.funzalushaka.doe.gov.za/",                                desc:"Teaching bursaries" },
+  { name:"ISFAP",                       url:"https://www.isfap.co.za/",                                            desc:"Missing middle students" },
+  { name:"Ikusasa Student Financial Aid",url:"https://ikusasasfap.org/",                                           desc:"Merit-based bursaries" },
+  { name:"Anglo American Bursaries",    url:"https://www.angloamerican.com/sustainability/people/education",       desc:"Mining & engineering" },
+  { name:"Sasol Bursaries",             url:"https://www.sasol.com/careers/bursaries-and-learnerships",           desc:"Engineering & sciences" },
+  { name:"Eskom Bursaries",             url:"https://www.eskom.co.za/careers/bursaries/",                         desc:"Engineering & IT" },
+  { name:"NRF Bursaries",               url:"https://www.nrf.ac.za",                                              desc:"Science & research" },
+];
+
+const UNIVERSITY_URLS = {
+  "UCT":"https://www.uct.ac.za","Wits":"https://www.wits.ac.za","SU":"https://www.sun.ac.za",
+  "UP":"https://www.up.ac.za","UJ":"https://www.uj.ac.za","UKZN":"https://www.ukzn.ac.za",
+  "NWU":"https://www.nwu.ac.za","UFS":"https://www.ufs.ac.za","RU":"https://www.ru.ac.za",
+  "NMMU":"https://www.nmmu.ac.za","UWC":"https://www.uwc.ac.za","UNISA":"https://www.unisa.ac.za",
+  "TUT":"https://www.tut.ac.za","DUT":"https://www.dut.ac.za","CUT":"https://www.cut.ac.za",
+  "MUT":"https://www.mut.ac.za","WSU":"https://www.wsu.ac.za","UniZulu":"https://www.unizulu.ac.za",
+  "UNIVEN":"https://www.univen.ac.za","UL":"https://www.ul.ac.za","Fort Hare":"https://www.ufh.ac.za",
+  "Limpopo":"https://www.ul.ac.za","SPU":"https://www.spu.ac.za",
+};
+
+const COURSE_REQUIREMENTS = [
+  { course:"MBChB (Medicine)",              faculty:"Health Sciences",   minAPS:36, duration:"6 years",  nsfasEligible:true,  description:"Train to become a medical doctor. One of SA's most competitive programmes.",               subjectRequirements:"Maths 70%+, Physical Sciences 60%+, Life Sciences 60%+",              universities:["UCT","Wits","SU","UP","UKZN","UFS","Limpopo","Walter Sisulu"] },
+  { course:"BEng Civil Engineering",        faculty:"Engineering",       minAPS:35, duration:"4 years",  nsfasEligible:true,  description:"Design and build infrastructure — roads, bridges, dams, buildings.",                       subjectRequirements:"Maths 70%+, Physical Sciences 60%+",                                  universities:["UCT","Wits","SU","UP","UJ","UKZN","NWU","UFS"] },
+  { course:"BEng Electrical Engineering",   faculty:"Engineering",       minAPS:35, duration:"4 years",  nsfasEligible:true,  description:"Power systems, electronics, telecommunications, and automation.",                         subjectRequirements:"Maths 70%+, Physical Sciences 60%+",                                  universities:["UCT","Wits","SU","UP","UJ","UKZN","TUT","DUT"] },
+  { course:"BEng Mechanical Engineering",   faculty:"Engineering",       minAPS:35, duration:"4 years",  nsfasEligible:true,  description:"Design, manufacture, and maintain mechanical systems and machines.",                      subjectRequirements:"Maths 70%+, Physical Sciences 60%+",                                  universities:["UCT","Wits","SU","UP","UJ","NWU","UKZN"] },
+  { course:"BSc Computer Science",          faculty:"Science",           minAPS:32, duration:"3 years",  nsfasEligible:true,  description:"Algorithms, programming, data structures, AI, and software systems.",                     subjectRequirements:"Maths 60%+",                                                          universities:["UCT","Wits","SU","UP","RU","UJ","NWU","UKZN"] },
+  { course:"BCom Accounting",               faculty:"Commerce",          minAPS:28, duration:"3 years",  nsfasEligible:true,  description:"Financial accounting, auditing, taxation, and management accounting.",                     subjectRequirements:"Maths 50%+ or Accounting 50%+",                                       universities:["UCT","Wits","SU","UP","UJ","UFS","NWU","UKZN","DUT"] },
+  { course:"LLB (Law)",                     faculty:"Law",               minAPS:32, duration:"4 years",  nsfasEligible:true,  description:"Become a lawyer, advocate, or legal practitioner in South Africa.",                       subjectRequirements:"English 60%+",                                                        universities:["UCT","Wits","SU","UP","UJ","UKZN","UFS","NWU","RU","UWC"] },
+  { course:"BSc Nursing",                   faculty:"Health Sciences",   minAPS:28, duration:"4 years",  nsfasEligible:true,  description:"Comprehensive nursing education leading to professional registration with SANC.",           subjectRequirements:"Life Sciences 50%+, Maths or Maths Lit 40%+",                        universities:["UCT","UP","UKZN","UJ","NWU","UFS","UWC","Limpopo","Fort Hare"] },
+  { course:"BEd Foundation Phase",          faculty:"Education",         minAPS:26, duration:"4 years",  nsfasEligible:true,  description:"Qualify to teach Grades R–3 in South African public schools.",                             subjectRequirements:"English 50%+",                                                        universities:["UCT","Wits","SU","UP","UJ","UKZN","UFS","NWU","RU","UWC","WSU"] },
+  { course:"BEd Intermediate Phase",        faculty:"Education",         minAPS:26, duration:"4 years",  nsfasEligible:true,  description:"Train to teach Grades 4–6 across curriculum subjects.",                                    subjectRequirements:"English 50%+",                                                        universities:["SU","UP","UJ","NWU","UFS","WSU","UniZulu"] },
+  { course:"BEd Senior/FET Phase",          faculty:"Education",         minAPS:28, duration:"4 years",  nsfasEligible:true,  description:"Teach Grades 7–12 — choose subject specialisations.",                                     subjectRequirements:"English 50%+, chosen subject 50%+",                                   universities:["UCT","Wits","SU","UP","UJ","UKZN","UFS","NWU","RU","UWC","Limpopo"] },
+  { course:"BSc Agriculture",               faculty:"Agriculture",       minAPS:26, duration:"4 years",  nsfasEligible:true,  description:"Crop production, soil science, animal production, agribusiness.",                          subjectRequirements:"Maths 50%+ or Agri Sciences 50%+",                                    universities:["UP","SU","UFS","NWU","Fort Hare","Limpopo","WSU"] },
+  { course:"BCom Economics",                faculty:"Commerce",          minAPS:28, duration:"3 years",  nsfasEligible:true,  description:"Micro and macroeconomics, econometrics, economic policy analysis.",                        subjectRequirements:"Maths 50%+",                                                          universities:["UCT","Wits","SU","UP","UJ","UKZN","UFS","NWU","RU"] },
+  { course:"BA Social Work",                faculty:"Social Sciences",   minAPS:24, duration:"4 years",  nsfasEligible:true,  description:"Help vulnerable individuals, families, and communities. SACSSP-registered.",               subjectRequirements:"English 50%+",                                                        universities:["UCT","SU","UP","UJ","UKZN","UFS","NWU","UWC","Limpopo","Fort Hare","UniZulu","WSU"] },
+  { course:"BA Psychology",                 faculty:"Social Sciences",   minAPS:26, duration:"3 years",  nsfasEligible:true,  description:"Foundation for careers in counselling, clinical, and research psychology.",                 subjectRequirements:"English 50%+",                                                        universities:["UCT","Wits","SU","UP","UJ","UKZN","UFS","NWU","RU","UWC"] },
+  { course:"BComm Information Systems",     faculty:"Commerce",          minAPS:28, duration:"3 years",  nsfasEligible:true,  description:"Business analysis, IT project management, enterprise systems, and e-commerce.",            subjectRequirements:"Maths 50%+",                                                          universities:["UCT","Wits","UP","UJ","UFS","NWU","DUT","TUT"] },
+  { course:"BTech Electrical Engineering",  faculty:"Engineering",       minAPS:22, duration:"3 years",  nsfasEligible:true,  description:"Applied electrical engineering — power, electronics, instrumentation.",                    subjectRequirements:"Maths 40%+, Physical Sciences 40%+",                                  universities:["TUT","DUT","CUT","MUT"] },
+  { course:"ND Civil Engineering",          faculty:"Engineering",       minAPS:20, duration:"3 years",  nsfasEligible:true,  description:"Practical civil engineering qualification at a University of Technology.",                  subjectRequirements:"Maths 40%+, Physical Sciences 40%+",                                  universities:["TUT","DUT","CUT","MUT"] },
+  { course:"National Diploma: Nursing",     faculty:"Health Sciences",   minAPS:20, duration:"3 years",  nsfasEligible:true,  description:"Enrolled nursing qualification offered at several UoTs and colleges.",                     subjectRequirements:"Life Sciences 40%+, English 40%+",                                    universities:["DUT","TUT","CUT","MUT","Limpopo"] },
+  { course:"ND Business Administration",    faculty:"Commerce",          minAPS:18, duration:"3 years",  nsfasEligible:true,  description:"Office management, administration, HR fundamentals, and business law.",                    subjectRequirements:"English 40%+",                                                        universities:["TUT","DUT","CUT","MUT","UNISA","Limpopo","WSU"] },
+  { course:"BCom Financial Management",     faculty:"Commerce",          minAPS:30, duration:"3 years",  nsfasEligible:true,  description:"Corporate finance, investment analysis, and financial planning.",                          subjectRequirements:"Maths 55%+ or Accounting 55%+",                                       universities:["UCT","Wits","SU","UP","UJ","NWU","UFS","UKZN"] },
+  { course:"BSc Actuarial Science",         faculty:"Science",           minAPS:35, duration:"3 years",  nsfasEligible:true,  description:"Apply mathematics, statistics, and finance to assess risk in insurance and finance.",      subjectRequirements:"Maths 80%+",                                                          universities:["UCT","Wits","SU","UP","UFS","NWU"] },
+  { course:"BA Journalism & Media",         faculty:"Humanities",        minAPS:26, duration:"3 years",  nsfasEligible:true,  description:"Reporting, editing, broadcast, digital media, and media law.",                            subjectRequirements:"English 60%+",                                                        universities:["UCT","Wits","RU","UJ","UKZN","UFS","NWU","UWC","TUT"] },
+  { course:"BA Architecture",               faculty:"Built Environment",  minAPS:30, duration:"3 years", nsfasEligible:true,  description:"Spatial design, construction technology, history of architecture, studio work.",           subjectRequirements:"Maths 50%+",                                                          universities:["UCT","Wits","SU","UP","UJ","DUT","TUT","CUT"] },
+  { course:"BSc Environmental Science",     faculty:"Science",           minAPS:28, duration:"3 years",  nsfasEligible:true,  description:"Climate change, biodiversity, natural resource management, and environmental law.",        subjectRequirements:"Maths 50%+, Life Sciences or Geography 50%+",                        universities:["UCT","SU","UP","UJ","UKZN","UFS","NWU","RU"] },
+  { course:"BPharm (Pharmacy)",             faculty:"Health Sciences",   minAPS:34, duration:"4 years",  nsfasEligible:true,  description:"Dispensing, clinical pharmacy, pharmaceutical sciences, SAPC registration.",              subjectRequirements:"Maths 60%+, Physical Sciences 60%+, Life Sciences 50%+",              universities:["UCT","Wits","SU","UP","UKZN","UWC","Limpopo"] },
+  { course:"BA Fine Arts",                  faculty:"Humanities",        minAPS:22, duration:"3 years",  nsfasEligible:true,  description:"Painting, sculpture, printmaking, digital art, and art history.",                         subjectRequirements:"English 50%+, Visual Arts or Portfolio",                              universities:["UCT","Wits","SU","UP","UJ","DUT","TUT"] },
+  { course:"BSc Data Science",              faculty:"Science",           minAPS:32, duration:"3 years",  nsfasEligible:true,  description:"Machine learning, big data analytics, statistical modelling, and data engineering.",     subjectRequirements:"Maths 70%+",                                                          universities:["UCT","Wits","SU","UP","UJ","NWU"] },
+  { course:"BCom Human Resource Mgmt",      faculty:"Commerce",          minAPS:26, duration:"3 years",  nsfasEligible:true,  description:"People management, labour law, talent development, and organisational behaviour.",        subjectRequirements:"English 50%+",                                                        universities:["UP","UJ","UFS","NWU","UKZN","DUT","TUT","UNISA"] },
+  { course:"ND Information Technology",     faculty:"ICT",               minAPS:20, duration:"3 years",  nsfasEligible:true,  description:"Networking, systems development, database admin, and cybersecurity fundamentals.",         subjectRequirements:"Maths 40%+",                                                          universities:["TUT","DUT","CUT","MUT","UNISA"] },
+];
+
+// ── State ─────────────────────────────────────────────────────────────────────
+let mathChoice = "mathematics";
+let marks = {};
+let apsScore = 0;
+let eligibleCourses = [];
+let selectedFaculty = "All";
+let currentCourse = null;
+
+function init() {
+  renderAPSScale();
+  renderBursaries();
+  renderSubjects();
+}
+
+function renderAPSScale() {
+  const el = document.getElementById("apsScale");
+  el.innerHTML = APS_TABLE.map(({range, points}) => {
+    const cls = points >= 6 ? "high" : points >= 4 ? "mid" : "low";
+    return `<div class="aps-cell ${cls}"><div class="pts">${points}</div><div class="rng">${range}%</div></div>`;
+  }).join("");
+}
+
+function renderBursaries() {
+  const el = document.getElementById("bursaryGrid");
+  el.innerHTML = BURSARY_PORTALS.map(b => `
+    <a href="${b.url}" target="_blank" rel="noopener" class="bursary-link">
+      <div><div class="bursary-name">${b.name}</div><div class="bursary-desc">${b.desc}</div></div>
+      <span class="ext-icon">↗</span>
+    </a>
+  `).join("");
+}
+
+function renderSubjects() {
+  const subjects = [...SUBJECTS_CORE, SUBJECTS_MATHS[mathChoice], ...ELECTIVES];
+  const grid = document.getElementById("subjectGrid");
+  grid.innerHTML = subjects.map(s => {
+    const val = marks[s.id] !== undefined ? marks[s.id] : "";
+    const points = val !== "" ? getAPSPoints(Number(val)) : null;
+    let badgeCls = "hidden";
+    if (points !== null) badgeCls = points >= 6 ? "high" : points >= 4 ? "mid" : "low";
+    return `
+      <div class="subject-row ${s.required ? "required" : ""}">
+        <div class="subject-info">
+          <div class="subject-name">${s.name}</div>
+          ${s.required ? '<div class="subject-req">Required</div>' : ""}
+        </div>
+        <input type="number" min="0" max="100" placeholder="%" class="mark-input"
+          value="${val}" data-id="${s.id}" oninput="handleMark(this)">
+        <div class="pts-badge ${badgeCls}" id="badge_${s.id}">${points ?? ""}</div>
+      </div>
+    `;
+  }).join("");
+}
+
+function setMath(choice) {
+  mathChoice = choice;
+  document.getElementById("btnMaths").classList.toggle("active", choice === "mathematics");
+  document.getElementById("btnLit").classList.toggle("active", choice === "mathematical_literacy");
+  document.getElementById("mathWarn").style.display = choice === "mathematical_literacy" ? "block" : "none";
+  delete marks["mathematics"]; delete marks["mathematical_literacy"];
+  renderSubjects();
+}
+
+function handleMark(input) {
+  const id = input.dataset.id;
+  const raw = input.value;
+  const num = raw === "" ? "" : Math.min(100, Math.max(0, parseInt(raw) || 0));
+  marks[id] = num; input.value = num === "" ? "" : num;
+  const badge = document.getElementById("badge_" + id);
+  if (badge) {
+    if (num === "") { badge.className = "pts-badge hidden"; badge.textContent = ""; }
+    else {
+      const pts = getAPSPoints(num);
+      badge.className = "pts-badge " + (pts >= 6 ? "high" : pts >= 4 ? "mid" : "low");
+      badge.textContent = pts;
+    }
+  }
+}
+
+function calculateAPS() {
+  const subjectsWithMarks = Object.entries(marks)
+    .filter(([id, val]) => val !== "" && id !== "life_orientation")
+    .map(([id, val]) => ({ id, points: getAPSPoints(Number(val)) }))
+    .sort((a, b) => b.points - a.points);
+
+  const bestSix = subjectsWithMarks.slice(0, 6);
+  apsScore = bestSix.reduce((sum, s) => sum + s.points, 0);
+
+  document.getElementById("scoreNum").textContent = apsScore;
+  document.getElementById("scoreMsg").textContent =
+    apsScore >= 35 ? "🏆 Excellent! You qualify for top competitive programmes." :
+    apsScore >= 28 ? "✅ Good score — access to most professional degrees." :
+    apsScore >= 22 ? "📚 Solid score — many diploma and degree options available." :
+                     "💪 Consider bridging/foundation programmes or TVET pathways.";
+
+  eligibleCourses = COURSE_REQUIREMENTS.filter(c => c.minAPS <= apsScore).sort((a,b) => b.minAPS - a.minAPS);
+  selectedFaculty = "All";
+  renderFacultyTabs(); renderCourseCards();
+
+  const results = document.getElementById("results");
+  results.classList.add("show");
+  setTimeout(() => results.scrollIntoView({ behavior:"smooth" }), 100);
+}
+
+function renderFacultyTabs() {
+  const faculties = ["All", ...new Set(COURSE_REQUIREMENTS.map(c => c.faculty))];
+  document.getElementById("facultyTabs").innerHTML = faculties.map(f =>
+    `<button class="faculty-tab ${f === selectedFaculty ? "active" : ""}" onclick="setFaculty('${f}')">${f}</button>`
+  ).join("");
+}
+
+function setFaculty(f) { selectedFaculty = f; renderFacultyTabs(); renderCourseCards(); }
+
+function renderCourseCards() {
+  const filtered = selectedFaculty === "All" ? eligibleCourses : eligibleCourses.filter(c => c.faculty === selectedFaculty);
+  document.getElementById("resultsHeading").innerHTML = `${filtered.length} Course${filtered.length !== 1 ? "s" : ""} You Qualify For <span>— click any course for details</span>`;
+  const container = document.getElementById("courseCards");
+  if (filtered.length === 0) {
+    container.innerHTML = `<div class="empty-state"><div class="emoji">🎓</div><p>No courses in this faculty match your current APS.</p><p style="font-size:13px;margin-top:8px;">Try selecting "All" or consider foundation / bridging programmes.</p></div>`;
+    return;
+  }
+  container.innerHTML = filtered.map((course, i) => {
+    const diff = apsScore - course.minAPS;
+    const pillCls = diff >= 5 ? "green" : diff >= 2 ? "blue" : "amber";
+    return `
+      <div class="course-card" onclick="openModal(${i})">
+        <div class="course-top">
+          <div><div class="course-name">${course.course}</div><div class="course-meta">${course.faculty} • ${course.duration}</div></div>
+          <span class="aps-pill ${pillCls}">Min APS: ${course.minAPS}</span>
+        </div>
+        <div class="course-desc">${course.description}</div>
+        <div class="course-hint">View details →</div>
+      </div>
+    `;
+  }).join("");
+  window._filteredCourses = filtered;
+}
+
+function openModal(idx) {
+  const course = (window._filteredCourses || [])[idx];
+  if (!course) return;
+  currentCourse = course;
+  document.getElementById("mFaculty").textContent = course.faculty;
+  document.getElementById("mTitle").textContent = course.course;
+  document.getElementById("mDuration").textContent = "⏱ " + course.duration;
+  document.getElementById("mDesc").textContent = course.description;
+  document.getElementById("mSubReq").textContent = course.subjectRequirements;
+  const diff = apsScore - course.minAPS;
+  const pillCls = diff >= 5 ? "green" : diff >= 0 ? "blue" : "amber";
+  document.getElementById("mAps").innerHTML = `
+    <span class="aps-pill ${pillCls}">Minimum APS: ${course.minAPS}</span>
+    <span style="font-size:13px;color:var(--muted)">Your score: <strong>${apsScore}</strong></span>
+    <span>${apsScore >= course.minAPS ? "✅" : "❌"}</span>
+  `;
+  document.getElementById("mNsfas").innerHTML = course.nsfasEligible
+    ? `<div class="nsfas-badge">✅ NSFAS eligible course</div>` : "";
+  document.getElementById("mUnis").innerHTML = course.universities.map(uni => {
+    const url = UNIVERSITY_URLS[uni];
+    return url
+      ? `<a href="${url}" target="_blank" rel="noopener" class="uni-tag">${uni} <span>↗</span></a>`
+      : `<span class="uni-tag" style="text-decoration:none;cursor:default">${uni}</span>`;
+  }).join("");
+  document.getElementById("modal").classList.add("open");
+  document.body.style.overflow = "hidden";
+}
+
+function closeModal(e) {
+  if (e && e.target !== document.getElementById("modal")) return;
+  document.getElementById("modal").classList.remove("open");
+  document.body.style.overflow = "";
+}
+
+init();
+</script>
+</body>
+</html>

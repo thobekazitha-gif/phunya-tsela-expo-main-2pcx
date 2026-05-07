@@ -1,0 +1,997 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Learner Registration — Phunya Tsela Career Expo 2026</title>
+<meta name="description" content="Register as a learner for the Phunya Tsela Career Expo 2026 — 24–25 June, Thabo Moorosi Multi-Purpose Centre, Kurumane, Northern Cape.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=Syne:wght@600;700;800&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --gold:          #d97706;
+    --gold-dark:     #b45309;
+    --gold-deeper:   #92400e;
+    --amber:         #f59e0b;
+    --amber-light:   #fffbeb;
+    --amber-border:  #fde68a;
+    --teal:          #0d9488;
+    --teal-light:    #ccfbf1;
+    --bg:            #fafaf9;
+    --white:         #ffffff;
+    --border:        #e5e7eb;
+    --text:          #111827;
+    --muted:         #6b7280;
+    --muted-light:   #f3f4f6;
+    --error:         #ef4444;
+    --success:       #10b981;
+    --radius:        12px;
+    --radius-lg:     16px;
+    --radius-xl:     20px;
+    --radius-2xl:    28px;
+  }
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  html { scroll-behavior: smooth; }
+
+  body {
+    font-family: 'Plus Jakarta Sans', sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    min-height: 100vh;
+  }
+
+  h1,h2,h3,h4 { font-family: 'Syne', sans-serif; }
+
+  /* ── Header ── */
+  .site-header {
+    position: fixed; top: 0; left: 0; right: 0; z-index: 50;
+    background: rgba(255,255,255,0.95);
+    backdrop-filter: blur(12px);
+    border-bottom: 1px solid var(--border);
+    box-shadow: 0 1px 12px rgba(0,0,0,.07);
+  }
+  .header-inner {
+    max-width: 1100px; margin: 0 auto;
+    padding: 0 24px; height: 68px;
+    display: flex; align-items: center; justify-content: space-between;
+  }
+  .logo-link { display: flex; align-items: center; text-decoration: none; }
+  .header-logo { height: 40px; object-fit: contain; }
+  .btn-back {
+    display: inline-flex; align-items: center; gap: 7px;
+    font-size: 13px; font-weight: 700; padding: 8px 18px;
+    border-radius: var(--radius); border: 1.5px solid var(--border);
+    background: transparent; color: var(--text); cursor: pointer;
+    text-decoration: none; transition: all .2s;
+    font-family: 'Plus Jakarta Sans', sans-serif;
+    letter-spacing: .01em;
+  }
+  .btn-back:hover { background: var(--muted-light); border-color: var(--gold); color: var(--gold-dark); }
+
+  /* ── Page layout ── */
+  main { padding-top: 68px; }
+
+  .page-wrap {
+    max-width: 740px; margin: 0 auto;
+    padding: 36px 20px 100px;
+  }
+
+  /* ── Hero Card ── */
+  .hero-card {
+    position: relative; border-radius: var(--radius-2xl);
+    overflow: hidden; margin-bottom: 32px;
+    box-shadow: 0 20px 60px rgba(217,119,6,.28);
+  }
+  .hero-bg {
+    position: absolute; inset: 0;
+    background: linear-gradient(140deg, #1c0a00 0%, #7c2d12 35%, #d97706 70%, #f59e0b 100%);
+  }
+  .hero-pattern {
+    position: absolute; inset: 0; opacity: .06;
+    background-image:
+      radial-gradient(circle at 20% 50%, white 1px, transparent 1px),
+      radial-gradient(circle at 80% 20%, white 1px, transparent 1px),
+      radial-gradient(circle at 60% 80%, white 1px, transparent 1px);
+    background-size: 40px 40px, 60px 60px, 50px 50px;
+  }
+  /* diagonal stripe accent */
+  .hero-stripe {
+    position: absolute; bottom: 0; right: 0; width: 200px; height: 200px;
+    background: repeating-linear-gradient(
+      -45deg,
+      rgba(255,255,255,.04) 0px, rgba(255,255,255,.04) 2px,
+      transparent 2px, transparent 12px
+    );
+  }
+  .hero-inner {
+    position: relative; z-index: 1;
+    padding: 52px 36px 44px;
+    display: flex; flex-direction: column; align-items: center; text-align: center;
+  }
+  .hero-logo {
+    height: 50px; margin-bottom: 22px;
+    filter: brightness(0) invert(1); opacity: .95;
+  }
+  .hero-pill {
+    display: inline-flex; align-items: center; gap: 8px;
+    padding: 5px 18px; border-radius: 99px;
+    background: rgba(255,255,255,.12); border: 1px solid rgba(255,255,255,.25);
+    font-size: 10px; font-weight: 800; letter-spacing: .14em;
+    text-transform: uppercase; color: rgba(255,255,255,.9);
+    margin-bottom: 16px;
+  }
+  .hero-pill-dot {
+    width: 7px; height: 7px; border-radius: 50%;
+    background: #fbbf24; animation: pulse 2s infinite;
+  }
+  @keyframes pulse { 0%,100%{opacity:1;transform:scale(1)} 50%{opacity:.6;transform:scale(1.3)} }
+  .hero-inner h1 {
+    font-size: clamp(24px, 4.5vw, 38px);
+    font-weight: 800; color: white; margin-bottom: 10px;
+    text-shadow: 0 3px 16px rgba(0,0,0,.3);
+    line-height: 1.15;
+  }
+  .hero-inner h1 em { font-style: normal; color: #fcd34d; }
+  .hero-inner p {
+    font-size: 14px; color: rgba(255,255,255,.78);
+    max-width: 460px; line-height: 1.65; margin-bottom: 24px;
+  }
+  .hero-meta {
+    display: flex; gap: 12px; flex-wrap: wrap; justify-content: center;
+  }
+  .hero-chip {
+    display: inline-flex; align-items: center; gap: 7px;
+    padding: 9px 18px; border-radius: 12px;
+    background: rgba(255,255,255,.12); border: 1px solid rgba(255,255,255,.2);
+    font-size: 13px; font-weight: 700; color: white;
+  }
+  .hero-chip svg { opacity: .85; }
+
+  /* ── Progress bar ── */
+  .progress-wrap {
+    margin-bottom: 28px;
+    background: var(--white); border: 1px solid var(--amber-border);
+    border-radius: var(--radius-xl); padding: 20px 24px;
+    box-shadow: 0 2px 12px rgba(217,119,6,.06);
+  }
+  .progress-label {
+    display: flex; justify-content: space-between; align-items: center;
+    margin-bottom: 10px; font-size: 13px; font-weight: 700; color: #374151;
+  }
+  .progress-label span { color: var(--gold); }
+  .progress-track {
+    height: 8px; background: var(--muted-light); border-radius: 99px; overflow: hidden;
+  }
+  .progress-bar {
+    height: 100%; border-radius: 99px;
+    background: linear-gradient(90deg, var(--amber), var(--gold));
+    transition: width .4s cubic-bezier(.4,0,.2,1);
+    width: 0%;
+  }
+  .progress-steps {
+    display: flex; justify-content: space-between; margin-top: 10px;
+  }
+  .progress-step-label {
+    font-size: 11px; font-weight: 600; color: var(--muted);
+    text-align: center; flex: 1;
+  }
+  .progress-step-label.active { color: var(--gold-dark); }
+  .progress-step-label.done { color: var(--success); }
+
+  /* ── Form sections ── */
+  .form-section {
+    background: var(--white); border: 1px solid var(--amber-border);
+    border-radius: var(--radius-xl); padding: 28px 28px 24px;
+    margin-bottom: 18px;
+    box-shadow: 0 2px 16px rgba(217,119,6,.05);
+    transition: box-shadow .2s;
+  }
+  .form-section:focus-within { box-shadow: 0 4px 24px rgba(217,119,6,.1); }
+
+  .section-header {
+    display: flex; align-items: center; gap: 12px;
+    padding-bottom: 16px; margin-bottom: 22px;
+    border-bottom: 2px solid var(--amber-border);
+  }
+  .section-num {
+    width: 34px; height: 34px; border-radius: 50%;
+    background: linear-gradient(135deg, var(--amber), var(--gold));
+    color: white; font-weight: 800; font-size: 13px;
+    display: flex; align-items: center; justify-content: center;
+    flex-shrink: 0; box-shadow: 0 4px 12px rgba(217,119,6,.35);
+    font-family: 'Syne', sans-serif;
+  }
+  .section-icon { font-size: 20px; }
+  .section-title { font-size: 16px; font-weight: 700; color: var(--text); font-family: 'Syne', sans-serif; }
+
+  /* ── Fields ── */
+  .field { margin-bottom: 18px; }
+  .field:last-child { margin-bottom: 0; }
+  .field-label {
+    display: block; font-size: 12.5px; font-weight: 700;
+    color: #374151; margin-bottom: 7px; letter-spacing: .01em;
+  }
+  .req { color: var(--error); margin-left: 2px; }
+  .hint { font-weight: 400; color: var(--muted); font-size: 11.5px; margin-left: 4px; }
+
+  .field-input, .field-select, .field-textarea {
+    width: 100%; padding: 11px 14px;
+    border: 1.5px solid var(--amber-border); border-radius: var(--radius-lg);
+    background: var(--white); font-size: 14px;
+    font-family: 'Plus Jakarta Sans', sans-serif; color: var(--text);
+    outline: none; transition: border-color .2s, box-shadow .2s;
+    -webkit-appearance: none;
+  }
+  .field-input::placeholder, .field-textarea::placeholder { color: #b3bac6; }
+  .field-input:focus, .field-select:focus, .field-textarea:focus {
+    border-color: var(--gold);
+    box-shadow: 0 0 0 3px rgba(217,119,6,.13);
+  }
+  .field-input.error, .field-select.error { border-color: var(--error); }
+  .field-input.valid { border-color: var(--success); }
+  .field-select { cursor: pointer; background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%236b7280' stroke-width='2'%3E%3Cpath d='M19 9l-7 7-7-7'/%3E%3C/svg%3E"); background-repeat: no-repeat; background-position: right 14px center; padding-right: 36px; }
+  .field-textarea { resize: vertical; min-height: 80px; }
+
+  .field-row-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+  .field-row-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 16px; }
+  @media(max-width: 560px) {
+    .field-row-2, .field-row-3 { grid-template-columns: 1fr; }
+  }
+
+  /* ── Pill selects (radio-style) ── */
+  .pill-group { display: flex; flex-wrap: wrap; gap: 9px; }
+  .pill-opt {
+    display: flex; align-items: center; gap: 7px;
+    padding: 8px 16px; border-radius: 99px;
+    border: 1.5px solid var(--amber-border); background: var(--white);
+    cursor: pointer; font-size: 13px; font-weight: 600; color: #4b5563;
+    transition: all .15s; user-select: none; line-height: 1;
+  }
+  .pill-opt:hover { border-color: var(--gold); color: var(--gold-dark); }
+  .pill-opt.active {
+    border-color: var(--gold); background: var(--amber-light);
+    color: var(--gold-deep); box-shadow: 0 1px 8px rgba(217,119,6,.18);
+  }
+  .pill-dot {
+    width: 14px; height: 14px; border-radius: 50%;
+    border: 2px solid #d1d5db; flex-shrink: 0;
+    display: flex; align-items: center; justify-content: center;
+    transition: border-color .15s;
+  }
+  .pill-opt.active .pill-dot { border-color: var(--gold); }
+  .pill-dot-fill {
+    width: 7px; height: 7px; border-radius: 50%;
+    background: var(--gold); display: none;
+  }
+  .pill-opt.active .pill-dot-fill { display: block; }
+
+  /* ── Checkbox pills ── */
+  .check-pill-group { display: flex; flex-wrap: wrap; gap: 9px; }
+  .check-pill {
+    display: flex; align-items: center; gap: 7px;
+    padding: 8px 16px; border-radius: 10px;
+    border: 1.5px solid var(--amber-border); background: var(--white);
+    cursor: pointer; font-size: 13px; font-weight: 600; color: #4b5563;
+    transition: all .15s; user-select: none;
+  }
+  .check-pill:hover { border-color: var(--gold); color: var(--gold-dark); }
+  .check-pill.active {
+    border-color: var(--gold); background: var(--amber-light);
+    color: var(--gold-deep); box-shadow: 0 1px 8px rgba(217,119,6,.18);
+  }
+  .check-box-icon {
+    width: 15px; height: 15px; border-radius: 4px;
+    border: 2px solid #d1d5db; display: flex; align-items: center;
+    justify-content: center; flex-shrink: 0; font-size: 9px; color: white;
+    transition: all .15s;
+  }
+  .check-pill.active .check-box-icon { background: var(--gold); border-color: var(--gold); }
+
+  /* ── Conditional block ── */
+  .cond { display: none; }
+  .cond.show { display: block; animation: slideDown .25s ease; }
+  @keyframes slideDown { from { opacity:0; transform:translateY(-6px); } to { opacity:1; transform:translateY(0); } }
+
+  /* ── Info box ── */
+  .info-box {
+    background: var(--teal-light); border: 1px solid #5eead4;
+    border-radius: var(--radius-lg); padding: 14px 18px;
+    font-size: 13px; color: #134e4a; line-height: 1.6;
+    display: flex; gap: 10px; align-items: flex-start; margin-bottom: 18px;
+  }
+  .info-box-icon { font-size: 18px; flex-shrink: 0; margin-top: 1px; }
+
+  /* ── Terms ── */
+  .terms-scroll {
+    background: #fffbeb; border: 1px solid var(--amber-border);
+    border-radius: var(--radius-lg); padding: 16px 18px;
+    font-size: 12.5px; color: #4b5563; line-height: 1.7;
+    max-height: 160px; overflow-y: auto; margin-bottom: 14px;
+  }
+  .terms-scroll ul { padding-left: 18px; display: flex; flex-direction: column; gap: 5px; }
+  .terms-scroll strong { color: var(--text); }
+  .terms-check-wrap {
+    display: flex; align-items: flex-start; gap: 12px;
+    padding: 14px 16px; border-radius: var(--radius-lg);
+    border: 1.5px solid var(--amber-border); cursor: pointer;
+    transition: all .2s; background: var(--white);
+  }
+  .terms-check-wrap:hover { border-color: var(--gold); }
+  .terms-check-wrap.checked { border-color: var(--gold); background: var(--amber-light); }
+  .terms-chk {
+    width: 20px; height: 20px; border-radius: 6px; flex-shrink: 0; margin-top: 1px;
+    border: 2px solid #d1d5db; display: flex; align-items: center;
+    justify-content: center; font-size: 11px; color: white; transition: all .2s;
+  }
+  .terms-check-wrap.checked .terms-chk { background: var(--gold); border-color: var(--gold); }
+  .terms-chk-text { font-size: 13px; font-weight: 600; color: #374151; line-height: 1.5; }
+
+  /* ── Notice ── */
+  .notice {
+    display: flex; gap: 14px; align-items: flex-start;
+    background: #f0fdf4; border: 1px solid #86efac;
+    border-radius: var(--radius-lg); padding: 16px 18px; margin-bottom: 18px;
+  }
+  .notice-icon { font-size: 22px; flex-shrink: 0; }
+  .notice-title { font-size: 13px; font-weight: 800; color: #166534; margin-bottom: 3px; }
+  .notice-body { font-size: 12.5px; color: #15803d; line-height: 1.6; }
+
+  /* ── Error banner ── */
+  .error-banner {
+    background: #fef2f2; border: 1px solid #fecaca;
+    border-radius: var(--radius-lg); padding: 12px 16px;
+    font-size: 13px; color: #b91c1c; display: none; margin-bottom: 18px;
+  }
+  .error-banner.show { display: block; }
+
+  /* ── Submit button ── */
+  .submit-btn {
+    width: 100%; height: 58px; border-radius: var(--radius-xl);
+    background: linear-gradient(135deg, #f59e0b 0%, #d97706 60%, #b45309 100%);
+    color: white; font-family: 'Syne', sans-serif;
+    font-weight: 700; font-size: 16px; border: none; cursor: pointer;
+    box-shadow: 0 8px 28px rgba(217,119,6,.4);
+    transition: transform .15s, box-shadow .15s, filter .2s;
+    display: flex; align-items: center; justify-content: center; gap: 10px;
+    letter-spacing: .01em;
+  }
+  .submit-btn:hover:not(:disabled) {
+    transform: translateY(-2px); box-shadow: 0 14px 36px rgba(217,119,6,.5);
+    filter: brightness(1.05);
+  }
+  .submit-btn:active { transform: translateY(0); }
+  .submit-btn:disabled { opacity: .65; cursor: not-allowed; }
+  .submit-note { text-align: center; font-size: 12px; color: var(--muted); margin-top: 10px; }
+
+  /* ── Success screen ── */
+  #successScreen {
+    display: none; flex-direction: column; align-items: center;
+    justify-content: center; min-height: 65vh; text-align: center; padding: 40px 20px;
+  }
+  #successScreen.show { display: flex; }
+  .success-icon {
+    width: 96px; height: 96px; border-radius: 50%;
+    background: linear-gradient(135deg, #f59e0b, #d97706);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 44px; margin-bottom: 28px;
+    box-shadow: 0 16px 48px rgba(217,119,6,.35);
+    animation: popIn .45s cubic-bezier(.175,.885,.32,1.275) both;
+  }
+  @keyframes popIn { from{opacity:0;transform:scale(.5)} to{opacity:1;transform:scale(1)} }
+  .success-confetti {
+    font-size: 28px; margin-bottom: 8px;
+    animation: bounce .6s ease .4s both;
+  }
+  @keyframes bounce { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-10px)} }
+  #successScreen h2 {
+    font-size: 30px; font-weight: 800; margin-bottom: 10px; color: var(--text);
+  }
+  #successScreen p { font-size: 15px; color: var(--muted); max-width: 440px; margin-bottom: 6px; line-height: 1.6; }
+  .success-ref {
+    display: inline-block; margin: 16px 0;
+    background: var(--amber-light); border: 1px solid var(--amber-border);
+    border-radius: var(--radius-lg); padding: 10px 22px;
+    font-size: 13px; font-weight: 700; color: var(--gold-dark);
+  }
+  .btn-home {
+    display: inline-flex; align-items: center; gap: 8px;
+    background: linear-gradient(135deg, #f59e0b, #d97706);
+    color: white; font-family: 'Syne', sans-serif;
+    font-weight: 700; font-size: 15px; padding: 14px 32px;
+    border-radius: var(--radius-lg); border: none; cursor: pointer;
+    margin-top: 20px; box-shadow: 0 6px 20px rgba(217,119,6,.35);
+    text-decoration: none; transition: filter .2s;
+  }
+  .btn-home:hover { filter: brightness(1.08); }
+
+  /* ── Spinner ── */
+  @keyframes spin { to { transform: rotate(360deg); } }
+  .spinner {
+    width: 18px; height: 18px; border-radius: 50%;
+    border: 2.5px solid rgba(255,255,255,.4);
+    border-top-color: white;
+    animation: spin .8s linear infinite;
+    flex-shrink: 0;
+  }
+
+  /* ── Responsive ── */
+  @media(max-width: 480px) {
+    .hero-inner { padding: 40px 20px 36px; }
+    .form-section { padding: 22px 18px; }
+    .hero-meta { flex-direction: column; align-items: center; }
+  }
+</style>
+</head>
+<body>
+
+<!-- Header -->
+<header class="site-header">
+  <div class="header-inner">
+    <a href="index.html" class="logo-link">
+      <img src="src/assets/logos/29.png" alt="Phunya Tsela" class="header-logo" />
+    </a>
+    <a href="index.html" class="btn-back">← Back to Home</a>
+  </div>
+</header>
+
+<main>
+
+  <!-- Success Screen -->
+  <div id="successScreen">
+    <div class="success-confetti">🎉</div>
+    <div class="success-icon">✓</div>
+    <h2>You're Registered!</h2>
+    <p>Welcome, <strong id="successName"></strong>! Your registration for <strong>Phunya Tsela Career Expo 2026</strong> has been received.</p>
+    <div class="success-ref" id="successRef"></div>
+    <p style="font-size:13px;">Keep an eye on your inbox — we'll send event updates, programme details, and your entry confirmation to <strong id="successEmail"></strong></p>
+    <a href="index.html" class="btn-home">← Back to Expo Home</a>
+  </div>
+
+  <!-- Form Wrapper -->
+  <div class="page-wrap" id="formWrap">
+
+    <!-- Hero -->
+    <div class="hero-card">
+      <div class="hero-bg"></div>
+      <div class="hero-pattern"></div>
+      <div class="hero-stripe"></div>
+      <div class="hero-inner">
+        <img src="src/assets/logos/29.png" alt="Phunya Tsela" class="hero-logo" />
+        <div class="hero-pill">
+          <span class="hero-pill-dot"></span>
+          Learner Registration — Free Entry
+        </div>
+        <h1>Phunya Tsela<br><em>Career Expo 2026</em></h1>
+        <p>Register to attend the Northern Cape's premier multi-industry career expo. Discover bursaries, career paths, skills programmes, and connect with 80+ organisations.</p>
+        <div class="hero-meta">
+          <div class="hero-chip">
+            <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+            24–25 June 2026
+          </div>
+          <div class="hero-chip">
+            <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+            Thabo Moorosi MPC, Kurumane
+          </div>
+          <div class="hero-chip">
+            <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 10v6M2 10l10-5 10 5-10 5z"/><path d="M6 12v5c3 3 9 3 12 0v-5"/></svg>
+            Free for Learners
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Progress -->
+    <div class="progress-wrap">
+      <div class="progress-label">
+        Registration Progress <span id="progressPct">0%</span>
+      </div>
+      <div class="progress-track">
+        <div class="progress-bar" id="progressBar"></div>
+      </div>
+      <div class="progress-steps">
+        <span class="progress-step-label" id="step1lbl">Personal</span>
+        <span class="progress-step-label" id="step2lbl">School</span>
+        <span class="progress-step-label" id="step3lbl">Interests</span>
+        <span class="progress-step-label" id="step4lbl">Submit</span>
+      </div>
+    </div>
+
+    <!-- Error Banner -->
+    <div class="error-banner" id="errorBanner"></div>
+
+    <!-- ── Section 1: Personal Details ── -->
+    <div class="form-section" id="sec1">
+      <div class="section-header">
+        <div class="section-num">1</div>
+        <span class="section-icon">👤</span>
+        <span class="section-title">Personal Details</span>
+      </div>
+      <div class="field-row-2">
+        <div class="field">
+          <label class="field-label">First Name <span class="req">*</span></label>
+          <input type="text" id="firstName" class="field-input" placeholder="Your first name" oninput="updateProgress()" />
+        </div>
+        <div class="field">
+          <label class="field-label">Last Name <span class="req">*</span></label>
+          <input type="text" id="lastName" class="field-input" placeholder="Your last name" oninput="updateProgress()" />
+        </div>
+      </div>
+      <div class="field-row-2">
+        <div class="field">
+          <label class="field-label">Email Address <span class="req">*</span></label>
+          <input type="email" id="email" class="field-input" placeholder="your@email.com" oninput="updateProgress()" />
+        </div>
+        <div class="field">
+          <label class="field-label">Cell Number <span class="req">*</span></label>
+          <input type="tel" id="cellNumber" class="field-input" placeholder="+27 xx xxx xxxx" oninput="updateProgress()" />
+        </div>
+      </div>
+      <div class="field-row-3">
+        <div class="field">
+          <label class="field-label">Date of Birth <span class="req">*</span></label>
+          <input type="date" id="dob" class="field-input" oninput="updateProgress()" />
+        </div>
+        <div class="field">
+          <label class="field-label">ID Number <span class="hint">(optional)</span></label>
+          <input type="text" id="idNumber" class="field-input" placeholder="SA ID number" />
+        </div>
+        <div class="field">
+          <label class="field-label">Gender <span class="req">*</span></label>
+          <select id="gender" class="field-select" onchange="updateProgress()">
+            <option value="">Select…</option>
+            <option>Male</option>
+            <option>Female</option>
+            <option>Non-binary</option>
+            <option>Prefer not to say</option>
+          </select>
+        </div>
+      </div>
+      <div class="field">
+        <label class="field-label">Home Town / Village <span class="req">*</span></label>
+        <input type="text" id="homeTown" class="field-input" placeholder="e.g. Kurumane, Hotazel, Kathu" oninput="updateProgress()" />
+      </div>
+    </div>
+
+    <!-- ── Section 2: School Details ── -->
+    <div class="form-section" id="sec2">
+      <div class="section-header">
+        <div class="section-num">2</div>
+        <span class="section-icon">🏫</span>
+        <span class="section-title">School &amp; Academic Details</span>
+      </div>
+      <div class="info-box">
+        <span class="info-box-icon">📚</span>
+        <span>Phunya Tsela is open to Grade 9–12 learners, post-matric youth, and young adults under 35 from the John Taolo Gaetsewe District and surrounding areas.</span>
+      </div>
+      <div class="field-row-2">
+        <div class="field">
+          <label class="field-label">School Name <span class="req">*</span></label>
+          <input type="text" id="schoolName" class="field-input" placeholder="Full school name" oninput="updateProgress()" />
+        </div>
+        <div class="field">
+          <label class="field-label">Grade / Level <span class="req">*</span></label>
+          <select id="grade" class="field-select" onchange="updateProgress()">
+            <option value="">Select grade…</option>
+            <option>Grade 9</option>
+            <option>Grade 10</option>
+            <option>Grade 11</option>
+            <option>Grade 12</option>
+            <option>Post-Matric / Gap Year</option>
+            <option>TVET Student</option>
+            <option>University Student</option>
+            <option>Young Adult (18–35)</option>
+          </select>
+        </div>
+      </div>
+      <div class="field-row-2">
+        <div class="field">
+          <label class="field-label">School District</label>
+          <select id="schoolDistrict" class="field-select">
+            <option value="">Select district…</option>
+            <option>John Taolo Gaetsewe</option>
+            <option>ZF Mgcawu</option>
+            <option>Frances Baard</option>
+            <option>Pixley Ka Seme</option>
+            <option>Namakwa</option>
+            <option>Other</option>
+          </select>
+        </div>
+        <div class="field">
+          <label class="field-label">Stream / Subjects</label>
+          <select id="stream" class="field-select">
+            <option value="">Select stream…</option>
+            <option>Science (Mathematics & Physical Science)</option>
+            <option>Commerce (Accounting & Business Studies)</option>
+            <option>Humanities / Arts</option>
+            <option>Technical / Vocational</option>
+            <option>Agricultural Sciences</option>
+            <option>Mixed / Other</option>
+          </select>
+        </div>
+      </div>
+      <div class="field">
+        <label class="field-label">Expected Matric Year</label>
+        <div class="pill-group" id="matricYearGroup" data-name="matricYear"></div>
+      </div>
+    </div>
+
+    <!-- ── Section 3: Interests ── -->
+    <div class="form-section" id="sec3">
+      <div class="section-header">
+        <div class="section-num">3</div>
+        <span class="section-icon">🌟</span>
+        <span class="section-title">Career Interests &amp; Expo Preferences</span>
+      </div>
+      <div class="field">
+        <label class="field-label">Career Fields of Interest <span class="hint">(select all that apply)</span></label>
+        <div class="check-pill-group" id="careerInterestsGroup" data-name="careerInterests"></div>
+      </div>
+      <div class="field">
+        <label class="field-label">Sessions You'd Like to Attend</label>
+        <div class="check-pill-group" id="sessionsGroup" data-name="sessions"></div>
+      </div>
+      <div class="field">
+        <label class="field-label">Do you need bursary / NSFAS information?</label>
+        <div class="pill-group" id="needsBursaryGroup" data-name="needsBursary"></div>
+      </div>
+      <div class="field">
+        <label class="field-label">What are you hoping to get from the expo?</label>
+        <textarea id="expectations" class="field-textarea" placeholder="e.g. I want to find out about careers in mining, apply for bursaries, meet professionals…" rows="3"></textarea>
+      </div>
+      <div class="field">
+        <label class="field-label">How did you hear about Phunya Tsela?</label>
+        <select id="hearAbout" class="field-select">
+          <option value="">Select…</option>
+          <option>Through my school / teacher</option>
+          <option>Social media (Facebook, Instagram, TikTok)</option>
+          <option>Community radio</option>
+          <option>Poster / flyer</option>
+          <option>Friend or family</option>
+          <option>WhatsApp group</option>
+          <option>Previous attendee</option>
+          <option>Other</option>
+        </select>
+      </div>
+    </div>
+
+    <!-- ── Section 4: Emergency Contact ── -->
+    <div class="form-section" id="sec4">
+      <div class="section-header">
+        <div class="section-num">4</div>
+        <span class="section-icon">🆘</span>
+        <span class="section-title">Emergency Contact</span>
+      </div>
+      <div class="field-row-2">
+        <div class="field">
+          <label class="field-label">Emergency Contact Name <span class="req">*</span></label>
+          <input type="text" id="emergencyName" class="field-input" placeholder="Parent / guardian / teacher" oninput="updateProgress()" />
+        </div>
+        <div class="field">
+          <label class="field-label">Relationship</label>
+          <select id="emergencyRel" class="field-select">
+            <option value="">Select…</option>
+            <option>Parent</option>
+            <option>Guardian</option>
+            <option>Teacher</option>
+            <option>Sibling</option>
+            <option>Other</option>
+          </select>
+        </div>
+      </div>
+      <div class="field">
+        <label class="field-label">Emergency Contact Number <span class="req">*</span></label>
+        <input type="tel" id="emergencyPhone" class="field-input" placeholder="+27 xx xxx xxxx" oninput="updateProgress()" />
+      </div>
+      <div class="field">
+        <label class="field-label">Special Requirements <span class="hint">(disability, dietary, medical, accessibility)</span></label>
+        <textarea id="specialReqs" class="field-textarea" placeholder="Let us know if you have any special requirements so we can accommodate you…" rows="2"></textarea>
+      </div>
+      <div class="field">
+        <label class="field-label">Will you be attending with your school group?</label>
+        <div class="pill-group" id="withSchoolGroup" data-name="withSchool"></div>
+      </div>
+      <div class="cond" id="schoolGroupWrap">
+        <div class="field">
+          <label class="field-label">Teacher / Group Leader Name</label>
+          <input type="text" id="teacherName" class="field-input" placeholder="Teacher or coordinator name" />
+        </div>
+      </div>
+    </div>
+
+    <!-- ── Section 5: Consent & Terms ── -->
+    <div class="form-section">
+      <div class="section-header">
+        <div class="section-num">5</div>
+        <span class="section-icon">📋</span>
+        <span class="section-title">Consent &amp; POPIA</span>
+      </div>
+      <div class="terms-scroll">
+        <p style="font-weight:700;color:#111827;margin-bottom:10px;">Please read and accept the following:</p>
+        <ul>
+          <li><strong>Event Access:</strong> Entry to Phunya Tsela Career Expo is free for registered learners. Bring your registration confirmation on the day.</li>
+          <li><strong>Photography & Media:</strong> The event will be photographed and filmed. By registering, you consent to your image being used in post-event media, reports, and social content.</li>
+          <li><strong>Data Protection (POPIA):</strong> Your personal information is collected solely for event management purposes and will not be shared with third parties without your consent, in compliance with the Protection of Personal Information Act.</li>
+          <li><strong>Communication:</strong> We may contact you with event updates, schedules, and career opportunity information. You can opt out at any time.</li>
+          <li><strong>Code of Conduct:</strong> All attendees are expected to behave respectfully towards exhibitors, fellow learners, and event staff.</li>
+          <li><strong>Liability:</strong> The organisers are not liable for loss of personal belongings. Attend responsibly.</li>
+        </ul>
+      </div>
+      <div class="terms-check-wrap" id="termsWrap" onclick="toggleTerms()">
+        <div class="terms-chk" id="termsChk"></div>
+        <span class="terms-chk-text">Yes — I have read and agree to the event terms, media consent, and POPIA data processing policy.</span>
+      </div>
+    </div>
+
+    <!-- Notice -->
+    <div class="notice">
+      <div class="notice-icon">📧</div>
+      <div>
+        <p class="notice-title">Confirmation Email</p>
+        <p class="notice-body">After submitting, you'll receive a confirmation email with your registration details, venue information, and the expo programme. Check your spam folder if it doesn't arrive within a few minutes.</p>
+      </div>
+    </div>
+
+    <!-- Submit -->
+    <button class="submit-btn" id="submitBtn" onclick="handleSubmit()">
+      Register for Free →
+    </button>
+    <p class="submit-note">🔒 Your data is protected under POPIA. We will never sell or share your information.</p>
+
+  </div><!-- /formWrap -->
+
+</main>
+
+<script>
+// ── State ─────────────────────────────────────────────────────────────────────
+var state = {
+  matricYear:      '',
+  careerInterests: [],
+  sessions:        [],
+  needsBursary:    '',
+  withSchool:      '',
+  termsAgreed:     false,
+};
+
+// ── Definitions ───────────────────────────────────────────────────────────────
+var RADIO_DEFS = {
+  matricYear:   ['2025','2026','2027','2028','Already matriculated'],
+  needsBursary: ['Yes, definitely','Possibly','No, just exploring'],
+  withSchool:   ['Yes, with my school','No, independently'],
+};
+
+var CHECK_DEFS = {
+  careerInterests: [
+    'Mining & Engineering','Government & Public Service','Health & Medical',
+    'Education & Teaching','Business & Finance','Technology & ICT',
+    'Agriculture & Environment','Defence & Security','Arts, Media & Entertainment',
+    'Entrepreneurship','Social Work & NGO','Law & Justice',
+  ],
+  sessions: [
+    'Bursary & NSFAS Workshop','University Application Guidance',
+    'TVET & Skills Pathways','Entrepreneurship Masterclass',
+    'APS Calculator Session','Psychometric / Career Test',
+    'Youth Pulse Community Forum','STEM Showcase',
+  ],
+};
+
+// ── Build pill groups ─────────────────────────────────────────────────────────
+function buildRadios() {
+  Object.keys(RADIO_DEFS).forEach(function(name) {
+    var wrap = document.getElementById(name + 'Group');
+    if (!wrap) return;
+    wrap.innerHTML = RADIO_DEFS[name].map(function(opt) {
+      return '<label class="pill-opt" data-value="' + esc(opt) + '" onclick="pickRadio(this,\'' + name + '\')">' +
+        '<span class="pill-dot"><span class="pill-dot-fill"></span></span>' + esc(opt) + '</label>';
+    }).join('');
+  });
+}
+
+function buildChecks() {
+  Object.keys(CHECK_DEFS).forEach(function(name) {
+    var wrap = document.getElementById(name + 'Group');
+    if (!wrap) return;
+    wrap.innerHTML = CHECK_DEFS[name].map(function(opt) {
+      return '<label class="check-pill" data-value="' + esc(opt) + '" onclick="toggleCheck(this,\'' + name + '\')">' +
+        '<span class="check-box-icon">✓</span>' + esc(opt) + '</label>';
+    }).join('');
+  });
+}
+
+function pickRadio(el, name) {
+  el.closest('.pill-group').querySelectorAll('.pill-opt').forEach(function(l) { l.classList.remove('active'); });
+  el.classList.add('active');
+  state[name] = el.dataset.value;
+  if (name === 'withSchool') {
+    document.getElementById('schoolGroupWrap').classList.toggle('show', el.dataset.value === 'Yes, with my school');
+  }
+  updateProgress();
+}
+
+function toggleCheck(el, name) {
+  el.classList.toggle('active');
+  var val = el.dataset.value;
+  var arr = state[name];
+  if (el.classList.contains('active')) {
+    if (!arr.includes(val)) arr.push(val);
+  } else {
+    state[name] = arr.filter(function(v) { return v !== val; });
+  }
+  updateProgress();
+}
+
+function toggleTerms() {
+  state.termsAgreed = !state.termsAgreed;
+  var wrap = document.getElementById('termsWrap');
+  var chk  = document.getElementById('termsChk');
+  wrap.classList.toggle('checked', state.termsAgreed);
+  chk.textContent = state.termsAgreed ? '✓' : '';
+  updateProgress();
+}
+
+// ── Progress ──────────────────────────────────────────────────────────────────
+var REQUIRED_FIELDS = ['firstName','lastName','email','cellNumber','dob','gender','homeTown','schoolName','grade','emergencyName','emergencyPhone'];
+
+function updateProgress() {
+  var filled = REQUIRED_FIELDS.filter(function(id) {
+    var el = document.getElementById(id);
+    return el && el.value.trim() !== '';
+  }).length;
+  var total = REQUIRED_FIELDS.length + 1; // +1 for terms
+  if (state.termsAgreed) filled++;
+  var pct = Math.round((filled / total) * 100);
+  document.getElementById('progressBar').style.width = pct + '%';
+  document.getElementById('progressPct').textContent = pct + '%';
+
+  // Step labels
+  var steps = [
+    ['firstName','lastName','email','cellNumber','dob','gender','homeTown'],
+    ['schoolName','grade'],
+    [],
+    ['emergencyName','emergencyPhone'],
+  ];
+  steps.forEach(function(fields, i) {
+    var lbl = document.getElementById('step'+(i+1)+'lbl');
+    if (!lbl) return;
+    var done = fields.length === 0
+      ? (i === 2) // interests always "in progress" once we show it
+      : fields.every(function(f){ var e=document.getElementById(f); return e && e.value.trim()!==''; });
+    lbl.className = 'progress-step-label' + (done ? ' done' : (fields.some(function(f){ var e=document.getElementById(f); return e&&e.value.trim()!==''; }) ? ' active' : ''));
+  });
+}
+
+// ── Validation ────────────────────────────────────────────────────────────────
+function showErr(msg) {
+  var b = document.getElementById('errorBanner');
+  b.textContent = '⚠️ ' + msg;
+  b.classList.add('show');
+  b.scrollIntoView({ behavior: 'smooth', block: 'center' });
+}
+function clearErr() { document.getElementById('errorBanner').classList.remove('show'); }
+
+// ── Submit ────────────────────────────────────────────────────────────────────
+function handleSubmit() {
+  clearErr();
+
+  var firstName     = document.getElementById('firstName').value.trim();
+  var lastName      = document.getElementById('lastName').value.trim();
+  var email         = document.getElementById('email').value.trim();
+  var cell          = document.getElementById('cellNumber').value.trim();
+  var dob           = document.getElementById('dob').value;
+  var gender        = document.getElementById('gender').value;
+  var homeTown      = document.getElementById('homeTown').value.trim();
+  var schoolName    = document.getElementById('schoolName').value.trim();
+  var grade         = document.getElementById('grade').value;
+  var emergencyName = document.getElementById('emergencyName').value.trim();
+  var emergencyPh   = document.getElementById('emergencyPhone').value.trim();
+
+  if (!firstName)     { showErr('Please enter your first name.'); return; }
+  if (!lastName)      { showErr('Please enter your last name.'); return; }
+  if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) { showErr('Please enter a valid email address.'); return; }
+  if (!cell)          { showErr('Please enter your cell number.'); return; }
+  if (!dob)           { showErr('Please enter your date of birth.'); return; }
+  if (!gender)        { showErr('Please select your gender.'); return; }
+  if (!homeTown)      { showErr('Please enter your home town / village.'); return; }
+  if (!schoolName)    { showErr('Please enter your school name.'); return; }
+  if (!grade)         { showErr('Please select your grade / level.'); return; }
+  if (!emergencyName) { showErr('Please enter an emergency contact name.'); return; }
+  if (!emergencyPh)   { showErr('Please enter an emergency contact number.'); return; }
+  if (!state.termsAgreed) { showErr('Please read and accept the terms and POPIA consent to continue.'); return; }
+
+  // Build FormData
+  var fd = new FormData();
+  fd.append('email', email); // Formspree reply-to
+
+  // Section 1 — Personal
+  fd.append('First Name',       firstName);
+  fd.append('Last Name',        lastName);
+  fd.append('Full Name',        firstName + ' ' + lastName);
+  fd.append('Cell Number',      cell);
+  fd.append('Date of Birth',    dob);
+  fd.append('ID Number',        document.getElementById('idNumber').value.trim() || '—');
+  fd.append('Gender',           gender);
+  fd.append('Home Town',        homeTown);
+
+  // Section 2 — School
+  fd.append('School Name',      schoolName);
+  fd.append('Grade / Level',    grade);
+  fd.append('School District',  document.getElementById('schoolDistrict').value || '—');
+  fd.append('Subject Stream',   document.getElementById('stream').value || '—');
+  fd.append('Expected Matric',  state.matricYear || '—');
+
+  // Section 3 — Interests
+  fd.append('Career Interests', state.careerInterests.length ? state.careerInterests.join(', ') : '—');
+  fd.append('Sessions',         state.sessions.length ? state.sessions.join(', ') : '—');
+  fd.append('Needs Bursary Info',state.needsBursary || '—');
+  fd.append('Expectations',     document.getElementById('expectations').value.trim() || '—');
+  fd.append('Heard About Expo', document.getElementById('hearAbout').value || '—');
+
+  // Section 4 — Emergency Contact
+  fd.append('Emergency Contact Name', emergencyName);
+  fd.append('Emergency Relationship', document.getElementById('emergencyRel').value || '—');
+  fd.append('Emergency Phone',        emergencyPh);
+  fd.append('Special Requirements',   document.getElementById('specialReqs').value.trim() || 'None');
+  fd.append('Attending With School',  state.withSchool || '—');
+  fd.append('Teacher / Group Leader', document.getElementById('teacherName').value.trim() || '—');
+
+  // Consent
+  fd.append('Terms & POPIA Agreed', 'Yes');
+  fd.append('Event', 'Phunya Tsela Career Expo 2026 — 24–25 June');
+
+  // Disable button
+  var btn = document.getElementById('submitBtn');
+  btn.disabled = true;
+  btn.innerHTML = '<span class="spinner"></span> Registering…';
+
+  // POST to Formspree
+  fetch('https://formspree.io/f/mykopvqy', {
+    method:  'POST',
+    body:    fd,
+    headers: { 'Accept': 'application/json' },
+  })
+  .then(function(res) {
+    if (res.ok) {
+      // Success
+      document.getElementById('successName').textContent  = firstName + ' ' + lastName;
+      document.getElementById('successEmail').textContent = email;
+      // Generate a simple ref
+      var ref = 'PT2026-' + Math.random().toString(36).substr(2,6).toUpperCase();
+      document.getElementById('successRef').textContent = '📋 Ref: ' + ref;
+      document.getElementById('formWrap').style.display = 'none';
+      var s = document.getElementById('successScreen');
+      s.classList.add('show');
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    } else {
+      return res.json().then(function(data) {
+        var msg = (data && data.errors)
+          ? data.errors.map(function(e) { return e.message; }).join(', ')
+          : 'Registration failed. Please try again.';
+        showErr(msg);
+        btn.disabled = false;
+        btn.innerHTML = 'Register for Free →';
+      });
+    }
+  })
+  .catch(function() {
+    showErr('Network error — please check your connection and try again.');
+    btn.disabled = false;
+    btn.innerHTML = 'Register for Free →';
+  });
+}
+
+// ── Init ──────────────────────────────────────────────────────────────────────
+document.addEventListener('DOMContentLoaded', function() {
+  buildRadios();
+  buildChecks();
+  updateProgress();
+});
+
+function esc(str) {
+  return String(str)
+    .replace(/&/g,'&amp;').replace(/</g,'&lt;')
+    .replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+</script>
+</body>
+</html>

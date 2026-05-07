@@ -1,0 +1,493 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Sponsors & Exhibitors — Phunya Tsela Career Expo 2026</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --primary:       #d97706;
+    --primary-dark:  #b45309;
+    --primary-light: #fde68a;
+    --yellow:        #f59e0b;
+    --yellow-light:  #fffbeb;
+    --bg:            #fafaf9;
+    --card:          #ffffff;
+    --border:        #e5e7eb;
+    --text:          #111827;
+    --muted:         #6b7280;
+    --muted-light:   #f3f4f6;
+    --dark:          #0f172a;
+    --radius:        12px;
+    --radius-lg:     16px;
+    --radius-xl:     20px;
+  }
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  html { scroll-behavior: smooth; }
+  body {
+    font-family: 'Plus Jakarta Sans', sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    min-height: 100vh;
+  }
+  h1,h2,h3,h4 { font-family: 'Space Grotesk', sans-serif; }
+
+  /* ── Sticky Header (same as index) ── */
+  .site-header {
+    position: fixed; top: 0; left: 0; right: 0; z-index: 50;
+    background: white; border-bottom: 1px solid var(--border);
+    box-shadow: 0 1px 8px rgba(0,0,0,.08);
+  }
+  .header-inner {
+    max-width: 1200px; margin: 0 auto;
+    padding: 0 24px; height: 68px;
+    display: flex; align-items: center; justify-content: space-between; gap: 24px;
+  }
+  .logo-link { display: flex; align-items: center; text-decoration: none; }
+  .header-logo { height: 42px; width: auto; object-fit: contain; }
+  .header-actions { display: flex; align-items: center; gap: 12px; }
+  .btn-primary {
+    display: inline-flex; align-items: center; gap: 8px;
+    background: var(--primary); color: white;
+    font-weight: 700; font-size: 14px; padding: 10px 20px;
+    border-radius: var(--radius-lg); border: none; cursor: pointer;
+    text-decoration: none; transition: background .2s, transform .15s;
+    font-family: 'Space Grotesk', sans-serif;
+  }
+  .btn-primary:hover { background: var(--primary-dark); transform: translateY(-1px); }
+  .btn-outline {
+    display: inline-flex; align-items: center; gap: 8px;
+    background: transparent; color: var(--text);
+    font-weight: 600; font-size: 14px; padding: 10px 20px;
+    border-radius: var(--radius-lg); border: 1px solid var(--border);
+    cursor: pointer; text-decoration: none; transition: background .2s;
+    font-family: 'Space Grotesk', sans-serif;
+  }
+  .btn-outline:hover { background: var(--muted-light); }
+
+  /* ── Page layout ── */
+  main { padding-top: 68px; }
+
+  /* ── Hero strip ── */
+  .page-hero {
+    background: linear-gradient(135deg, var(--dark) 0%, #1e293b 100%);
+    padding: 56px 24px 48px;
+    position: relative; overflow: hidden;
+  }
+  .page-hero::before {
+    content: '';
+    position: absolute; inset: 0;
+    background: repeating-linear-gradient(45deg, transparent, transparent 40px, rgba(217,119,6,.04) 40px, rgba(217,119,6,.04) 80px);
+  }
+  .page-hero-inner { max-width: 1200px; margin: 0 auto; position: relative; }
+  .page-eyebrow {
+    display: inline-block; font-size: 11px; font-weight: 700;
+    letter-spacing: .12em; text-transform: uppercase;
+    color: var(--yellow); margin-bottom: 12px;
+  }
+  .page-hero h1 { font-size: clamp(28px,4vw,44px); font-weight: 700; color: white; margin-bottom: 10px; }
+  .page-hero p { font-size: 15px; color: rgba(255,255,255,.6); max-width: 500px; }
+
+  /* ── Stats row ── */
+  .stats-row {
+    display: flex; flex-wrap: wrap; gap: 28px;
+    margin-top: 28px;
+  }
+  .stat-item { }
+  .stat-num { font-family: 'Space Grotesk', sans-serif; font-size: 28px; font-weight: 700; color: var(--yellow); }
+  .stat-lbl { font-size: 12px; color: rgba(255,255,255,.5); margin-top: 2px; }
+
+  /* ── Toolbar ── */
+  .toolbar {
+    max-width: 1200px; margin: 0 auto;
+    padding: 28px 24px 0;
+    display: flex; flex-wrap: wrap; gap: 14px; align-items: center;
+  }
+  .search-wrap { position: relative; flex: 1; min-width: 220px; max-width: 380px; }
+  .search-icon { position: absolute; left: 14px; top: 50%; transform: translateY(-50%); color: var(--muted); font-size: 16px; pointer-events: none; }
+  .search-input {
+    width: 100%; padding: 10px 14px 10px 40px;
+    border: 1px solid var(--border); border-radius: var(--radius-lg);
+    background: white; font-size: 14px; font-family: 'Plus Jakarta Sans', sans-serif;
+    outline: none; transition: border-color .2s, box-shadow .2s;
+  }
+  .search-input:focus { border-color: var(--primary); box-shadow: 0 0 0 3px #fde68a44; }
+  .view-toggle { display: flex; gap: 4px; background: var(--muted-light); border-radius: 10px; padding: 4px; }
+  .view-btn {
+    width: 36px; height: 36px; border-radius: 8px; border: none;
+    background: transparent; cursor: pointer; display: flex;
+    align-items: center; justify-content: center; color: var(--muted);
+    transition: all .2s; font-size: 16px;
+  }
+  .view-btn.active { background: white; color: var(--primary); box-shadow: 0 1px 4px rgba(0,0,0,.08); }
+
+  /* ── Category filters ── */
+  .filters {
+    max-width: 1200px; margin: 0 auto;
+    padding: 16px 24px 0;
+    display: flex; flex-wrap: wrap; gap: 8px;
+  }
+  .filter-btn {
+    padding: 6px 16px; border-radius: 99px; border: 1px solid var(--border);
+    background: white; font-size: 13px; font-weight: 600; cursor: pointer;
+    color: var(--muted); transition: all .2s; font-family: 'Plus Jakarta Sans', sans-serif;
+  }
+  .filter-btn:hover { border-color: var(--primary); color: var(--primary); }
+  .filter-btn.active { background: var(--primary); border-color: var(--primary); color: white; }
+
+  /* ── Results count ── */
+  .results-meta {
+    max-width: 1200px; margin: 0 auto;
+    padding: 16px 24px 0;
+    font-size: 13px; color: var(--muted);
+  }
+  .results-meta span { color: var(--primary); font-weight: 700; }
+
+  /* ── Grid view ── */
+  .content-area {
+    max-width: 1200px; margin: 0 auto;
+    padding: 20px 24px 80px;
+  }
+
+  /* Headline partners section */
+  .partners-section { margin-bottom: 40px; }
+  .section-label {
+    font-size: 11px; font-weight: 800; letter-spacing: .1em;
+    text-transform: uppercase; color: var(--muted);
+    margin-bottom: 14px; display: flex; align-items: center; gap: 10px;
+  }
+  .section-label::after { content: ''; flex: 1; height: 1px; background: var(--border); }
+
+  .partners-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+    gap: 14px;
+  }
+
+  /* Exhibitor card — grid */
+  .ex-card {
+    background: white; border: 1px solid var(--border);
+    border-radius: var(--radius-lg); padding: 16px 12px;
+    display: flex; flex-direction: column; align-items: center;
+    gap: 10px; cursor: default; transition: all .2s;
+    position: relative;
+  }
+  .ex-card:hover { border-color: rgba(217,119,6,.3); box-shadow: 0 4px 20px rgba(0,0,0,.06); }
+  .ex-card.featured { border-color: rgba(217,119,6,.5); background: var(--yellow-light); }
+  .featured-star {
+    position: absolute; top: 10px; right: 10px;
+    color: var(--primary); font-size: 14px;
+  }
+  .ex-logo-wrap {
+    width: 72px; height: 72px;
+    background: var(--muted-light); border-radius: 12px;
+    display: flex; align-items: center; justify-content: center;
+    overflow: hidden; padding: 6px; flex-shrink: 0;
+  }
+  .ex-logo-wrap img { max-width: 100%; max-height: 100%; object-fit: contain; }
+  .ex-logo-placeholder {
+    font-size: 9px; color: var(--muted); text-align: center;
+    line-height: 1.3; padding: 4px;
+  }
+  .ex-name { font-size: 12px; font-weight: 700; text-align: center; line-height: 1.3; color: var(--text); }
+  .ex-tier { font-size: 10px; color: var(--primary); font-weight: 700; text-align: center; }
+  .ex-cat { font-size: 10px; color: var(--muted); text-align: center; }
+
+  /* Exhibitor row — list */
+  .ex-row {
+    background: white; border: 1px solid var(--border);
+    border-radius: var(--radius-lg); padding: 14px 16px;
+    display: flex; align-items: center; gap: 14px;
+    transition: all .2s; margin-bottom: 8px;
+  }
+  .ex-row:hover { border-color: rgba(217,119,6,.3); box-shadow: 0 2px 12px rgba(0,0,0,.05); }
+  .ex-row.featured { border-color: rgba(217,119,6,.4); background: var(--yellow-light); }
+  .ex-row .ex-logo-wrap { width: 52px; height: 52px; }
+  .ex-row-info { flex: 1; min-width: 0; }
+  .ex-row-name { font-size: 14px; font-weight: 700; color: var(--text); }
+  .ex-row-meta { display: flex; gap: 12px; margin-top: 2px; }
+  .ex-row-tier { font-size: 12px; color: var(--primary); font-weight: 700; }
+  .ex-row-cat { font-size: 12px; color: var(--muted); }
+  .ex-row-star { color: var(--primary); font-size: 14px; flex-shrink: 0; }
+
+  /* Exhibitors list container */
+  #exhibitorsList { }
+
+  /* Empty state */
+  .empty-state { text-align: center; padding: 60px 20px; color: var(--muted); }
+  .empty-state .emoji { font-size: 40px; margin-bottom: 12px; }
+
+  /* Sticky apply button */
+  .sticky-apply {
+    position: fixed; bottom: 24px; right: 24px; z-index: 40;
+  }
+  @media(max-width: 640px) { .sticky-apply { display: none; } }
+
+  /* Responsive */
+  @media(max-width: 600px) {
+    .toolbar { flex-direction: column; align-items: stretch; }
+    .search-wrap { max-width: 100%; }
+    .partners-grid { grid-template-columns: repeat(2, 1fr); }
+  }
+</style>
+</head>
+<body>
+
+<!-- ── Header ── -->
+<header class="site-header">
+  <div class="header-inner">
+    <a href="index.html" class="logo-link">
+      <img src="src/assets/logos/29.png" alt="Phunya Tsela" class="header-logo" />
+    </a>
+    <div class="header-actions">
+      <a href="index.html" class="btn-outline">← Back to Home</a>
+      <a href="exhibitor-signup.html" class="btn-primary">Apply to Exhibit →</a>
+    </div>
+  </div>
+</header>
+
+<main>
+  <!-- ── Hero ── -->
+  <div class="page-hero">
+    <div class="page-hero-inner">
+      <div class="page-eyebrow">Exhibitor Directory</div>
+      <h1>Sponsors &amp; Exhibitors</h1>
+      <p>Browse organisations exhibiting at Phunya Tsela Career Expo — Northern Cape's premier multi-industry career expo.</p>
+      <div class="stats-row">
+        <div class="stat-item"><div class="stat-num">80+</div><div class="stat-lbl">Exhibitors hosted</div></div>
+        <div class="stat-item"><div class="stat-num">7</div><div class="stat-lbl">Industry sectors</div></div>
+        <div class="stat-item"><div class="stat-num">15,000+</div><div class="stat-lbl">Learners reached</div></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── Toolbar ── -->
+  <div class="toolbar">
+    <div class="search-wrap">
+      <span class="search-icon">🔍</span>
+      <input type="text" id="searchInput" class="search-input" placeholder="Search exhibitors..." oninput="applyFilters()" />
+    </div>
+    <div class="view-toggle">
+      <button class="view-btn active" id="btnGrid" title="Grid view" onclick="setView('grid')">⊞</button>
+      <button class="view-btn" id="btnList" title="List view" onclick="setView('list')">☰</button>
+    </div>
+  </div>
+
+  <!-- ── Category filters ── -->
+  <div class="filters" id="categoryFilters"></div>
+
+  <!-- ── Results meta ── -->
+  <div class="results-meta" id="resultsMeta"></div>
+
+  <!-- ── Content ── -->
+  <div class="content-area">
+    <div id="exhibitorsList"></div>
+  </div>
+</main>
+
+<!-- Sticky apply CTA -->
+<div class="sticky-apply">
+  <a href="exhibitor-signup.html" class="btn-primary" style="padding:14px 24px; font-size:15px; box-shadow:0 8px 28px rgba(217,119,6,.4);">
+    Apply to Exhibit →
+  </a>
+</div>
+
+<script>
+// ── Data ──────────────────────────────────────────────────────────────────────
+const CATEGORIES = [
+  "Mining & Industrial",
+  "Government",
+  "Education & Skills",
+  "Business & Enterprise",
+  "STEM & Green Economy",
+  "FAME (Film, Arts, Media, Entertainment & Sports)",
+];
+
+const HEADLINE_PARTNERS = [
+  { name:"Assmang Iron Ore",        tier:"Platinum Partner",  logo:"src/assets/logos/2.png",   category:"Mining & Industrial", featured:true },
+  { name:"Department of Education", tier:"Host Department",   logo:"src/assets/logos/41.png",  category:"Government",          featured:true },
+  { name:"JTG Trust",               tier:"Host Partner",      logo:"src/assets/logos/4.png",   category:"Government",          featured:true },
+  { name:"Tshipi",                  tier:"Gold Sponsor",      logo:"src/assets/logos/7.png",   category:"Mining & Industrial", featured:false },
+  { name:"Kudumane",                tier:"Gold Sponsor",      logo:"src/assets/logos/5.png",   category:"Mining & Industrial", featured:false },
+  { name:"Forestry",                tier:"Gold Sponsor",      logo:"src/assets/logos/22.png",  category:"Government",          featured:false },
+  { name:"SiOC",                    tier:"Associate Sponsor", logo:"src/assets/logos/112.png", category:"Mining & Industrial", featured:false },
+];
+
+const ALL_EXHIBITORS = [
+  { name:"Assmang Iron Ore – Khumani Mine",         category:"Mining & Industrial",    logo:"src/assets/logos/2.png"   },
+  { name:"Assmang Manganese – Black Rock",          category:"Mining & Industrial",    logo:"src/assets/logos/3.png"   },
+  { name:"Kudumane Manganese Resources",            category:"Mining & Industrial",    logo:"src/assets/logos/5.png"   },
+  { name:"South African Weather Service",           category:"Government",             logo:"src/assets/logos/6.png"   },
+  { name:"Tshipi é Ntle Manganese Mining",          category:"Mining & Industrial",    logo:"src/assets/logos/7.png"   },
+  { name:"University of Pretoria",                  category:"Education & Skills",     logo:"src/assets/logos/8.png"   },
+  { name:"G20 South Africa 2025",                   category:"Government",             logo:"src/assets/logos/9.png"   },
+  { name:"NSFAS",                                   category:"Education & Skills",     logo:"src/assets/logos/10.png"  },
+  { name:"Sol Plaatje University",                  category:"Education & Skills",     logo:"src/assets/logos/11.png"  },
+  { name:"FNB",                                     category:"Business & Enterprise",  logo:"src/assets/logos/12.png"  },
+  { name:"SA Responsible Gambling Foundation",      category:"Government",             logo:"src/assets/logos/13.png"  },
+  { name:"Virtual Training Academy",                category:"Education & Skills",     logo:"src/assets/logos/14.png"  },
+  { name:"Dept of Water & Sanitation",              category:"Government",             logo:"src/assets/logos/15.png"  },
+  { name:"Dept of Social Development NC",           category:"Government",             logo:"src/assets/logos/16.png"  },
+  { name:"Farm Manager SA",                         category:"Business & Enterprise",  logo:"src/assets/logos/17.png"  },
+  { name:"ABSA",                                    category:"Business & Enterprise",  logo:"src/assets/logos/18.png"  },
+  { name:"Capitec Bank",                            category:"Business & Enterprise",  logo:"src/assets/logos/19.png"  },
+  { name:"FoodBev SETA",                            category:"Education & Skills",     logo:"src/assets/logos/20.png"  },
+  { name:"The SANDF",                               category:"Government",             logo:"src/assets/logos/21.png"  },
+  { name:"Office of the Premier – Northern Cape",   category:"Government",             logo:"src/assets/logos/23.png"  },
+  { name:"Phunya Tsela / Kasi Expo",                category:"Education & Skills",     logo:"src/assets/logos/29.png"  },
+  { name:"Dept of Environmental Affairs",           category:"Government",             logo:"src/assets/logos/42.png"  },
+  { name:"Khetha",                                  category:"Education & Skills",     logo:"src/assets/logos/43.png"  },
+  { name:"GPAA",                                    category:"Government",             logo:"src/assets/logos/50.png"  },
+  { name:"Ithala",                                  category:"Business & Enterprise",  logo:"src/assets/logos/55.png"  },
+  { name:"UNISA",                                   category:"Education & Skills",     logo:"src/assets/logos/56.png"  },
+  { name:"SAICA",                                   category:"Business & Enterprise",  logo:"src/assets/logos/79.png"  },
+  { name:"Standard Bank",                           category:"Business & Enterprise",  logo:"src/assets/logos/85.png"  },
+  { name:"NRF SAASTA",                              category:"STEM & Green Economy",   logo:"src/assets/logos/87.png"  },
+  { name:"NC Urban TVET College",                   category:"Education & Skills",     logo:"src/assets/logos/96.png"  },
+  { name:"Maiktronix",                              category:"Mining & Industrial",    logo:"src/assets/logos/99.png"  },
+  { name:"SAPS",                                    category:"Government",             logo:"src/assets/logos/101.png" },
+  { name:"SASSA",                                   category:"Government",             logo:"src/assets/logos/104.png" },
+  { name:"Dept of Transport, Safety & Liaison NC",  category:"Government",             logo:"src/assets/logos/105.png" },
+  { name:"Dept Social Development NC",              category:"Government",             logo:"src/assets/logos/107.png" },
+  { name:"NECSA",                                   category:"STEM & Green Economy",   logo:"src/assets/logos/108.png" },
+  { name:"SmartTKT",                                category:"Business & Enterprise",  logo:"src/assets/logos/109.png" },
+  { name:"Dept of Home Affairs",                    category:"Government",             logo:"src/assets/logos/113.png" },
+  { name:"Great Poroza Sports Development Academy", category:"FAME (Film, Arts, Media, Entertainment & Sports)", logo:"src/assets/logos/116.png" },
+  { name:"AND310 Mining Services",                  category:"Mining & Industrial",    logo:"src/assets/logos/122.png" },
+  { name:"National Research Foundation",            category:"STEM & Green Economy",   logo:"src/assets/logos/173.png" },
+  { name:"CIPC",                                    category:"Business & Enterprise",  logo:"src/assets/logos/25.png"  },
+  { name:"CSIR",                                    category:"STEM & Green Economy",   logo:"src/assets/logos/9.png"   },
+  { name:"Military Health Service",                 category:"Government",             logo:"src/assets/logos/11.png"  },
+  { name:"SABC Education",                          category:"FAME (Film, Arts, Media, Entertainment & Sports)", logo:"src/assets/logos/13.png" },
+  { name:"Joe Morolong Local Municipality",         category:"Government",             logo:"src/assets/logos/18.png"  },
+  { name:"Future First Academy",                    category:"Education & Skills",     logo:"src/assets/logos/19.png"  },
+  { name:"FASSET",                                  category:"Education & Skills",     logo:"src/assets/logos/25.png"  },
+];
+
+// ── State ─────────────────────────────────────────────────────────────────────
+var currentView     = 'grid';
+var currentCategory = 'All';
+
+var allData = HEADLINE_PARTNERS.concat(ALL_EXHIBITORS);
+
+// ── Init ─────────────────────────────────────────────────────────────────────
+document.addEventListener('DOMContentLoaded', function () {
+  buildCategoryFilters();
+  applyFilters();
+});
+
+function buildCategoryFilters() {
+  var wrap = document.getElementById('categoryFilters');
+  var cats = ['All'].concat(CATEGORIES);
+  wrap.innerHTML = cats.map(function(cat) {
+    return '<button class="filter-btn' + (cat === 'All' ? ' active' : '') + '" onclick="setCategory(\'' + cat.replace(/'/g, "\\'") + '\')">' + cat + '</button>';
+  }).join('');
+}
+
+function setCategory(cat) {
+  currentCategory = cat;
+  document.querySelectorAll('.filter-btn').forEach(function(btn) {
+    btn.classList.toggle('active', btn.textContent === cat);
+  });
+  applyFilters();
+}
+
+function setView(v) {
+  currentView = v;
+  document.getElementById('btnGrid').classList.toggle('active', v === 'grid');
+  document.getElementById('btnList').classList.toggle('active', v === 'list');
+  applyFilters();
+}
+
+function applyFilters() {
+  var search = document.getElementById('searchInput').value.toLowerCase();
+
+  var filtered = allData.filter(function(e) {
+    var matchSearch = e.name.toLowerCase().includes(search);
+    var matchCat    = currentCategory === 'All' || e.category === currentCategory;
+    return matchSearch && matchCat;
+  });
+
+  // Separate featured (headline partners)
+  var featured = filtered.filter(function(e) { return e.featured; });
+  var rest     = filtered.filter(function(e) { return !e.featured; });
+
+  document.getElementById('resultsMeta').innerHTML =
+    'Showing <span>' + filtered.length + '</span> exhibitor' + (filtered.length !== 1 ? 's' : '');
+
+  var container = document.getElementById('exhibitorsList');
+
+  if (filtered.length === 0) {
+    container.innerHTML = '<div class="empty-state"><div class="emoji">🏢</div><p>No exhibitors match your search. Try different filters.</p></div>';
+    return;
+  }
+
+  var html = '';
+
+  // Headline partners (only when showing all or they match filter)
+  if (featured.length > 0) {
+    html += '<div class="partners-section">';
+    html += '<div class="section-label">Headline Partners</div>';
+    if (currentView === 'grid') {
+      html += '<div class="partners-grid">' + featured.map(renderCardGrid).join('') + '</div>';
+    } else {
+      html += featured.map(renderRowList).join('');
+    }
+    html += '</div>';
+  }
+
+  // All other exhibitors
+  if (rest.length > 0) {
+    var sectionTitle = featured.length > 0 ? 'All Exhibitors' : 'Exhibitors';
+    html += '<div class="section-label">' + sectionTitle + '</div>';
+    if (currentView === 'grid') {
+      html += '<div class="partners-grid">' + rest.map(renderCardGrid).join('') + '</div>';
+    } else {
+      rest.forEach(function(e) { html += renderRowList(e); });
+    }
+  }
+
+  container.innerHTML = html;
+}
+
+function logoOrPlaceholder(e, size) {
+  if (e.logo) {
+    return '<img src="' + e.logo + '" alt="' + esc(e.name) + '" onerror="this.style.display=\'none\';this.nextElementSibling.style.display=\'block\'" /><span class="ex-logo-placeholder" style="display:none">' + esc(e.name) + '</span>';
+  }
+  return '<span class="ex-logo-placeholder">' + esc(e.name) + '</span>';
+}
+
+function renderCardGrid(e) {
+  return '<div class="ex-card' + (e.featured ? ' featured' : '') + '">' +
+    (e.featured ? '<span class="featured-star">★</span>' : '') +
+    '<div class="ex-logo-wrap">' + logoOrPlaceholder(e) + '</div>' +
+    '<span class="ex-name">' + esc(e.name) + '</span>' +
+    (e.tier ? '<span class="ex-tier">' + esc(e.tier) + '</span>' : '') +
+    '<span class="ex-cat">' + esc(e.category) + '</span>' +
+    '</div>';
+}
+
+function renderRowList(e) {
+  return '<div class="ex-row' + (e.featured ? ' featured' : '') + '">' +
+    '<div class="ex-logo-wrap">' + logoOrPlaceholder(e) + '</div>' +
+    '<div class="ex-row-info">' +
+      '<div class="ex-row-name">' + esc(e.name) + (e.featured ? ' <span class="ex-row-star">★</span>' : '') + '</div>' +
+      '<div class="ex-row-meta">' +
+        (e.tier ? '<span class="ex-row-tier">' + esc(e.tier) + '</span>' : '') +
+        '<span class="ex-row-cat">' + esc(e.category) + '</span>' +
+      '</div>' +
+    '</div>' +
+    '</div>';
+}
+
+function esc(str) {
+  return String(str)
+    .replace(/&/g,'&amp;').replace(/</g,'&lt;')
+    .replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+</script>
+</body>
+</html>
