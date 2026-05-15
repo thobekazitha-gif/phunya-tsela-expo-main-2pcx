@@ -18,6 +18,15 @@
     --amber-border:  #fde68a;
     --teal:          #0d9488;
     --teal-light:    #ccfbf1;
+    --purple:        #7c3aed;
+    --purple-light:  #ede9fe;
+    --purple-border: #c4b5fd;
+    --blue:          #2563eb;
+    --blue-light:    #eff6ff;
+    --blue-border:   #bfdbfe;
+    --green:         #059669;
+    --green-light:   #ecfdf5;
+    --green-border:  #a7f3d0;
     --bg:            #fafaf9;
     --white:         #ffffff;
     --border:        #e5e7eb;
@@ -96,7 +105,6 @@
       radial-gradient(circle at 60% 80%, white 1px, transparent 1px);
     background-size: 40px 40px, 60px 60px, 50px 50px;
   }
-  /* diagonal stripe accent */
   .hero-stripe {
     position: absolute; bottom: 0; right: 0; width: 200px; height: 200px;
     background: repeating-linear-gradient(
@@ -190,6 +198,21 @@
   }
   .form-section:focus-within { box-shadow: 0 4px 24px rgba(217,119,6,.1); }
 
+  /* ── Help section special styling ── */
+  .form-section.help-section {
+    border-color: var(--purple-border);
+    background: linear-gradient(135deg, #faf5ff 0%, #fff 60%);
+    box-shadow: 0 2px 16px rgba(124,58,237,.06);
+  }
+  .form-section.help-section:focus-within { box-shadow: 0 4px 24px rgba(124,58,237,.12); }
+  .form-section.help-section .section-header {
+    border-bottom-color: var(--purple-border);
+  }
+  .form-section.help-section .section-num {
+    background: linear-gradient(135deg, #7c3aed, #6d28d9);
+    box-shadow: 0 4px 12px rgba(124,58,237,.35);
+  }
+
   .section-header {
     display: flex; align-items: center; gap: 12px;
     padding-bottom: 16px; margin-bottom: 22px;
@@ -205,6 +228,7 @@
   }
   .section-icon { font-size: 20px; }
   .section-title { font-size: 16px; font-weight: 700; color: var(--text); font-family: 'Syne', sans-serif; }
+  .section-subtitle { font-size: 12px; font-weight: 500; color: var(--muted); margin-top: 2px; }
 
   /* ── Fields ── */
   .field { margin-bottom: 18px; }
@@ -215,6 +239,12 @@
   }
   .req { color: var(--error); margin-left: 2px; }
   .hint { font-weight: 400; color: var(--muted); font-size: 11.5px; margin-left: 4px; }
+  .optional-tag {
+    display: inline-block; font-size: 10px; font-weight: 700;
+    color: var(--muted); background: var(--muted-light);
+    border-radius: 4px; padding: 1px 6px; margin-left: 6px;
+    letter-spacing: .04em; text-transform: uppercase; vertical-align: middle;
+  }
 
   .field-input, .field-select, .field-textarea {
     width: 100%; padding: 11px 14px;
@@ -289,10 +319,53 @@
   }
   .check-pill.active .check-box-icon { background: var(--gold); border-color: var(--gold); }
 
-  /* ── Conditional block ── */
-  .cond { display: none; }
-  .cond.show { display: block; animation: slideDown .25s ease; }
-  @keyframes slideDown { from { opacity:0; transform:translateY(-6px); } to { opacity:1; transform:translateY(0); } }
+  /* ── Help section pill & check overrides ── */
+  .help-pill-group { display: flex; flex-wrap: wrap; gap: 9px; }
+  .help-pill {
+    display: flex; align-items: flex-start; gap: 10px;
+    padding: 12px 16px; border-radius: 12px;
+    border: 1.5px solid var(--purple-border); background: var(--white);
+    cursor: pointer; font-size: 13px; font-weight: 600; color: #4b5563;
+    transition: all .15s; user-select: none; flex: 0 0 auto;
+    max-width: 100%;
+  }
+  .help-pill:hover { border-color: var(--purple); color: #4c1d95; background: var(--purple-light); }
+  .help-pill.active {
+    border-color: var(--purple); background: var(--purple-light);
+    color: #4c1d95; box-shadow: 0 1px 10px rgba(124,58,237,.18);
+  }
+  .help-check-icon {
+    width: 17px; height: 17px; border-radius: 5px; flex-shrink: 0; margin-top: 1px;
+    border: 2px solid #c4b5fd; display: flex; align-items: center;
+    justify-content: center; font-size: 10px; color: white; transition: all .15s;
+  }
+  .help-pill.active .help-check-icon { background: var(--purple); border-color: var(--purple); }
+  .help-pill-content { display: flex; flex-direction: column; gap: 2px; line-height: 1; }
+  .help-pill-label { font-size: 13px; font-weight: 700; }
+  .help-pill-desc { font-size: 11px; font-weight: 400; color: var(--muted); }
+  .help-pill.active .help-pill-desc { color: #6d28d9; }
+
+  .help-grid {
+    display: grid; grid-template-columns: 1fr 1fr; gap: 10px;
+  }
+  @media(max-width: 500px) { .help-grid { grid-template-columns: 1fr; } }
+
+  /* ── Help urgency pills ── */
+  .urgency-pill {
+    display: flex; align-items: center; gap: 7px;
+    padding: 8px 16px; border-radius: 99px;
+    border: 1.5px solid var(--purple-border); background: var(--white);
+    cursor: pointer; font-size: 13px; font-weight: 600; color: #4b5563;
+    transition: all .15s; user-select: none;
+  }
+  .urgency-pill:hover { border-color: var(--purple); color: #4c1d95; }
+  .urgency-pill.active {
+    border-color: var(--purple); background: var(--purple-light); color: #4c1d95;
+    box-shadow: 0 1px 8px rgba(124,58,237,.18);
+  }
+  .urgency-pill .pill-dot { border-color: #c4b5fd; }
+  .urgency-pill.active .pill-dot { border-color: var(--purple); }
+  .urgency-pill.active .pill-dot-fill { display: block; background: var(--purple); }
 
   /* ── Info box ── */
   .info-box {
@@ -302,6 +375,16 @@
     display: flex; gap: 10px; align-items: flex-start; margin-bottom: 18px;
   }
   .info-box-icon { font-size: 18px; flex-shrink: 0; margin-top: 1px; }
+
+  .info-box.purple {
+    background: var(--purple-light); border-color: var(--purple-border);
+    color: #4c1d95;
+  }
+
+  /* ── Conditional block ── */
+  .cond { display: none; }
+  .cond.show { display: block; animation: slideDown .25s ease; }
+  @keyframes slideDown { from { opacity:0; transform:translateY(-6px); } to { opacity:1; transform:translateY(0); } }
 
   /* ── Terms ── */
   .terms-scroll {
@@ -395,6 +478,11 @@
     border-radius: var(--radius-lg); padding: 10px 22px;
     font-size: 13px; font-weight: 700; color: var(--gold-dark);
   }
+  .success-help-note {
+    background: var(--purple-light); border: 1px solid var(--purple-border);
+    border-radius: var(--radius-lg); padding: 14px 20px;
+    font-size: 13px; color: #4c1d95; max-width: 440px; margin: 8px 0 16px; line-height: 1.6;
+  }
   .btn-home {
     display: inline-flex; align-items: center; gap: 8px;
     background: linear-gradient(135deg, #f59e0b, #d97706);
@@ -415,6 +503,13 @@
     animation: spin .8s linear infinite;
     flex-shrink: 0;
   }
+
+  /* ── Divider ── */
+  .field-divider {
+    border: none; border-top: 1px dashed var(--amber-border);
+    margin: 20px 0;
+  }
+  .field-divider.purple { border-top-color: var(--purple-border); }
 
   /* ── Responsive ── */
   @media(max-width: 480px) {
@@ -445,7 +540,10 @@
     <h2>You're Registered!</h2>
     <p>Welcome, <strong id="successName"></strong>! Your registration for <strong>Phunya Tsela Career Expo 2026</strong> has been received.</p>
     <div class="success-ref" id="successRef"></div>
-    <p style="font-size:13px;">Keep an eye on your inbox — we'll send event updates, programme details, and your entry confirmation to <strong id="successEmail"></strong></p>
+    <div id="successHelpNote" class="success-help-note" style="display:none;">
+      🙋 You've indicated you need help with applications — our team will reach out before the expo to connect you with the right support sessions and advisors.
+    </div>
+    <p style="font-size:13px;">Keep an eye on your inbox and phone — we'll send event updates, programme details, and your entry confirmation to <strong id="successContact"></strong></p>
     <a href="index.html" class="btn-home">← Back to Expo Home</a>
   </div>
 
@@ -494,7 +592,9 @@
         <span class="progress-step-label" id="step1lbl">Personal</span>
         <span class="progress-step-label" id="step2lbl">School</span>
         <span class="progress-step-label" id="step3lbl">Interests</span>
-        <span class="progress-step-label" id="step4lbl">Submit</span>
+        <span class="progress-step-label" id="step4lbl">Help</span>
+        <span class="progress-step-label" id="step5lbl">Contact</span>
+        <span class="progress-step-label" id="step6lbl">Submit</span>
       </div>
     </div>
 
@@ -506,7 +606,9 @@
       <div class="section-header">
         <div class="section-num">1</div>
         <span class="section-icon">👤</span>
-        <span class="section-title">Personal Details</span>
+        <div>
+          <div class="section-title">Personal Details</div>
+        </div>
       </div>
       <div class="field-row-2">
         <div class="field">
@@ -520,12 +622,16 @@
       </div>
       <div class="field-row-2">
         <div class="field">
-          <label class="field-label">Email Address <span class="req">*</span></label>
-          <input type="email" id="email" class="field-input" placeholder="your@email.com" oninput="updateProgress()" />
+          <label class="field-label">
+            Cell Number <span class="req">*</span>
+          </label>
+          <input type="tel" id="cellNumber" class="field-input" placeholder="+27 xx xxx xxxx" oninput="updateProgress()" />
         </div>
         <div class="field">
-          <label class="field-label">Cell Number <span class="req">*</span></label>
-          <input type="tel" id="cellNumber" class="field-input" placeholder="+27 xx xxx xxxx" oninput="updateProgress()" />
+          <label class="field-label">
+            Email Address <span class="optional-tag">optional</span>
+          </label>
+          <input type="email" id="email" class="field-input" placeholder="your@email.com (optional)" />
         </div>
       </div>
       <div class="field-row-3">
@@ -534,7 +640,7 @@
           <input type="date" id="dob" class="field-input" oninput="updateProgress()" />
         </div>
         <div class="field">
-          <label class="field-label">ID Number <span class="hint">(optional)</span></label>
+          <label class="field-label">ID Number <span class="optional-tag">optional</span></label>
           <input type="text" id="idNumber" class="field-input" placeholder="SA ID number" />
         </div>
         <div class="field">
@@ -559,7 +665,7 @@
       <div class="section-header">
         <div class="section-num">2</div>
         <span class="section-icon">🏫</span>
-        <span class="section-title">School &amp; Academic Details</span>
+        <div class="section-title">School &amp; Academic Details</div>
       </div>
       <div class="info-box">
         <span class="info-box-icon">📚</span>
@@ -622,7 +728,7 @@
       <div class="section-header">
         <div class="section-num">3</div>
         <span class="section-icon">🌟</span>
-        <span class="section-title">Career Interests &amp; Expo Preferences</span>
+        <div class="section-title">Career Interests &amp; Expo Preferences</div>
       </div>
       <div class="field">
         <label class="field-label">Career Fields of Interest <span class="hint">(select all that apply)</span></label>
@@ -631,10 +737,6 @@
       <div class="field">
         <label class="field-label">Sessions You'd Like to Attend</label>
         <div class="check-pill-group" id="sessionsGroup" data-name="sessions"></div>
-      </div>
-      <div class="field">
-        <label class="field-label">Do you need bursary / NSFAS information?</label>
-        <div class="pill-group" id="needsBursaryGroup" data-name="needsBursary"></div>
       </div>
       <div class="field">
         <label class="field-label">What are you hoping to get from the expo?</label>
@@ -656,40 +758,116 @@
       </div>
     </div>
 
-    <!-- ── Section 4: Emergency Contact ── -->
-    <div class="form-section" id="sec4">
+    <!-- ── Section 4: Help & Support ── -->
+    <div class="form-section help-section" id="sec4">
       <div class="section-header">
         <div class="section-num">4</div>
-        <span class="section-icon">🆘</span>
-        <span class="section-title">Emergency Contact</span>
+        <span class="section-icon">🙋</span>
+        <div>
+          <div class="section-title">Help &amp; Application Support</div>
+          <div class="section-subtitle">Tell us what support you need — we'll connect you with the right people at the expo</div>
+        </div>
       </div>
+
+      <div class="info-box purple">
+        <span class="info-box-icon">💡</span>
+        <span>Tick everything that applies to you. Our support team will use this to prioritise your needs and ensure you get the right guidance at the expo — whether it's funding, applications, or career advice.</span>
+      </div>
+
+      <div class="field">
+        <label class="field-label" style="color:#4c1d95;">What do you need help with? <span class="hint">(tick all that apply)</span></label>
+        <div class="help-grid" id="helpNeedsGroup"></div>
+      </div>
+
+      <div class="cond" id="helpUrgencyWrap">
+        <hr class="field-divider purple" />
+        <div class="field">
+          <label class="field-label" style="color:#4c1d95;">How urgent is your situation?</label>
+          <div class="pill-group" id="helpUrgencyGroup" data-name="helpUrgency" style="gap:9px;"></div>
+        </div>
+      </div>
+
+      <div class="cond" id="helpDetailsWrap">
+        <div class="field">
+          <label class="field-label" style="color:#4c1d95;">Tell us more about your situation <span class="hint">(optional — helps us prepare better)</span></label>
+          <textarea id="helpDetails" class="field-textarea" placeholder="e.g. I'm a Grade 12 learner who wants to study nursing but don't know how to apply for NSFAS or which universities to apply to…" rows="3" style="border-color: var(--purple-border);"></textarea>
+        </div>
+      </div>
+
+      <div class="field">
+        <label class="field-label" style="color:#4c1d95;">Do you need bursary / NSFAS information?</label>
+        <div class="pill-group" id="needsBursaryGroup" data-name="needsBursary"></div>
+      </div>
+    </div>
+
+    <!-- ── Section 5: Parent / Emergency Contact (merged) ── -->
+    <div class="form-section" id="sec5">
+      <div class="section-header">
+        <div class="section-num">5</div>
+        <span class="section-icon">👨‍👩‍👧</span>
+        <div>
+          <div class="section-title">Parent / Emergency Contact</div>
+          <div class="section-subtitle">We'll reach out here if needed on the day — required for all learners</div>
+        </div>
+      </div>
+
+      <div class="info-box">
+        <span class="info-box-icon">ℹ️</span>
+        <span>This person will be contacted in an emergency and will receive event updates. Please ensure the contact number is correct and reachable on the event days.</span>
+      </div>
+
+      <div class="field-row-3">
+        <div class="field">
+          <label class="field-label">Title</label>
+          <select id="guardianTitle" class="field-select">
+            <option value="">Select…</option>
+            <option>Mr</option>
+            <option>Mrs</option>
+            <option>Ms</option>
+            <option>Miss</option>
+            <option>Dr</option>
+            <option>Prof</option>
+            <option>Rev</option>
+            <option>Other</option>
+          </select>
+        </div>
+        <div class="field" style="grid-column: span 2;">
+          <label class="field-label">Full Name <span class="req">*</span></label>
+          <input type="text" id="guardianName" class="field-input" placeholder="Parent, guardian, or teacher name" oninput="updateProgress()" />
+        </div>
+      </div>
+
       <div class="field-row-2">
         <div class="field">
-          <label class="field-label">Emergency Contact Name <span class="req">*</span></label>
-          <input type="text" id="emergencyName" class="field-input" placeholder="Parent / guardian / teacher" oninput="updateProgress()" />
+          <label class="field-label">Contact Number <span class="req">*</span></label>
+          <input type="tel" id="guardianPhone" class="field-input" placeholder="+27 xx xxx xxxx" oninput="updateProgress()" />
         </div>
         <div class="field">
-          <label class="field-label">Relationship</label>
-          <select id="emergencyRel" class="field-select">
+          <label class="field-label">Relationship to Learner <span class="req">*</span></label>
+          <select id="guardianRelSelect" class="field-select" onchange="updateProgress()">
             <option value="">Select…</option>
             <option>Parent</option>
             <option>Guardian</option>
+            <option>Grandparent</option>
+            <option>Aunt / Uncle</option>
+            <option>Older Sibling</option>
             <option>Teacher</option>
-            <option>Sibling</option>
             <option>Other</option>
           </select>
         </div>
       </div>
+
+      <hr class="field-divider" />
+
       <div class="field">
-        <label class="field-label">Emergency Contact Number <span class="req">*</span></label>
-        <input type="tel" id="emergencyPhone" class="field-input" placeholder="+27 xx xxx xxxx" oninput="updateProgress()" />
+        <label class="field-label">Employment Status <span class="hint">(helps us direct appropriate support resources)</span></label>
+        <div class="pill-group" id="guardianEmployedGroup" data-name="guardianEmployed"></div>
       </div>
+
+      <hr class="field-divider" />
+
       <div class="field">
-        <label class="field-label">Special Requirements <span class="hint">(disability, dietary, medical, accessibility)</span></label>
-        <textarea id="specialReqs" class="field-textarea" placeholder="Let us know if you have any special requirements so we can accommodate you…" rows="2"></textarea>
-      </div>
-      <div class="field">
-        <label class="field-label">Will you be attending with your school group?</label>
+        <label class="field-label">Will the learner be attending with their school group?</label>
         <div class="pill-group" id="withSchoolGroup" data-name="withSchool"></div>
       </div>
       <div class="cond" id="schoolGroupWrap">
@@ -698,14 +876,19 @@
           <input type="text" id="teacherName" class="field-input" placeholder="Teacher or coordinator name" />
         </div>
       </div>
+
+      <div class="field">
+        <label class="field-label">Special Requirements <span class="hint">(disability, dietary, medical, accessibility)</span></label>
+        <textarea id="specialReqs" class="field-textarea" placeholder="Let us know if there are any special requirements so we can accommodate…" rows="2"></textarea>
+      </div>
     </div>
 
-    <!-- ── Section 5: Consent & Terms ── -->
+    <!-- ── Section 6: Consent & Terms ── -->
     <div class="form-section">
       <div class="section-header">
-        <div class="section-num">5</div>
+        <div class="section-num">6</div>
         <span class="section-icon">📋</span>
-        <span class="section-title">Consent &amp; POPIA</span>
+        <div class="section-title">Consent &amp; POPIA</div>
       </div>
       <div class="terms-scroll">
         <p style="font-weight:700;color:#111827;margin-bottom:10px;">Please read and accept the following:</p>
@@ -724,15 +907,6 @@
       </div>
     </div>
 
-    <!-- Notice -->
-    <div class="notice">
-      <div class="notice-icon">📧</div>
-      <div>
-        <p class="notice-title">Confirmation Email</p>
-        <p class="notice-body">After submitting, you'll receive a confirmation email with your registration details, venue information, and the expo programme. Check your spam folder if it doesn't arrive within a few minutes.</p>
-      </div>
-    </div>
-
     <!-- Submit -->
     <button class="submit-btn" id="submitBtn" onclick="handleSubmit()">
       Register for Free →
@@ -746,20 +920,30 @@
 <script>
 // ── State ─────────────────────────────────────────────────────────────────────
 var state = {
-  matricYear:      '',
-  careerInterests: [],
-  sessions:        [],
-  needsBursary:    '',
-  withSchool:      '',
-  termsAgreed:     false,
+  matricYear:       '',
+  careerInterests:  [],
+  sessions:         [],
+  needsBursary:     '',
+  helpNeeds:        [],
+  helpUrgency:      '',
+  withSchool:       '',
+  guardianEmployed: '',
+  termsAgreed:      false,
 };
 
 // ── Definitions ───────────────────────────────────────────────────────────────
 var RADIO_DEFS = {
-  matricYear:   ['2025','2026','2027','2028','Already matriculated'],
-  needsBursary: ['Yes, definitely','Possibly','No, just exploring'],
-  withSchool:   ['Yes, with my school','No, independently'],
+  matricYear:       ['2025','2026','2027','2028','Already matriculated'],
+  needsBursary:     ['Yes, definitely','Possibly','No, just exploring'],
+  withSchool:       ['Yes, with my school','No, independently'],
+  guardianEmployed: ['Employed','Self-employed','Unemployed','Retired'],
 };
+
+var URGENCY_OPTS = [
+  'Very urgent — deadlines soon',
+  'Somewhat urgent — planning ahead',
+  'Just exploring options',
+];
 
 var CHECK_DEFS = {
   careerInterests: [
@@ -776,6 +960,17 @@ var CHECK_DEFS = {
   ],
 };
 
+var HELP_NEEDS_DEFS = [
+  { id: 'hn_funding',     label: 'Funding Applications',        desc: 'NSFAS, bursaries, grants & scholarships' },
+  { id: 'hn_univ',        label: 'University Applications',     desc: 'CAO, direct applications, deadlines' },
+  { id: 'hn_tvet',        label: 'TVET / College Applications', desc: 'Courses, N-levels, artisanship' },
+  { id: 'hn_career',      label: 'Career Guidance',             desc: 'Choosing a career path that suits me' },
+  { id: 'hn_aps',         label: 'APS Score Calculation',       desc: 'Understanding my admission points' },
+  { id: 'hn_cv',          label: 'CV & Cover Letter',           desc: 'Writing my first CV or job application' },
+  { id: 'hn_learnerships',label: 'Learnerships & Internships',  desc: 'Finding workplace training & apprenticeships' },
+  { id: 'hn_skills',      label: 'Skills Programmes',           desc: 'Short courses, artisans, trades' },
+];
+
 // ── Build pill groups ─────────────────────────────────────────────────────────
 function buildRadios() {
   Object.keys(RADIO_DEFS).forEach(function(name) {
@@ -786,6 +981,15 @@ function buildRadios() {
         '<span class="pill-dot"><span class="pill-dot-fill"></span></span>' + esc(opt) + '</label>';
     }).join('');
   });
+
+  // Urgency (purple pills)
+  var urgWrap = document.getElementById('helpUrgencyGroup');
+  if (urgWrap) {
+    urgWrap.innerHTML = URGENCY_OPTS.map(function(opt) {
+      return '<label class="urgency-pill" data-value="' + esc(opt) + '" onclick="pickUrgency(this)">' +
+        '<span class="pill-dot"><span class="pill-dot-fill"></span></span>' + esc(opt) + '</label>';
+    }).join('');
+  }
 }
 
 function buildChecks() {
@@ -799,6 +1003,35 @@ function buildChecks() {
   });
 }
 
+function buildHelpNeeds() {
+  var wrap = document.getElementById('helpNeedsGroup');
+  if (!wrap) return;
+  wrap.innerHTML = HELP_NEEDS_DEFS.map(function(item) {
+    return '<label class="help-pill" data-value="' + esc(item.label) + '" id="' + item.id + '" onclick="toggleHelpNeed(this)">' +
+      '<span class="help-check-icon">✓</span>' +
+      '<span class="help-pill-content">' +
+        '<span class="help-pill-label">' + esc(item.label) + '</span>' +
+        '<span class="help-pill-desc">' + esc(item.desc) + '</span>' +
+      '</span>' +
+    '</label>';
+  }).join('');
+}
+
+function toggleHelpNeed(el) {
+  el.classList.toggle('active');
+  var val = el.dataset.value;
+  if (el.classList.contains('active')) {
+    if (!state.helpNeeds.includes(val)) state.helpNeeds.push(val);
+  } else {
+    state.helpNeeds = state.helpNeeds.filter(function(v) { return v !== val; });
+  }
+  // Show urgency + details if any help need selected
+  var hasHelp = state.helpNeeds.length > 0;
+  document.getElementById('helpUrgencyWrap').classList.toggle('show', hasHelp);
+  document.getElementById('helpDetailsWrap').classList.toggle('show', hasHelp);
+  updateProgress();
+}
+
 function pickRadio(el, name) {
   el.closest('.pill-group').querySelectorAll('.pill-opt').forEach(function(l) { l.classList.remove('active'); });
   el.classList.add('active');
@@ -807,6 +1040,12 @@ function pickRadio(el, name) {
     document.getElementById('schoolGroupWrap').classList.toggle('show', el.dataset.value === 'Yes, with my school');
   }
   updateProgress();
+}
+
+function pickUrgency(el) {
+  document.getElementById('helpUrgencyGroup').querySelectorAll('.urgency-pill').forEach(function(l) { l.classList.remove('active'); });
+  el.classList.add('active');
+  state.helpUrgency = el.dataset.value;
 }
 
 function toggleCheck(el, name) {
@@ -831,33 +1070,42 @@ function toggleTerms() {
 }
 
 // ── Progress ──────────────────────────────────────────────────────────────────
-var REQUIRED_FIELDS = ['firstName','lastName','email','cellNumber','dob','gender','homeTown','schoolName','grade','emergencyName','emergencyPhone'];
+var REQUIRED_FIELDS = ['firstName','lastName','cellNumber','dob','gender','homeTown','schoolName','grade','guardianName','guardianPhone'];
 
 function updateProgress() {
   var filled = REQUIRED_FIELDS.filter(function(id) {
     var el = document.getElementById(id);
     return el && el.value.trim() !== '';
   }).length;
-  var total = REQUIRED_FIELDS.length + 1; // +1 for terms
+
+  // guardianRelSelect also required
+  var relEl = document.getElementById('guardianRelSelect');
+  if (relEl && relEl.value) filled++;
+
+  var total = REQUIRED_FIELDS.length + 1 + 1; // +1 guardianRel, +1 terms
   if (state.termsAgreed) filled++;
+
   var pct = Math.round((filled / total) * 100);
   document.getElementById('progressBar').style.width = pct + '%';
   document.getElementById('progressPct').textContent = pct + '%';
 
   // Step labels
   var steps = [
-    ['firstName','lastName','email','cellNumber','dob','gender','homeTown'],
+    ['firstName','lastName','cellNumber','dob','gender','homeTown'],
     ['schoolName','grade'],
     [],
-    ['emergencyName','emergencyPhone'],
+    [],
+    ['guardianName','guardianPhone'],
+    [],
   ];
   steps.forEach(function(fields, i) {
     var lbl = document.getElementById('step'+(i+1)+'lbl');
     if (!lbl) return;
     var done = fields.length === 0
-      ? (i === 2) // interests always "in progress" once we show it
+      ? false
       : fields.every(function(f){ var e=document.getElementById(f); return e && e.value.trim()!==''; });
-    lbl.className = 'progress-step-label' + (done ? ' done' : (fields.some(function(f){ var e=document.getElementById(f); return e&&e.value.trim()!==''; }) ? ' active' : ''));
+    var started = fields.some(function(f){ var e=document.getElementById(f); return e&&e.value.trim()!==''; });
+    lbl.className = 'progress-step-label' + (done ? ' done' : (started ? ' active' : ''));
   });
 }
 
@@ -876,38 +1124,41 @@ function handleSubmit() {
 
   var firstName     = document.getElementById('firstName').value.trim();
   var lastName      = document.getElementById('lastName').value.trim();
-  var email         = document.getElementById('email').value.trim();
   var cell          = document.getElementById('cellNumber').value.trim();
+  var email         = document.getElementById('email').value.trim();
   var dob           = document.getElementById('dob').value;
   var gender        = document.getElementById('gender').value;
   var homeTown      = document.getElementById('homeTown').value.trim();
   var schoolName    = document.getElementById('schoolName').value.trim();
   var grade         = document.getElementById('grade').value;
-  var emergencyName = document.getElementById('emergencyName').value.trim();
-  var emergencyPh   = document.getElementById('emergencyPhone').value.trim();
+  var guardianName  = document.getElementById('guardianName').value.trim();
+  var guardianPhone = document.getElementById('guardianPhone').value.trim();
+  var guardianRel   = document.getElementById('guardianRelSelect').value;
 
   if (!firstName)     { showErr('Please enter your first name.'); return; }
   if (!lastName)      { showErr('Please enter your last name.'); return; }
-  if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) { showErr('Please enter a valid email address.'); return; }
   if (!cell)          { showErr('Please enter your cell number.'); return; }
+  if (email && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) { showErr('The email address you entered doesn\'t look right. Please fix it or leave it blank.'); return; }
   if (!dob)           { showErr('Please enter your date of birth.'); return; }
   if (!gender)        { showErr('Please select your gender.'); return; }
   if (!homeTown)      { showErr('Please enter your home town / village.'); return; }
   if (!schoolName)    { showErr('Please enter your school name.'); return; }
   if (!grade)         { showErr('Please select your grade / level.'); return; }
-  if (!emergencyName) { showErr('Please enter an emergency contact name.'); return; }
-  if (!emergencyPh)   { showErr('Please enter an emergency contact number.'); return; }
+  if (!guardianName)  { showErr('Please enter the parent / emergency contact\'s full name.'); return; }
+  if (!guardianPhone) { showErr('Please enter the parent / emergency contact\'s number.'); return; }
+  if (!guardianRel)   { showErr('Please select the relationship of your emergency contact to you.'); return; }
   if (!state.termsAgreed) { showErr('Please read and accept the terms and POPIA consent to continue.'); return; }
 
   // Build FormData
   var fd = new FormData();
-  fd.append('email', email); // Formspree reply-to
+  fd.append('email', email || '(not provided)');
 
   // Section 1 — Personal
   fd.append('First Name',       firstName);
   fd.append('Last Name',        lastName);
   fd.append('Full Name',        firstName + ' ' + lastName);
   fd.append('Cell Number',      cell);
+  fd.append('Email Address',    email || '—');
   fd.append('Date of Birth',    dob);
   fd.append('ID Number',        document.getElementById('idNumber').value.trim() || '—');
   fd.append('Gender',           gender);
@@ -921,19 +1172,26 @@ function handleSubmit() {
   fd.append('Expected Matric',  state.matricYear || '—');
 
   // Section 3 — Interests
-  fd.append('Career Interests', state.careerInterests.length ? state.careerInterests.join(', ') : '—');
-  fd.append('Sessions',         state.sessions.length ? state.sessions.join(', ') : '—');
-  fd.append('Needs Bursary Info',state.needsBursary || '—');
-  fd.append('Expectations',     document.getElementById('expectations').value.trim() || '—');
-  fd.append('Heard About Expo', document.getElementById('hearAbout').value || '—');
+  fd.append('Career Interests',  state.careerInterests.length ? state.careerInterests.join(', ') : '—');
+  fd.append('Sessions',          state.sessions.length ? state.sessions.join(', ') : '—');
+  fd.append('Expectations',      document.getElementById('expectations').value.trim() || '—');
+  fd.append('Heard About Expo',  document.getElementById('hearAbout').value || '—');
 
-  // Section 4 — Emergency Contact
-  fd.append('Emergency Contact Name', emergencyName);
-  fd.append('Emergency Relationship', document.getElementById('emergencyRel').value || '—');
-  fd.append('Emergency Phone',        emergencyPh);
-  fd.append('Special Requirements',   document.getElementById('specialReqs').value.trim() || 'None');
-  fd.append('Attending With School',  state.withSchool || '—');
-  fd.append('Teacher / Group Leader', document.getElementById('teacherName').value.trim() || '—');
+  // Section 4 — Help
+  fd.append('Help Needed',           state.helpNeeds.length ? state.helpNeeds.join(', ') : 'None indicated');
+  fd.append('Help Urgency',          state.helpUrgency || '—');
+  fd.append('Help Details',          document.getElementById('helpDetails').value.trim() || '—');
+  fd.append('Needs Bursary Info',    state.needsBursary || '—');
+
+  // Section 5 — Parent / Emergency Contact
+  fd.append('Guardian Title',            document.getElementById('guardianTitle').value || '—');
+  fd.append('Guardian Full Name',        guardianName);
+  fd.append('Guardian Contact Number',   guardianPhone);
+  fd.append('Guardian Relationship',     guardianRel);
+  fd.append('Guardian Employment Status',state.guardianEmployed || '—');
+  fd.append('Attending With School',     state.withSchool || '—');
+  fd.append('Teacher / Group Leader',    document.getElementById('teacherName').value.trim() || '—');
+  fd.append('Special Requirements',      document.getElementById('specialReqs').value.trim() || 'None');
 
   // Consent
   fd.append('Terms & POPIA Agreed', 'Yes');
@@ -952,12 +1210,17 @@ function handleSubmit() {
   })
   .then(function(res) {
     if (res.ok) {
-      // Success
-      document.getElementById('successName').textContent  = firstName + ' ' + lastName;
-      document.getElementById('successEmail').textContent = email;
-      // Generate a simple ref
+      document.getElementById('successName').textContent = firstName + ' ' + lastName;
+      var contact = email ? email : cell;
+      document.getElementById('successContact').textContent = contact;
       var ref = 'PT2026-' + Math.random().toString(36).substr(2,6).toUpperCase();
       document.getElementById('successRef').textContent = '📋 Ref: ' + ref;
+
+      // Show help note if they selected any help needs
+      if (state.helpNeeds.length > 0) {
+        document.getElementById('successHelpNote').style.display = 'block';
+      }
+
       document.getElementById('formWrap').style.display = 'none';
       var s = document.getElementById('successScreen');
       s.classList.add('show');
@@ -984,6 +1247,7 @@ function handleSubmit() {
 document.addEventListener('DOMContentLoaded', function() {
   buildRadios();
   buildChecks();
+  buildHelpNeeds();
   updateProgress();
 });
 
