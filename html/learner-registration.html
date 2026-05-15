@@ -1153,6 +1153,10 @@ function handleSubmit() {
   var fd = new FormData();
   fd.append('email', email || '(not provided)');
 
+  // ── Generate reference number BEFORE submitting so it is captured in the email ──
+  var ref = 'PT2026-' + Math.random().toString(36).substr(2,6).toUpperCase();
+  fd.append('Registration Reference', ref);
+
   // Section 1 — Personal
   fd.append('First Name',       firstName);
   fd.append('Last Name',        lastName);
@@ -1213,7 +1217,7 @@ function handleSubmit() {
       document.getElementById('successName').textContent = firstName + ' ' + lastName;
       var contact = email ? email : cell;
       document.getElementById('successContact').textContent = contact;
-      var ref = 'PT2026-' + Math.random().toString(36).substr(2,6).toUpperCase();
+      // Display the same ref that was submitted
       document.getElementById('successRef').textContent = '📋 Ref: ' + ref;
 
       // Show help note if they selected any help needs
