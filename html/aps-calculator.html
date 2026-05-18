@@ -6,9 +6,8 @@
 <title>APS Calculator — Phunya Tsela</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;600;700;800&family=DM+Sans:wght@400;500;600&display=swap" rel="stylesheet">
-<script src="auth.js"></script>
+<script src="auth.js?v=2"></script>
 <script>
-  // ── AUTH GUARD ──
   (function() {
     var user = Auth.requireAuth();
     window.__ptUser = user;
@@ -34,13 +33,11 @@
   body { font-family: 'DM Sans', sans-serif; background: var(--bg); color: var(--text); min-height: 100vh; }
   h1, h2, h3, h4 { font-family: 'Sora', sans-serif; }
 
-  /* User bar */
   .user-bar { background: rgba(0,0,0,.15); padding: 8px 16px; }
   .user-bar-inner { max-width: 800px; margin: 0 auto; display: flex; align-items: center; justify-content: space-between; font-size: 12px; color: rgba(255,255,255,.85); }
   .logout-btn { background: rgba(255,255,255,.2); border: none; color: white; font-size: 12px; font-weight: 700; padding: 4px 10px; border-radius: 6px; cursor: pointer; transition: background .2s; }
   .logout-btn:hover { background: rgba(255,255,255,.3); }
 
-  /* ── Header ── */
   .hero { background: linear-gradient(135deg, var(--primary) 0%, var(--yellow) 100%); color: white; padding: 32px 16px 40px; }
   .hero-inner { max-width: 800px; margin: 0 auto; }
   .back-btn { display: inline-flex; align-items: center; gap: 6px; color: rgba(255,255,255,0.8); font-size: 14px; font-weight: 600; text-decoration: none; margin-bottom: 24px; border: none; background: none; cursor: pointer; transition: color .2s; }
@@ -50,7 +47,6 @@
   .hero h1 { font-size: clamp(24px,5vw,36px); font-weight: 800; }
   .hero .sub { color: rgba(255,255,255,0.8); font-size: 14px; margin-top: 2px; }
 
-  /* ── Main ── */
   .main { max-width: 800px; margin: 0 auto; padding: 40px 16px; }
 
   .info-box { background: #fffbeb; border: 1px solid #fcd34d; border-radius: var(--radius-lg); padding: 16px; margin-bottom: 32px; display: flex; gap: 12px; align-items: flex-start; }
@@ -92,7 +88,9 @@
   .calc-btn:hover { transform: translateY(-2px); box-shadow: 0 8px 28px #f59e0b66; }
   .calc-btn:active { transform: translateY(0); }
 
-  /* ── Results ── */
+  /* saved banner */
+  .saved-banner { background: #d1fae5; border: 1px solid #6ee7b7; border-radius: var(--radius-lg); padding: 12px 16px; font-size: 13px; color: #065f46; display: flex; align-items: center; gap: 8px; margin-bottom: 24px; font-weight: 600; }
+
   #results { display: none; }
   #results.show { display: block; animation: fadeUp .5s ease both; }
   @keyframes fadeUp { from { opacity:0; transform:translateY(20px); } to { opacity:1; transform:translateY(0); } }
@@ -142,7 +140,6 @@
   .funding-more { text-align: center; font-size: 12px; color: #059669; margin-top: 12px; }
   .funding-more a { color: #065f46; font-weight: 700; text-decoration: underline; }
 
-  /* ── Modal ── */
   .modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.6); z-index: 100; display: none; align-items: center; justify-content: center; padding: 16px; backdrop-filter: blur(4px); }
   .modal-overlay.open { display: flex; }
   .modal { background: white; border-radius: var(--radius-xl); max-width: 500px; width: 100%; max-height: 90vh; overflow-y: auto; box-shadow: 0 24px 80px rgba(0,0,0,0.3); animation: scaleIn .2s ease both; }
@@ -170,7 +167,6 @@
   .funding-btn.primary { background: var(--primary); color: white; }
   .close-modal-btn { width: 100%; padding: 12px; border-radius: var(--radius); border: 1px solid var(--border); background: white; font-weight: 700; font-family: 'Sora', sans-serif; font-size: 14px; cursor: pointer; transition: background .2s; }
   .close-modal-btn:hover { background: #f3f4f6; }
-
   .funding-cta { background: #fffbeb; border: 1px solid #fcd34d; border-radius: var(--radius-lg); padding: 16px; }
   .funding-cta h4 { font-size: 14px; font-weight: 800; color: #92400e; margin-bottom: 4px; }
   .funding-cta p { font-size: 12px; color: #b45309; margin-bottom: 12px; }
@@ -178,7 +174,6 @@
 </head>
 <body>
 
-<!-- ── Hero ── -->
 <div class="hero">
   <div class="user-bar">
     <div class="user-bar-inner">
@@ -198,7 +193,6 @@
   </div>
 </div>
 
-<!-- ── Main ── -->
 <div class="main">
   <div class="info-box">
     <span class="icon">ℹ️</span>
@@ -222,8 +216,11 @@
     🧮 Calculate My APS &amp; View Eligible Courses
   </button>
 
-  <!-- Results -->
   <div id="results">
+    <div class="saved-banner" id="savedBanner" style="display:none">
+      ✅ Your APS result has been saved to your dashboard.
+    </div>
+
     <div class="score-card">
       <div class="score-label">Your APS Score</div>
       <div class="score-number" id="scoreNum">0</div>
@@ -249,7 +246,6 @@
   </div>
 </div>
 
-<!-- ── Course Modal ── -->
 <div class="modal-overlay" id="modal" onclick="closeModal(event)">
   <div class="modal" onclick="event.stopPropagation()">
     <div class="modal-header">
@@ -278,14 +274,12 @@
 </div>
 
 <script>
-// ── User greeting ─────────────────────────────────────────────────────────────
 window.addEventListener('DOMContentLoaded', function() {
   var user = window.__ptUser;
   if (user) document.getElementById('userGreeting').textContent = 'Hi, ' + user.firstName + ' 👋';
 });
 
-// ── Data ──────────────────────────────────────────────────────────────────────
-const APS_TABLE = [
+var APS_TABLE = [
   { range:"80-100", points:7 }, { range:"70-79", points:6 }, { range:"60-69", points:5 },
   { range:"50-59", points:4 }, { range:"40-49", points:3 }, { range:"30-39", points:2 }, { range:"0-29", points:1 },
 ];
@@ -295,45 +289,51 @@ function getAPSPoints(mark) {
   if (mark >= 50) return 4; if (mark >= 40) return 3; if (mark >= 30) return 2; return 1;
 }
 
-const SUBJECTS_CORE = [
-  { id:"home_language",            name:"Home Language",              required:true },
-  { id:"first_additional_language",name:"First Additional Language",  required:true },
-  { id:"life_orientation",         name:"Life Orientation",           required:true },
+var SUBJECTS_CORE = [
+  { id:"home_language",             name:"Home Language",             required:true },
+  { id:"first_additional_language", name:"First Additional Language", required:true },
+  { id:"life_orientation",          name:"Life Orientation",          required:true },
 ];
-const SUBJECTS_MATHS = {
-  mathematics:           { id:"mathematics",           name:"Mathematics (Pure)",   required:false },
-  mathematical_literacy: { id:"mathematical_literacy", name:"Mathematical Literacy", required:false },
+var SUBJECTS_MATHS = {
+  mathematics:           { id:"mathematics",            name:"Mathematics (Pure)",    required:false },
+  mathematical_literacy: { id:"mathematical_literacy",  name:"Mathematical Literacy", required:false },
 };
-const ELECTIVES = [
-  { id:"physical_sciences",      name:"Physical Sciences"       },
-  { id:"life_sciences",          name:"Life Sciences"           },
-  { id:"accounting",             name:"Accounting"              },
-  { id:"business_studies",       name:"Business Studies"        },
-  { id:"economics",              name:"Economics"               },
-  { id:"history",                name:"History"                 },
-  { id:"geography",              name:"Geography"               },
-  { id:"information_technology", name:"Information Technology"  },
+var ELECTIVES = [
+  { id:"physical_sciences",      name:"Physical Sciences"                },
+  { id:"life_sciences",          name:"Life Sciences"                    },
+  { id:"accounting",             name:"Accounting"                       },
+  { id:"business_studies",       name:"Business Studies"                 },
+  { id:"economics",              name:"Economics"                        },
+  { id:"history",                name:"History"                          },
+  { id:"geography",              name:"Geography"                        },
+  { id:"information_technology", name:"Information Technology"           },
   { id:"computer_applications",  name:"Computer Applications Technology" },
-  { id:"agricultural_sciences",  name:"Agricultural Sciences"   },
-  { id:"tourism",                name:"Tourism"                 },
-  { id:"consumer_studies",       name:"Consumer Studies"        },
-  { id:"dramatic_arts",          name:"Dramatic Arts"           },
-  { id:"music",                  name:"Music"                   },
-  { id:"visual_arts",            name:"Visual Arts"             },
+  { id:"agricultural_sciences",  name:"Agricultural Sciences"            },
+  { id:"tourism",                name:"Tourism"                          },
+  { id:"consumer_studies",       name:"Consumer Studies"                 },
+  { id:"dramatic_arts",          name:"Dramatic Arts"                    },
+  { id:"music",                  name:"Music"                            },
+  { id:"visual_arts",            name:"Visual Arts"                      },
 ];
 
-const BURSARY_PORTALS = [
-  { name:"NSFAS",                       url:"https://www.nsfas.org.za/content/apply.html",                         desc:"National Student Financial Aid Scheme" },
-  { name:"Funza Lushaka",               url:"https://www.funzalushaka.doe.gov.za/",                                desc:"Teaching bursaries" },
-  { name:"ISFAP",                       url:"https://www.isfap.co.za/",                                            desc:"Missing middle students" },
-  { name:"Ikusasa Student Financial Aid",url:"https://ikusasasfap.org/",                                           desc:"Merit-based bursaries" },
-  { name:"Anglo American Bursaries",    url:"https://www.angloamerican.com/sustainability/people/education",       desc:"Mining & engineering" },
-  { name:"Sasol Bursaries",             url:"https://www.sasol.com/careers/bursaries-and-learnerships",           desc:"Engineering & sciences" },
-  { name:"Eskom Bursaries",             url:"https://www.eskom.co.za/careers/bursaries/",                         desc:"Engineering & IT" },
-  { name:"NRF Bursaries",               url:"https://www.nrf.ac.za",                                              desc:"Science & research" },
+var SUBJECT_NAMES = {};
+(function() {
+  var all = SUBJECTS_CORE.concat([SUBJECTS_MATHS.mathematics, SUBJECTS_MATHS.mathematical_literacy]).concat(ELECTIVES);
+  for (var i = 0; i < all.length; i++) { SUBJECT_NAMES[all[i].id] = all[i].name; }
+})();
+
+var BURSARY_PORTALS = [
+  { name:"NSFAS",                        url:"https://www.nsfas.org.za/content/apply.html",                   desc:"National Student Financial Aid Scheme" },
+  { name:"Funza Lushaka",                url:"https://www.funzalushaka.doe.gov.za/",                          desc:"Teaching bursaries" },
+  { name:"ISFAP",                        url:"https://www.isfap.co.za/",                                      desc:"Missing middle students" },
+  { name:"Ikusasa Student Financial Aid",url:"https://ikusasasfap.org/",                                      desc:"Merit-based bursaries" },
+  { name:"Anglo American Bursaries",     url:"https://www.angloamerican.com/sustainability/people/education", desc:"Mining & engineering" },
+  { name:"Sasol Bursaries",              url:"https://www.sasol.com/careers/bursaries-and-learnerships",      desc:"Engineering & sciences" },
+  { name:"Eskom Bursaries",              url:"https://www.eskom.co.za/careers/bursaries/",                    desc:"Engineering & IT" },
+  { name:"NRF Bursaries",                url:"https://www.nrf.ac.za",                                         desc:"Science & research" },
 ];
 
-const UNIVERSITY_URLS = {
+var UNIVERSITY_URLS = {
   "UCT":"https://www.uct.ac.za","Wits":"https://www.wits.ac.za","SU":"https://www.sun.ac.za",
   "UP":"https://www.up.ac.za","UJ":"https://www.uj.ac.za","UKZN":"https://www.ukzn.ac.za",
   "NWU":"https://www.nwu.ac.za","UFS":"https://www.ufs.ac.za","RU":"https://www.ru.ac.za",
@@ -344,46 +344,45 @@ const UNIVERSITY_URLS = {
   "Limpopo":"https://www.ul.ac.za","SPU":"https://www.spu.ac.za",
 };
 
-const COURSE_REQUIREMENTS = [
-  { course:"MBChB (Medicine)",              faculty:"Health Sciences",   minAPS:36, duration:"6 years",  nsfasEligible:true,  description:"Train to become a medical doctor. One of SA's most competitive programmes.",               subjectRequirements:"Maths 70%+, Physical Sciences 60%+, Life Sciences 60%+",              universities:["UCT","Wits","SU","UP","UKZN","UFS","Limpopo","Walter Sisulu"] },
-  { course:"BEng Civil Engineering",        faculty:"Engineering",       minAPS:35, duration:"4 years",  nsfasEligible:true,  description:"Design and build infrastructure — roads, bridges, dams, buildings.",                       subjectRequirements:"Maths 70%+, Physical Sciences 60%+",                                  universities:["UCT","Wits","SU","UP","UJ","UKZN","NWU","UFS"] },
-  { course:"BEng Electrical Engineering",   faculty:"Engineering",       minAPS:35, duration:"4 years",  nsfasEligible:true,  description:"Power systems, electronics, telecommunications, and automation.",                         subjectRequirements:"Maths 70%+, Physical Sciences 60%+",                                  universities:["UCT","Wits","SU","UP","UJ","UKZN","TUT","DUT"] },
-  { course:"BEng Mechanical Engineering",   faculty:"Engineering",       minAPS:35, duration:"4 years",  nsfasEligible:true,  description:"Design, manufacture, and maintain mechanical systems and machines.",                      subjectRequirements:"Maths 70%+, Physical Sciences 60%+",                                  universities:["UCT","Wits","SU","UP","UJ","NWU","UKZN"] },
-  { course:"BSc Computer Science",          faculty:"Science",           minAPS:32, duration:"3 years",  nsfasEligible:true,  description:"Algorithms, programming, data structures, AI, and software systems.",                     subjectRequirements:"Maths 60%+",                                                          universities:["UCT","Wits","SU","UP","RU","UJ","NWU","UKZN"] },
-  { course:"BCom Accounting",               faculty:"Commerce",          minAPS:28, duration:"3 years",  nsfasEligible:true,  description:"Financial accounting, auditing, taxation, and management accounting.",                     subjectRequirements:"Maths 50%+ or Accounting 50%+",                                       universities:["UCT","Wits","SU","UP","UJ","UFS","NWU","UKZN","DUT"] },
-  { course:"LLB (Law)",                     faculty:"Law",               minAPS:32, duration:"4 years",  nsfasEligible:true,  description:"Become a lawyer, advocate, or legal practitioner in South Africa.",                       subjectRequirements:"English 60%+",                                                        universities:["UCT","Wits","SU","UP","UJ","UKZN","UFS","NWU","RU","UWC"] },
-  { course:"BSc Nursing",                   faculty:"Health Sciences",   minAPS:28, duration:"4 years",  nsfasEligible:true,  description:"Comprehensive nursing education leading to professional registration with SANC.",           subjectRequirements:"Life Sciences 50%+, Maths or Maths Lit 40%+",                        universities:["UCT","UP","UKZN","UJ","NWU","UFS","UWC","Limpopo","Fort Hare"] },
-  { course:"BEd Foundation Phase",          faculty:"Education",         minAPS:26, duration:"4 years",  nsfasEligible:true,  description:"Qualify to teach Grades R–3 in South African public schools.",                             subjectRequirements:"English 50%+",                                                        universities:["UCT","Wits","SU","UP","UJ","UKZN","UFS","NWU","RU","UWC","WSU"] },
-  { course:"BEd Intermediate Phase",        faculty:"Education",         minAPS:26, duration:"4 years",  nsfasEligible:true,  description:"Train to teach Grades 4–6 across curriculum subjects.",                                    subjectRequirements:"English 50%+",                                                        universities:["SU","UP","UJ","NWU","UFS","WSU","UniZulu"] },
-  { course:"BEd Senior/FET Phase",          faculty:"Education",         minAPS:28, duration:"4 years",  nsfasEligible:true,  description:"Teach Grades 7–12 — choose subject specialisations.",                                     subjectRequirements:"English 50%+, chosen subject 50%+",                                   universities:["UCT","Wits","SU","UP","UJ","UKZN","UFS","NWU","RU","UWC","Limpopo"] },
-  { course:"BSc Agriculture",               faculty:"Agriculture",       minAPS:26, duration:"4 years",  nsfasEligible:true,  description:"Crop production, soil science, animal production, agribusiness.",                          subjectRequirements:"Maths 50%+ or Agri Sciences 50%+",                                    universities:["UP","SU","UFS","NWU","Fort Hare","Limpopo","WSU"] },
-  { course:"BCom Economics",                faculty:"Commerce",          minAPS:28, duration:"3 years",  nsfasEligible:true,  description:"Micro and macroeconomics, econometrics, economic policy analysis.",                        subjectRequirements:"Maths 50%+",                                                          universities:["UCT","Wits","SU","UP","UJ","UKZN","UFS","NWU","RU"] },
-  { course:"BA Social Work",                faculty:"Social Sciences",   minAPS:24, duration:"4 years",  nsfasEligible:true,  description:"Help vulnerable individuals, families, and communities. SACSSP-registered.",               subjectRequirements:"English 50%+",                                                        universities:["UCT","SU","UP","UJ","UKZN","UFS","NWU","UWC","Limpopo","Fort Hare","UniZulu","WSU"] },
-  { course:"BA Psychology",                 faculty:"Social Sciences",   minAPS:26, duration:"3 years",  nsfasEligible:true,  description:"Foundation for careers in counselling, clinical, and research psychology.",                 subjectRequirements:"English 50%+",                                                        universities:["UCT","Wits","SU","UP","UJ","UKZN","UFS","NWU","RU","UWC"] },
-  { course:"BComm Information Systems",     faculty:"Commerce",          minAPS:28, duration:"3 years",  nsfasEligible:true,  description:"Business analysis, IT project management, enterprise systems, and e-commerce.",            subjectRequirements:"Maths 50%+",                                                          universities:["UCT","Wits","UP","UJ","UFS","NWU","DUT","TUT"] },
-  { course:"BTech Electrical Engineering",  faculty:"Engineering",       minAPS:22, duration:"3 years",  nsfasEligible:true,  description:"Applied electrical engineering — power, electronics, instrumentation.",                    subjectRequirements:"Maths 40%+, Physical Sciences 40%+",                                  universities:["TUT","DUT","CUT","MUT"] },
-  { course:"ND Civil Engineering",          faculty:"Engineering",       minAPS:20, duration:"3 years",  nsfasEligible:true,  description:"Practical civil engineering qualification at a University of Technology.",                  subjectRequirements:"Maths 40%+, Physical Sciences 40%+",                                  universities:["TUT","DUT","CUT","MUT"] },
-  { course:"National Diploma: Nursing",     faculty:"Health Sciences",   minAPS:20, duration:"3 years",  nsfasEligible:true,  description:"Enrolled nursing qualification offered at several UoTs and colleges.",                     subjectRequirements:"Life Sciences 40%+, English 40%+",                                    universities:["DUT","TUT","CUT","MUT","Limpopo"] },
-  { course:"ND Business Administration",    faculty:"Commerce",          minAPS:18, duration:"3 years",  nsfasEligible:true,  description:"Office management, administration, HR fundamentals, and business law.",                    subjectRequirements:"English 40%+",                                                        universities:["TUT","DUT","CUT","MUT","UNISA","Limpopo","WSU"] },
-  { course:"BCom Financial Management",     faculty:"Commerce",          minAPS:30, duration:"3 years",  nsfasEligible:true,  description:"Corporate finance, investment analysis, and financial planning.",                          subjectRequirements:"Maths 55%+ or Accounting 55%+",                                       universities:["UCT","Wits","SU","UP","UJ","NWU","UFS","UKZN"] },
-  { course:"BSc Actuarial Science",         faculty:"Science",           minAPS:35, duration:"3 years",  nsfasEligible:true,  description:"Apply mathematics, statistics, and finance to assess risk in insurance and finance.",      subjectRequirements:"Maths 80%+",                                                          universities:["UCT","Wits","SU","UP","UFS","NWU"] },
-  { course:"BA Journalism & Media",         faculty:"Humanities",        minAPS:26, duration:"3 years",  nsfasEligible:true,  description:"Reporting, editing, broadcast, digital media, and media law.",                            subjectRequirements:"English 60%+",                                                        universities:["UCT","Wits","RU","UJ","UKZN","UFS","NWU","UWC","TUT"] },
-  { course:"BA Architecture",               faculty:"Built Environment",  minAPS:30, duration:"3 years", nsfasEligible:true,  description:"Spatial design, construction technology, history of architecture, studio work.",           subjectRequirements:"Maths 50%+",                                                          universities:["UCT","Wits","SU","UP","UJ","DUT","TUT","CUT"] },
-  { course:"BSc Environmental Science",     faculty:"Science",           minAPS:28, duration:"3 years",  nsfasEligible:true,  description:"Climate change, biodiversity, natural resource management, and environmental law.",        subjectRequirements:"Maths 50%+, Life Sciences or Geography 50%+",                        universities:["UCT","SU","UP","UJ","UKZN","UFS","NWU","RU"] },
-  { course:"BPharm (Pharmacy)",             faculty:"Health Sciences",   minAPS:34, duration:"4 years",  nsfasEligible:true,  description:"Dispensing, clinical pharmacy, pharmaceutical sciences, SAPC registration.",              subjectRequirements:"Maths 60%+, Physical Sciences 60%+, Life Sciences 50%+",              universities:["UCT","Wits","SU","UP","UKZN","UWC","Limpopo"] },
-  { course:"BA Fine Arts",                  faculty:"Humanities",        minAPS:22, duration:"3 years",  nsfasEligible:true,  description:"Painting, sculpture, printmaking, digital art, and art history.",                         subjectRequirements:"English 50%+, Visual Arts or Portfolio",                              universities:["UCT","Wits","SU","UP","UJ","DUT","TUT"] },
-  { course:"BSc Data Science",              faculty:"Science",           minAPS:32, duration:"3 years",  nsfasEligible:true,  description:"Machine learning, big data analytics, statistical modelling, and data engineering.",     subjectRequirements:"Maths 70%+",                                                          universities:["UCT","Wits","SU","UP","UJ","NWU"] },
-  { course:"BCom Human Resource Mgmt",      faculty:"Commerce",          minAPS:26, duration:"3 years",  nsfasEligible:true,  description:"People management, labour law, talent development, and organisational behaviour.",        subjectRequirements:"English 50%+",                                                        universities:["UP","UJ","UFS","NWU","UKZN","DUT","TUT","UNISA"] },
-  { course:"ND Information Technology",     faculty:"ICT",               minAPS:20, duration:"3 years",  nsfasEligible:true,  description:"Networking, systems development, database admin, and cybersecurity fundamentals.",         subjectRequirements:"Maths 40%+",                                                          universities:["TUT","DUT","CUT","MUT","UNISA"] },
+var COURSE_REQUIREMENTS = [
+  { course:"MBChB (Medicine)",             faculty:"Health Sciences",  minAPS:36, duration:"6 years", nsfasEligible:true, description:"Train to become a medical doctor. One of SA's most competitive programmes.",         subjectRequirements:"Maths 70%+, Physical Sciences 60%+, Life Sciences 60%+",         universities:["UCT","Wits","SU","UP","UKZN","UFS","Limpopo","Walter Sisulu"] },
+  { course:"BEng Civil Engineering",       faculty:"Engineering",      minAPS:35, duration:"4 years", nsfasEligible:true, description:"Design and build infrastructure — roads, bridges, dams, buildings.",                subjectRequirements:"Maths 70%+, Physical Sciences 60%+",                            universities:["UCT","Wits","SU","UP","UJ","UKZN","NWU","UFS"] },
+  { course:"BEng Electrical Engineering",  faculty:"Engineering",      minAPS:35, duration:"4 years", nsfasEligible:true, description:"Power systems, electronics, telecommunications, and automation.",                  subjectRequirements:"Maths 70%+, Physical Sciences 60%+",                            universities:["UCT","Wits","SU","UP","UJ","UKZN","TUT","DUT"] },
+  { course:"BEng Mechanical Engineering",  faculty:"Engineering",      minAPS:35, duration:"4 years", nsfasEligible:true, description:"Design, manufacture, and maintain mechanical systems and machines.",               subjectRequirements:"Maths 70%+, Physical Sciences 60%+",                            universities:["UCT","Wits","SU","UP","UJ","NWU","UKZN"] },
+  { course:"BSc Computer Science",         faculty:"Science",          minAPS:32, duration:"3 years", nsfasEligible:true, description:"Algorithms, programming, data structures, AI, and software systems.",              subjectRequirements:"Maths 60%+",                                                    universities:["UCT","Wits","SU","UP","RU","UJ","NWU","UKZN"] },
+  { course:"BCom Accounting",              faculty:"Commerce",         minAPS:28, duration:"3 years", nsfasEligible:true, description:"Financial accounting, auditing, taxation, and management accounting.",              subjectRequirements:"Maths 50%+ or Accounting 50%+",                                 universities:["UCT","Wits","SU","UP","UJ","UFS","NWU","UKZN","DUT"] },
+  { course:"LLB (Law)",                    faculty:"Law",              minAPS:32, duration:"4 years", nsfasEligible:true, description:"Become a lawyer, advocate, or legal practitioner in South Africa.",                subjectRequirements:"English 60%+",                                                  universities:["UCT","Wits","SU","UP","UJ","UKZN","UFS","NWU","RU","UWC"] },
+  { course:"BSc Nursing",                  faculty:"Health Sciences",  minAPS:28, duration:"4 years", nsfasEligible:true, description:"Comprehensive nursing education leading to professional registration with SANC.",  subjectRequirements:"Life Sciences 50%+, Maths or Maths Lit 40%+",                  universities:["UCT","UP","UKZN","UJ","NWU","UFS","UWC","Limpopo","Fort Hare"] },
+  { course:"BEd Foundation Phase",         faculty:"Education",        minAPS:26, duration:"4 years", nsfasEligible:true, description:"Qualify to teach Grades R–3 in South African public schools.",                    subjectRequirements:"English 50%+",                                                  universities:["UCT","Wits","SU","UP","UJ","UKZN","UFS","NWU","RU","UWC","WSU"] },
+  { course:"BEd Intermediate Phase",       faculty:"Education",        minAPS:26, duration:"4 years", nsfasEligible:true, description:"Train to teach Grades 4–6 across curriculum subjects.",                           subjectRequirements:"English 50%+",                                                  universities:["SU","UP","UJ","NWU","UFS","WSU","UniZulu"] },
+  { course:"BEd Senior/FET Phase",         faculty:"Education",        minAPS:28, duration:"4 years", nsfasEligible:true, description:"Teach Grades 7–12 — choose subject specialisations.",                            subjectRequirements:"English 50%+, chosen subject 50%+",                             universities:["UCT","Wits","SU","UP","UJ","UKZN","UFS","NWU","RU","UWC","Limpopo"] },
+  { course:"BSc Agriculture",              faculty:"Agriculture",      minAPS:26, duration:"4 years", nsfasEligible:true, description:"Crop production, soil science, animal production, agribusiness.",                 subjectRequirements:"Maths 50%+ or Agri Sciences 50%+",                              universities:["UP","SU","UFS","NWU","Fort Hare","Limpopo","WSU"] },
+  { course:"BCom Economics",               faculty:"Commerce",         minAPS:28, duration:"3 years", nsfasEligible:true, description:"Micro and macroeconomics, econometrics, economic policy analysis.",               subjectRequirements:"Maths 50%+",                                                    universities:["UCT","Wits","SU","UP","UJ","UKZN","UFS","NWU","RU"] },
+  { course:"BA Social Work",               faculty:"Social Sciences",  minAPS:24, duration:"4 years", nsfasEligible:true, description:"Help vulnerable individuals, families, and communities. SACSSP-registered.",      subjectRequirements:"English 50%+",                                                  universities:["UCT","SU","UP","UJ","UKZN","UFS","NWU","UWC","Limpopo","Fort Hare","UniZulu","WSU"] },
+  { course:"BA Psychology",                faculty:"Social Sciences",  minAPS:26, duration:"3 years", nsfasEligible:true, description:"Foundation for careers in counselling, clinical, and research psychology.",        subjectRequirements:"English 50%+",                                                  universities:["UCT","Wits","SU","UP","UJ","UKZN","UFS","NWU","RU","UWC"] },
+  { course:"BComm Information Systems",    faculty:"Commerce",         minAPS:28, duration:"3 years", nsfasEligible:true, description:"Business analysis, IT project management, enterprise systems, and e-commerce.",   subjectRequirements:"Maths 50%+",                                                    universities:["UCT","Wits","UP","UJ","UFS","NWU","DUT","TUT"] },
+  { course:"BTech Electrical Engineering", faculty:"Engineering",      minAPS:22, duration:"3 years", nsfasEligible:true, description:"Applied electrical engineering — power, electronics, instrumentation.",           subjectRequirements:"Maths 40%+, Physical Sciences 40%+",                            universities:["TUT","DUT","CUT","MUT"] },
+  { course:"ND Civil Engineering",         faculty:"Engineering",      minAPS:20, duration:"3 years", nsfasEligible:true, description:"Practical civil engineering qualification at a University of Technology.",         subjectRequirements:"Maths 40%+, Physical Sciences 40%+",                            universities:["TUT","DUT","CUT","MUT"] },
+  { course:"National Diploma: Nursing",    faculty:"Health Sciences",  minAPS:20, duration:"3 years", nsfasEligible:true, description:"Enrolled nursing qualification offered at several UoTs and colleges.",            subjectRequirements:"Life Sciences 40%+, English 40%+",                              universities:["DUT","TUT","CUT","MUT","Limpopo"] },
+  { course:"ND Business Administration",   faculty:"Commerce",         minAPS:18, duration:"3 years", nsfasEligible:true, description:"Office management, administration, HR fundamentals, and business law.",           subjectRequirements:"English 40%+",                                                  universities:["TUT","DUT","CUT","MUT","UNISA","Limpopo","WSU"] },
+  { course:"BCom Financial Management",    faculty:"Commerce",         minAPS:30, duration:"3 years", nsfasEligible:true, description:"Corporate finance, investment analysis, and financial planning.",                  subjectRequirements:"Maths 55%+ or Accounting 55%+",                                 universities:["UCT","Wits","SU","UP","UJ","NWU","UFS","UKZN"] },
+  { course:"BSc Actuarial Science",        faculty:"Science",          minAPS:35, duration:"3 years", nsfasEligible:true, description:"Apply mathematics, statistics, and finance to assess risk in insurance and finance.", subjectRequirements:"Maths 80%+",                                                 universities:["UCT","Wits","SU","UP","UFS","NWU"] },
+  { course:"BA Journalism & Media",        faculty:"Humanities",       minAPS:26, duration:"3 years", nsfasEligible:true, description:"Reporting, editing, broadcast, digital media, and media law.",                    subjectRequirements:"English 60%+",                                                  universities:["UCT","Wits","RU","UJ","UKZN","UFS","NWU","UWC","TUT"] },
+  { course:"BA Architecture",              faculty:"Built Environment", minAPS:30, duration:"3 years", nsfasEligible:true, description:"Spatial design, construction technology, history of architecture, studio work.", subjectRequirements:"Maths 50%+",                                                    universities:["UCT","Wits","SU","UP","UJ","DUT","TUT","CUT"] },
+  { course:"BSc Environmental Science",    faculty:"Science",          minAPS:28, duration:"3 years", nsfasEligible:true, description:"Climate change, biodiversity, natural resource management, and environmental law.", subjectRequirements:"Maths 50%+, Life Sciences or Geography 50%+",                universities:["UCT","SU","UP","UJ","UKZN","UFS","NWU","RU"] },
+  { course:"BPharm (Pharmacy)",            faculty:"Health Sciences",  minAPS:34, duration:"4 years", nsfasEligible:true, description:"Dispensing, clinical pharmacy, pharmaceutical sciences, SAPC registration.",     subjectRequirements:"Maths 60%+, Physical Sciences 60%+, Life Sciences 50%+",        universities:["UCT","Wits","SU","UP","UKZN","UWC","Limpopo"] },
+  { course:"BA Fine Arts",                 faculty:"Humanities",       minAPS:22, duration:"3 years", nsfasEligible:true, description:"Painting, sculpture, printmaking, digital art, and art history.",                subjectRequirements:"English 50%+, Visual Arts or Portfolio",                        universities:["UCT","Wits","SU","UP","UJ","DUT","TUT"] },
+  { course:"BSc Data Science",             faculty:"Science",          minAPS:32, duration:"3 years", nsfasEligible:true, description:"Machine learning, big data analytics, statistical modelling, and data engineering.", subjectRequirements:"Maths 70%+",                                                 universities:["UCT","Wits","SU","UP","UJ","NWU"] },
+  { course:"BCom Human Resource Mgmt",     faculty:"Commerce",         minAPS:26, duration:"3 years", nsfasEligible:true, description:"People management, labour law, talent development, and organisational behaviour.", subjectRequirements:"English 50%+",                                                 universities:["UP","UJ","UFS","NWU","UKZN","DUT","TUT","UNISA"] },
+  { course:"ND Information Technology",    faculty:"ICT",              minAPS:20, duration:"3 years", nsfasEligible:true, description:"Networking, systems development, database admin, and cybersecurity fundamentals.", subjectRequirements:"Maths 40%+",                                                    universities:["TUT","DUT","CUT","MUT","UNISA"] },
 ];
 
-// ── State ─────────────────────────────────────────────────────────────────────
-let mathChoice = "mathematics";
-let marks = {};
-let apsScore = 0;
-let eligibleCourses = [];
-let selectedFaculty = "All";
-let currentCourse = null;
+// ── State ─────────────────────────────────────────────────────────────────
+var mathChoice      = "mathematics";
+var marks           = {};
+var apsScore        = 0;
+var eligibleCourses = [];
+var selectedFaculty = "All";
 
 function init() {
   renderAPSScale();
@@ -392,43 +391,43 @@ function init() {
 }
 
 function renderAPSScale() {
-  const el = document.getElementById("apsScale");
-  el.innerHTML = APS_TABLE.map(({range, points}) => {
-    const cls = points >= 6 ? "high" : points >= 4 ? "mid" : "low";
-    return `<div class="aps-cell ${cls}"><div class="pts">${points}</div><div class="rng">${range}%</div></div>`;
-  }).join("");
+  var el = document.getElementById("apsScale");
+  var html = "";
+  for (var i = 0; i < APS_TABLE.length; i++) {
+    var row = APS_TABLE[i];
+    var cls = row.points >= 6 ? "high" : row.points >= 4 ? "mid" : "low";
+    html += '<div class="aps-cell ' + cls + '"><div class="pts">' + row.points + '</div><div class="rng">' + row.range + '%</div></div>';
+  }
+  el.innerHTML = html;
 }
 
 function renderBursaries() {
-  const el = document.getElementById("bursaryGrid");
-  el.innerHTML = BURSARY_PORTALS.map(b => `
-    <a href="${b.url}" target="_blank" rel="noopener" class="bursary-link">
-      <div><div class="bursary-name">${b.name}</div><div class="bursary-desc">${b.desc}</div></div>
-      <span class="ext-icon">↗</span>
-    </a>
-  `).join("");
+  var el = document.getElementById("bursaryGrid");
+  var html = "";
+  for (var i = 0; i < BURSARY_PORTALS.length; i++) {
+    var b = BURSARY_PORTALS[i];
+    html += '<a href="' + b.url + '" target="_blank" rel="noopener" class="bursary-link"><div><div class="bursary-name">' + b.name + '</div><div class="bursary-desc">' + b.desc + '</div></div><span class="ext-icon">↗</span></a>';
+  }
+  el.innerHTML = html;
 }
 
 function renderSubjects() {
-  const subjects = [...SUBJECTS_CORE, SUBJECTS_MATHS[mathChoice], ...ELECTIVES];
-  const grid = document.getElementById("subjectGrid");
-  grid.innerHTML = subjects.map(s => {
-    const val = marks[s.id] !== undefined ? marks[s.id] : "";
-    const points = val !== "" ? getAPSPoints(Number(val)) : null;
-    let badgeCls = "hidden";
+  var subjects = SUBJECTS_CORE.concat([SUBJECTS_MATHS[mathChoice]]).concat(ELECTIVES);
+  var grid = document.getElementById("subjectGrid");
+  var html = "";
+  for (var i = 0; i < subjects.length; i++) {
+    var s = subjects[i];
+    var val = marks[s.id] !== undefined ? marks[s.id] : "";
+    var points = val !== "" ? getAPSPoints(Number(val)) : null;
+    var badgeCls = "hidden";
     if (points !== null) badgeCls = points >= 6 ? "high" : points >= 4 ? "mid" : "low";
-    return `
-      <div class="subject-row ${s.required ? "required" : ""}">
-        <div class="subject-info">
-          <div class="subject-name">${s.name}</div>
-          ${s.required ? '<div class="subject-req">Required</div>' : ""}
-        </div>
-        <input type="number" min="0" max="100" placeholder="%" class="mark-input"
-          value="${val}" data-id="${s.id}" oninput="handleMark(this)">
-        <div class="pts-badge ${badgeCls}" id="badge_${s.id}">${points ?? ""}</div>
-      </div>
-    `;
-  }).join("");
+    html += '<div class="subject-row ' + (s.required ? "required" : "") + '">' +
+      '<div class="subject-info"><div class="subject-name">' + s.name + '</div>' + (s.required ? '<div class="subject-req">Required</div>' : '') + '</div>' +
+      '<input type="number" min="0" max="100" placeholder="%" class="mark-input" value="' + val + '" data-id="' + s.id + '" oninput="handleMark(this)">' +
+      '<div class="pts-badge ' + badgeCls + '" id="badge_' + s.id + '">' + (points !== null ? points : '') + '</div>' +
+      '</div>';
+  }
+  grid.innerHTML = html;
 }
 
 function setMath(choice) {
@@ -436,20 +435,22 @@ function setMath(choice) {
   document.getElementById("btnMaths").classList.toggle("active", choice === "mathematics");
   document.getElementById("btnLit").classList.toggle("active", choice === "mathematical_literacy");
   document.getElementById("mathWarn").style.display = choice === "mathematical_literacy" ? "block" : "none";
-  delete marks["mathematics"]; delete marks["mathematical_literacy"];
+  delete marks["mathematics"];
+  delete marks["mathematical_literacy"];
   renderSubjects();
 }
 
 function handleMark(input) {
-  const id = input.dataset.id;
-  const raw = input.value;
-  const num = raw === "" ? "" : Math.min(100, Math.max(0, parseInt(raw) || 0));
-  marks[id] = num; input.value = num === "" ? "" : num;
-  const badge = document.getElementById("badge_" + id);
+  var id  = input.dataset.id;
+  var raw = input.value;
+  var num = raw === "" ? "" : Math.min(100, Math.max(0, parseInt(raw) || 0));
+  marks[id] = num;
+  input.value = num === "" ? "" : num;
+  var badge = document.getElementById("badge_" + id);
   if (badge) {
     if (num === "") { badge.className = "pts-badge hidden"; badge.textContent = ""; }
     else {
-      const pts = getAPSPoints(num);
+      var pts = getAPSPoints(num);
       badge.className = "pts-badge " + (pts >= 6 ? "high" : pts >= 4 ? "mid" : "low");
       badge.textContent = pts;
     }
@@ -457,14 +458,50 @@ function handleMark(input) {
 }
 
 function calculateAPS() {
-  const subjectsWithMarks = Object.entries(marks)
-    .filter(([id, val]) => val !== "" && id !== "life_orientation")
-    .map(([id, val]) => ({ id, points: getAPSPoints(Number(val)) }))
-    .sort((a, b) => b.points - a.points);
+  // Build list of subjects with marks (excluding Life Orientation)
+  var subjectEntries = [];
+  for (var id in marks) {
+    if (Object.prototype.hasOwnProperty.call(marks, id) && marks[id] !== "" && id !== "life_orientation") {
+      subjectEntries.push({ id: id, mark: Number(marks[id]), points: getAPSPoints(Number(marks[id])) });
+    }
+  }
 
-  const bestSix = subjectsWithMarks.slice(0, 6);
-  apsScore = bestSix.reduce((sum, s) => sum + s.points, 0);
+  // Sort by points descending, take best 6
+  subjectEntries.sort(function(a, b) { return b.points - a.points; });
+  var bestSix = subjectEntries.slice(0, 6);
 
+  apsScore = 0;
+  for (var i = 0; i < bestSix.length; i++) { apsScore += bestSix[i].points; }
+
+  // ── Save to dashboard ──────────────────────────────────────────────────
+  var user = window.__ptUser;
+  if (user) {
+    // Build subjects array for the dashboard to display
+    var subjectsForSave = [];
+    for (var j = 0; j < bestSix.length; j++) {
+      subjectsForSave.push({
+        id:     bestSix[j].id,
+        name:   SUBJECT_NAMES[bestSix[j].id] || bestSix[j].id,
+        mark:   bestSix[j].mark,
+        points: bestSix[j].points,
+        aps:    bestSix[j].points,   // alias so dashboard renderAPSBody works
+      });
+    }
+    try {
+      Auth.saveAPSResult(user.id, {
+        apsScore: apsScore,
+        total:    apsScore,          // alias for dashboard
+        subjects: subjectsForSave,
+        mathType: mathChoice,
+        summary:  'APS Score: ' + apsScore,
+      });
+      document.getElementById('savedBanner').style.display = 'flex';
+    } catch (e) {
+      console.warn('Could not save APS result:', e);
+    }
+  }
+
+  // Update score display
   document.getElementById("scoreNum").textContent = apsScore;
   document.getElementById("scoreMsg").textContent =
     apsScore >= 35 ? "🏆 Excellent! You qualify for top competitive programmes." :
@@ -472,73 +509,94 @@ function calculateAPS() {
     apsScore >= 22 ? "📚 Solid score — many diploma and degree options available." :
                      "💪 Consider bridging/foundation programmes or TVET pathways.";
 
-  eligibleCourses = COURSE_REQUIREMENTS.filter(c => c.minAPS <= apsScore).sort((a,b) => b.minAPS - a.minAPS);
-  selectedFaculty = "All";
-  renderFacultyTabs(); renderCourseCards();
+  // Filter eligible courses
+  eligibleCourses = [];
+  for (var k = 0; k < COURSE_REQUIREMENTS.length; k++) {
+    if (COURSE_REQUIREMENTS[k].minAPS <= apsScore) eligibleCourses.push(COURSE_REQUIREMENTS[k]);
+  }
+  eligibleCourses.sort(function(a, b) { return b.minAPS - a.minAPS; });
 
-  const results = document.getElementById("results");
+  selectedFaculty = "All";
+  renderFacultyTabs();
+  renderCourseCards();
+
+  var results = document.getElementById("results");
   results.classList.add("show");
-  setTimeout(() => results.scrollIntoView({ behavior:"smooth" }), 100);
+  setTimeout(function() { results.scrollIntoView({ behavior:"smooth" }); }, 100);
 }
 
 function renderFacultyTabs() {
-  const faculties = ["All", ...new Set(COURSE_REQUIREMENTS.map(c => c.faculty))];
-  document.getElementById("facultyTabs").innerHTML = faculties.map(f =>
-    `<button class="faculty-tab ${f === selectedFaculty ? "active" : ""}" onclick="setFaculty('${f}')">${f}</button>`
-  ).join("");
+  var seen = {}, faculties = ["All"];
+  for (var i = 0; i < COURSE_REQUIREMENTS.length; i++) {
+    var f = COURSE_REQUIREMENTS[i].faculty;
+    if (!seen[f]) { seen[f] = true; faculties.push(f); }
+  }
+  var html = "";
+  for (var j = 0; j < faculties.length; j++) {
+    html += '<button class="faculty-tab ' + (faculties[j] === selectedFaculty ? "active" : "") + '" onclick="setFaculty(\'' + faculties[j].replace(/'/g,"\\'") + '\')">' + faculties[j] + '</button>';
+  }
+  document.getElementById("facultyTabs").innerHTML = html;
 }
 
 function setFaculty(f) { selectedFaculty = f; renderFacultyTabs(); renderCourseCards(); }
 
 function renderCourseCards() {
-  const filtered = selectedFaculty === "All" ? eligibleCourses : eligibleCourses.filter(c => c.faculty === selectedFaculty);
-  document.getElementById("resultsHeading").innerHTML = `${filtered.length} Course${filtered.length !== 1 ? "s" : ""} You Qualify For <span>— click any course for details</span>`;
-  const container = document.getElementById("courseCards");
+  var filtered = [];
+  for (var i = 0; i < eligibleCourses.length; i++) {
+    if (selectedFaculty === "All" || eligibleCourses[i].faculty === selectedFaculty) filtered.push(eligibleCourses[i]);
+  }
+  document.getElementById("resultsHeading").innerHTML =
+    filtered.length + ' Course' + (filtered.length !== 1 ? 's' : '') + ' You Qualify For <span>— click any course for details</span>';
+
+  var container = document.getElementById("courseCards");
   if (filtered.length === 0) {
-    container.innerHTML = `<div class="empty-state"><div class="emoji">🎓</div><p>No courses in this faculty match your current APS.</p><p style="font-size:13px;margin-top:8px;">Try selecting "All" or consider foundation / bridging programmes.</p></div>`;
+    container.innerHTML = '<div class="empty-state"><div class="emoji">🎓</div><p>No courses in this faculty match your current APS.</p><p style="font-size:13px;margin-top:8px;">Try selecting "All" or consider foundation / bridging programmes.</p></div>';
+    window._filteredCourses = [];
     return;
   }
-  container.innerHTML = filtered.map((course, i) => {
-    const diff = apsScore - course.minAPS;
-    const pillCls = diff >= 5 ? "green" : diff >= 2 ? "blue" : "amber";
-    return `
-      <div class="course-card" onclick="openModal(${i})">
-        <div class="course-top">
-          <div><div class="course-name">${course.course}</div><div class="course-meta">${course.faculty} • ${course.duration}</div></div>
-          <span class="aps-pill ${pillCls}">Min APS: ${course.minAPS}</span>
-        </div>
-        <div class="course-desc">${course.description}</div>
-        <div class="course-hint">View details →</div>
-      </div>
-    `;
-  }).join("");
+  var html = "";
+  for (var i = 0; i < filtered.length; i++) {
+    var course = filtered[i];
+    var diff = apsScore - course.minAPS;
+    var pillCls = diff >= 5 ? "green" : diff >= 2 ? "blue" : "amber";
+    html += '<div class="course-card" onclick="openModal(' + i + ')">' +
+      '<div class="course-top"><div><div class="course-name">' + course.course + '</div><div class="course-meta">' + course.faculty + ' • ' + course.duration + '</div></div>' +
+      '<span class="aps-pill ' + pillCls + '">Min APS: ' + course.minAPS + '</span></div>' +
+      '<div class="course-desc">' + course.description + '</div>' +
+      '<div class="course-hint">View details →</div></div>';
+  }
+  container.innerHTML = html;
   window._filteredCourses = filtered;
 }
 
 function openModal(idx) {
-  const course = (window._filteredCourses || [])[idx];
+  var course = (window._filteredCourses || [])[idx];
   if (!course) return;
-  currentCourse = course;
-  document.getElementById("mFaculty").textContent = course.faculty;
-  document.getElementById("mTitle").textContent = course.course;
+  document.getElementById("mFaculty").textContent  = course.faculty;
+  document.getElementById("mTitle").textContent    = course.course;
   document.getElementById("mDuration").textContent = "⏱ " + course.duration;
-  document.getElementById("mDesc").textContent = course.description;
-  document.getElementById("mSubReq").textContent = course.subjectRequirements;
-  const diff = apsScore - course.minAPS;
-  const pillCls = diff >= 5 ? "green" : diff >= 0 ? "blue" : "amber";
-  document.getElementById("mAps").innerHTML = `
-    <span class="aps-pill ${pillCls}">Minimum APS: ${course.minAPS}</span>
-    <span style="font-size:13px;color:var(--muted)">Your score: <strong>${apsScore}</strong></span>
-    <span>${apsScore >= course.minAPS ? "✅" : "❌"}</span>
-  `;
+  document.getElementById("mDesc").textContent     = course.description;
+  document.getElementById("mSubReq").textContent   = course.subjectRequirements;
+
+  var diff = apsScore - course.minAPS;
+  var pillCls = diff >= 5 ? "green" : diff >= 0 ? "blue" : "amber";
+  document.getElementById("mAps").innerHTML =
+    '<span class="aps-pill ' + pillCls + '">Minimum APS: ' + course.minAPS + '</span>' +
+    '<span style="font-size:13px;color:var(--muted)">Your score: <strong>' + apsScore + '</strong></span>' +
+    '<span>' + (apsScore >= course.minAPS ? "✅" : "❌") + '</span>';
+
   document.getElementById("mNsfas").innerHTML = course.nsfasEligible
-    ? `<div class="nsfas-badge">✅ NSFAS eligible course</div>` : "";
-  document.getElementById("mUnis").innerHTML = course.universities.map(uni => {
-    const url = UNIVERSITY_URLS[uni];
-    return url
-      ? `<a href="${url}" target="_blank" rel="noopener" class="uni-tag">${uni} <span>↗</span></a>`
-      : `<span class="uni-tag" style="text-decoration:none;cursor:default">${uni}</span>`;
-  }).join("");
+    ? '<div class="nsfas-badge">✅ NSFAS eligible course</div>' : "";
+
+  var unisHtml = "";
+  for (var i = 0; i < course.universities.length; i++) {
+    var uni = course.universities[i];
+    var url = UNIVERSITY_URLS[uni];
+    unisHtml += url
+      ? '<a href="' + url + '" target="_blank" rel="noopener" class="uni-tag">' + uni + ' <span>↗</span></a>'
+      : '<span class="uni-tag" style="text-decoration:none;cursor:default">' + uni + '</span>';
+  }
+  document.getElementById("mUnis").innerHTML = unisHtml;
   document.getElementById("modal").classList.add("open");
   document.body.style.overflow = "hidden";
 }

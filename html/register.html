@@ -6,103 +6,49 @@
 <title>Register — Phunya Tsela</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;600;700;800;900&family=DM+Sans:wght@400;500;600&display=swap" rel="stylesheet">
-<script src="auth.js"></script>
+<!-- ?v=2 forces the browser to fetch the new auth.js, bypassing any cache -->
+<script src="auth.js?v=2"></script>
 <style>
   :root {
     --primary: #d97706; --yellow: #f59e0b; --bg: #fafaf9;
     --border: #e5e7eb; --text: #111827; --muted: #6b7280;
-    --error: #ef4444; --success: #10b981;
-    --radius: 12px; --radius-lg: 16px; --radius-xl: 20px;
+    --error: #ef4444; --radius: 12px; --radius-lg: 16px; --radius-xl: 20px;
   }
   *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
   body { font-family: 'DM Sans', sans-serif; background: var(--bg); color: var(--text); min-height: 100vh; display: flex; flex-direction: column; }
   h1,h2,h3 { font-family: 'Sora', sans-serif; }
 
   .page { flex: 1; display: flex; align-items: center; justify-content: center; padding: 40px 16px; }
-  .card {
-    background: white; border-radius: var(--radius-xl); border: 1px solid var(--border);
-    box-shadow: 0 8px 40px rgba(0,0,0,.07); width: 100%; max-width: 480px;
-    overflow: hidden;
-  }
-
-  .card-header {
-    background: linear-gradient(135deg, var(--primary), var(--yellow));
-    padding: 32px 32px 28px; text-align: center; color: white;
-  }
+  .card { background: white; border-radius: var(--radius-xl); border: 1px solid var(--border); box-shadow: 0 8px 40px rgba(0,0,0,.07); width: 100%; max-width: 480px; overflow: hidden; }
+  .card-header { background: linear-gradient(135deg, var(--primary), var(--yellow)); padding: 32px 32px 28px; text-align: center; color: white; }
   .logo { font-size: 40px; margin-bottom: 10px; }
   .card-header h1 { font-size: 26px; font-weight: 900; }
   .card-header p { font-size: 13px; opacity: .8; margin-top: 4px; }
-
-  .card-body { padding: 28px 32px; }
-
-  .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
-  @media(max-width:480px){ .form-row { grid-template-columns: 1fr; } }
-
+  .card-body { padding: 32px; }
+  .name-row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
   .form-group { margin-bottom: 16px; }
   .form-group label { display: block; font-size: 13px; font-weight: 700; color: var(--text); margin-bottom: 6px; }
-  .form-group input,
-  .form-group select {
+  .form-group input, .form-group select {
     width: 100%; padding: 11px 14px; border: 1px solid var(--border);
     border-radius: var(--radius); font-size: 14px; font-family: 'DM Sans', sans-serif;
     background: white; outline: none; transition: border-color .2s, box-shadow .2s;
-    color: var(--text);
   }
-  .form-group input:focus,
-  .form-group select:focus { border-color: var(--primary); box-shadow: 0 0 0 3px #fde68a44; }
-  .form-group input.error-field,
-  .form-group select.error-field { border-color: var(--error); }
-
-  /* Password strength */
-  .pw-strength { margin-top: 6px; }
-  .pw-bar-track { height: 4px; background: #e5e7eb; border-radius: 99px; overflow: hidden; margin-bottom: 4px; }
-  .pw-bar-fill { height: 100%; border-radius: 99px; transition: width .3s, background .3s; width: 0%; }
-  .pw-label { font-size: 11px; color: var(--muted); }
-
-  /* Error banner */
-  .error-banner {
-    background: #fef2f2; border: 1px solid #fecaca; border-radius: var(--radius);
-    padding: 10px 14px; font-size: 13px; color: #b91c1c; margin-bottom: 18px;
-    display: none; align-items: center; gap: 8px;
-  }
+  .form-group input:focus, .form-group select:focus { border-color: var(--primary); box-shadow: 0 0 0 3px #fde68a44; }
+  .form-group input.error-field { border-color: var(--error); box-shadow: 0 0 0 3px #fca5a544; }
+  .password-hint { font-size: 11px; color: var(--muted); margin-top: 5px; }
+  .error-banner { background: #fef2f2; border: 1px solid #fecaca; border-radius: var(--radius); padding: 10px 14px; font-size: 13px; color: #b91c1c; margin-bottom: 18px; display: none; align-items: center; gap: 8px; }
   .error-banner.show { display: flex; }
-
-  /* Submit */
-  .submit-btn {
-    width: 100%; height: 50px; border-radius: var(--radius-lg);
-    background: var(--primary); color: white; font-family: 'Sora', sans-serif;
-    font-weight: 800; font-size: 15px; border: none; cursor: pointer;
-    transition: filter .2s, transform .15s; margin-top: 4px;
-    display: flex; align-items: center; justify-content: center; gap: 8px;
-  }
-  .submit-btn:hover { filter: brightness(1.08); transform: translateY(-1px); }
-  .submit-btn:active { transform: translateY(0); }
-  .submit-btn:disabled { opacity: .5; cursor: not-allowed; transform: none; }
-
-  .card-footer { text-align: center; padding: 18px 32px 26px; border-top: 1px solid var(--border); }
+  .submit-btn { width: 100%; height: 50px; border-radius: var(--radius-lg); background: var(--primary); color: white; font-family: 'Sora', sans-serif; font-weight: 800; font-size: 15px; border: none; cursor: pointer; transition: filter .2s, transform .15s; margin-top: 4px; display: flex; align-items: center; justify-content: center; gap: 8px; }
+  .submit-btn:hover:not(:disabled) { filter: brightness(1.08); transform: translateY(-1px); }
+  .submit-btn:disabled { opacity: .5; cursor: not-allowed; }
+  .card-footer { text-align: center; padding: 18px 32px 24px; border-top: 1px solid var(--border); }
   .card-footer p { font-size: 13px; color: var(--muted); }
   .card-footer a { color: var(--primary); font-weight: 700; text-decoration: none; }
-  .card-footer a:hover { text-decoration: underline; }
-
   .back-link { text-align: center; margin-bottom: 24px; }
   .back-link a { font-size: 13px; color: var(--muted); text-decoration: none; }
-  .back-link a:hover { color: var(--text); }
-
-  /* Terms */
-  .terms-row { display: flex; align-items: flex-start; gap: 10px; margin-bottom: 18px; }
-  .terms-row input[type="checkbox"] { margin-top: 2px; width: 16px; height: 16px; accent-color: var(--primary); flex-shrink: 0; cursor: pointer; }
-  .terms-row label { font-size: 12px; color: var(--muted); line-height: 1.5; cursor: pointer; }
-  .terms-row a { color: var(--primary); font-weight: 600; }
-
-  /* Divider */
-  .section-divider { font-size: 11px; font-weight: 800; text-transform: uppercase; letter-spacing: .06em; color: var(--muted); margin: 4px 0 16px; }
-
   .spinner { width: 18px; height: 18px; border: 2px solid rgba(255,255,255,.3); border-top-color: white; border-radius: 50%; animation: spin .6s linear infinite; }
   @keyframes spin { to { transform: rotate(360deg); } }
-
-  /* Steps indicator */
-  .steps { display: flex; align-items: center; justify-content: center; gap: 6px; margin-bottom: 24px; }
-  .step-dot { width: 8px; height: 8px; border-radius: 50%; background: rgba(255,255,255,.35); transition: background .2s; }
-  .step-dot.active { background: white; width: 20px; border-radius: 99px; }
+  .optional-label { font-size: 10px; font-weight: 400; color: var(--muted); margin-left: 4px; }
 </style>
 </head>
 <body>
@@ -113,75 +59,50 @@
       <div class="card-header">
         <div class="logo">🎓</div>
         <h1>Create Your Account</h1>
-        <p>Join Phunya Tsela — it's free for all students</p>
+        <p>Free access to all Phunya Tsela student tools</p>
       </div>
       <div class="card-body">
         <div class="error-banner" id="errorBanner">
           <span>⚠️</span> <span id="errorText"></span>
         </div>
-
-        <!-- Name row -->
-        <div class="form-row">
+        <div class="name-row">
           <div class="form-group">
             <label for="firstName">First Name</label>
-            <input type="text" id="firstName" placeholder="Lerato" autocomplete="given-name">
+            <input type="text" id="firstName" placeholder="e.g. Lebo" autocomplete="given-name">
           </div>
           <div class="form-group">
             <label for="lastName">Last Name</label>
-            <input type="text" id="lastName" placeholder="Dlamini" autocomplete="family-name">
+            <input type="text" id="lastName" placeholder="e.g. Dlamini" autocomplete="family-name">
           </div>
         </div>
-
-        <!-- Email -->
         <div class="form-group">
           <label for="email">Email Address</label>
           <input type="email" id="email" placeholder="your@email.com" autocomplete="email">
         </div>
-
-        <!-- School details -->
-        <div class="section-divider">School Details (optional)</div>
-        <div class="form-row">
-          <div class="form-group">
-            <label for="grade">Current Grade</label>
-            <select id="grade">
-              <option value="">Select grade</option>
-              <option>Grade 10</option>
-              <option>Grade 11</option>
-              <option>Grade 12</option>
-              <option>Matric Rewrite</option>
-              <option>Already matriculated</option>
-            </select>
-          </div>
-          <div class="form-group">
-            <label for="school">School Name</label>
-            <input type="text" id="school" placeholder="e.g. Kuruman High" autocomplete="organization">
-          </div>
-        </div>
-
-        <!-- Password -->
         <div class="form-group">
           <label for="password">Password</label>
-          <input type="password" id="password" placeholder="Min. 6 characters" autocomplete="new-password" oninput="checkStrength(this.value)">
-          <div class="pw-strength">
-            <div class="pw-bar-track"><div class="pw-bar-fill" id="pwBar"></div></div>
-            <div class="pw-label" id="pwLabel"></div>
-          </div>
+          <input type="password" id="password" placeholder="At least 6 characters" autocomplete="new-password">
+          <p class="password-hint">Minimum 6 characters</p>
         </div>
-
         <div class="form-group">
           <label for="confirmPassword">Confirm Password</label>
           <input type="password" id="confirmPassword" placeholder="Repeat your password" autocomplete="new-password">
         </div>
-
-        <!-- Terms -->
-        <div class="terms-row">
-          <input type="checkbox" id="terms">
-          <label for="terms">I agree to the <a href="#">Terms of Use</a> and confirm that all information I provide is accurate.</label>
+        <div class="form-group">
+          <label for="grade">Grade <span class="optional-label">(optional)</span></label>
+          <select id="grade">
+            <option value="">Select your grade</option>
+            <option>Grade 8</option><option>Grade 9</option><option>Grade 10</option>
+            <option>Grade 11</option><option>Grade 12</option>
+            <option>Matric passed</option>
+            <option>Already at university/college</option>
+          </select>
         </div>
-
-        <button class="submit-btn" id="registerBtn" onclick="doRegister()">
-          Create My Free Account
-        </button>
+        <div class="form-group">
+          <label for="school">School Name <span class="optional-label">(optional)</span></label>
+          <input type="text" id="school" placeholder="e.g. Kuruman High School" autocomplete="organization">
+        </div>
+        <button class="submit-btn" id="registerBtn" onclick="doRegister()">Create My Free Account</button>
       </div>
       <div class="card-footer">
         <p>Already have an account? <a href="login.html">Sign in →</a></p>
@@ -193,97 +114,83 @@
 <script>
   // Redirect if already logged in
   (function() {
-    if (typeof Auth !== 'undefined') {
-      const user = Auth.getSession();
-      if (user) window.location.href = 'index.html';
-    }
+    try {
+      if (Auth && Auth.getSession && Auth.getSession()) {
+        window.location.href = 'index.html';
+      }
+    } catch(e) {}
   })();
-
-  function checkStrength(pw) {
-    const bar   = document.getElementById('pwBar');
-    const label = document.getElementById('pwLabel');
-    if (!pw) { bar.style.width = '0%'; label.textContent = ''; return; }
-    let score = 0;
-    if (pw.length >= 6)  score++;
-    if (pw.length >= 10) score++;
-    if (/[A-Z]/.test(pw)) score++;
-    if (/[0-9]/.test(pw)) score++;
-    if (/[^A-Za-z0-9]/.test(pw)) score++;
-    const levels = [
-      { pct: '20%', color: '#ef4444', text: 'Too short' },
-      { pct: '40%', color: '#f97316', text: 'Weak' },
-      { pct: '60%', color: '#f59e0b', text: 'Fair' },
-      { pct: '80%', color: '#84cc16', text: 'Good' },
-      { pct: '100%',color: '#10b981', text: 'Strong ✓' },
-    ];
-    const lvl = levels[Math.min(score - 1, 4)] || levels[0];
-    bar.style.width = lvl.pct;
-    bar.style.background = lvl.color;
-    label.style.color = lvl.color;
-    label.textContent = lvl.text;
-  }
 
   function showError(msg) {
     document.getElementById('errorText').textContent = msg;
     document.getElementById('errorBanner').classList.add('show');
   }
+
   function clearError() {
     document.getElementById('errorBanner').classList.remove('show');
-    ['firstName','lastName','email','password','confirmPassword'].forEach(id => {
-      const el = document.getElementById(id);
-      if (el) el.classList.remove('error-field');
-    });
+    var ids = ['firstName','lastName','email','password','confirmPassword'];
+    for (var i = 0; i < ids.length; i++) {
+      document.getElementById(ids[i]).classList.remove('error-field');
+    }
+  }
+
+  function markError(id) {
+    var el = document.getElementById(id);
+    if (el) el.classList.add('error-field');
   }
 
   function setLoading(yes) {
-    const btn = document.getElementById('registerBtn');
+    var btn = document.getElementById('registerBtn');
     btn.disabled = yes;
-    btn.innerHTML = yes
-      ? '<div class="spinner"></div> Creating account...'
-      : 'Create My Free Account';
+    btn.innerHTML = yes ? '<div class="spinner"></div> Creating account...' : 'Create My Free Account';
   }
 
   function doRegister() {
     clearError();
 
-    const firstName       = document.getElementById('firstName').value.trim();
-    const lastName        = document.getElementById('lastName').value.trim();
-    const email           = document.getElementById('email').value.trim();
-    const grade           = document.getElementById('grade').value;
-    const school          = document.getElementById('school').value.trim();
-    const password        = document.getElementById('password').value;
-    const confirmPassword = document.getElementById('confirmPassword').value;
-    const terms           = document.getElementById('terms').checked;
+    var firstName       = document.getElementById('firstName').value.trim();
+    var lastName        = document.getElementById('lastName').value.trim();
+    var email           = document.getElementById('email').value.trim();
+    var password        = document.getElementById('password').value;
+    var confirmPassword = document.getElementById('confirmPassword').value;
+    var grade           = document.getElementById('grade').value;
+    var school          = document.getElementById('school').value.trim();
 
-    // Validation
-    if (!firstName) { showError('Please enter your first name.'); document.getElementById('firstName').classList.add('error-field'); return; }
-    if (!lastName)  { showError('Please enter your last name.');  document.getElementById('lastName').classList.add('error-field'); return; }
-    if (!email)     { showError('Please enter your email address.'); document.getElementById('email').classList.add('error-field'); return; }
-    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) { showError('Please enter a valid email address.'); document.getElementById('email').classList.add('error-field'); return; }
-    if (!password || password.length < 6) { showError('Password must be at least 6 characters.'); document.getElementById('password').classList.add('error-field'); return; }
-    if (password !== confirmPassword) { showError('Passwords do not match.'); document.getElementById('confirmPassword').classList.add('error-field'); return; }
-    if (!terms) { showError('Please accept the Terms of Use to continue.'); return; }
+    if (!firstName)                       { showError('Please enter your first name.');            markError('firstName');       return; }
+    if (!lastName)                        { showError('Please enter your last name.');             markError('lastName');        return; }
+    if (!email || email.indexOf('@') < 0) { showError('Please enter a valid email address.');     markError('email');           return; }
+    if (!password || password.length < 6) { showError('Password must be at least 6 characters.'); markError('password');       return; }
+    if (password !== confirmPassword)     { showError('Passwords do not match.');                 markError('confirmPassword'); return; }
 
     setLoading(true);
 
-    setTimeout(() => {
-      const result = Auth.register({ firstName, lastName, email, password, grade, school });
-      setLoading(false);
-      if (result.ok) {
-        // Redirect to home or intended destination
-        const params = new URLSearchParams(window.location.search);
-        window.location.href = params.get('redirect') || 'index.html';
-      } else {
-        showError(result.error);
-        if (result.error.toLowerCase().includes('email')) {
-          document.getElementById('email').classList.add('error-field');
+    setTimeout(function() {
+      try {
+        var result = Auth.register({
+          firstName: firstName,
+          lastName:  lastName,
+          email:     email,
+          password:  password,
+          grade:     grade,
+          school:    school
+        });
+        setLoading(false);
+        if (result.ok) {
+          window.location.href = 'dashboard.html';
+        } else {
+          showError(result.error);
         }
+      } catch(e) {
+        setLoading(false);
+        showError('Something went wrong: ' + e.message);
+        console.error('Registration error:', e);
       }
-    }, 500);
+    }, 400);
   }
 
-  // Allow Enter key
-  document.addEventListener('keydown', e => { if (e.key === 'Enter') doRegister(); });
+  document.addEventListener('keydown', function(e) {
+    if (e.key === 'Enter') doRegister();
+  });
 </script>
 </body>
 </html>

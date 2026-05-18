@@ -23,7 +23,6 @@
   body { font-family: 'DM Sans', sans-serif; background: var(--bg); color: var(--text); min-height: 100vh; }
   h1,h2,h3,h4 { font-family: 'Sora', sans-serif; }
 
-  /* ── Hero ── */
   .hero { background: linear-gradient(135deg, var(--primary) 0%, var(--yellow) 100%); color: white; padding: 40px 16px 36px; }
   .hero-inner { max-width: 680px; margin: 0 auto; }
   .back-btn { display: inline-flex; align-items: center; gap: 6px; color: rgba(255,255,255,.8); font-size: 14px; font-weight: 600; border: none; background: none; cursor: pointer; margin-bottom: 20px; transition: color .2s; }
@@ -33,22 +32,18 @@
   .hero h1 { font-size: clamp(22px,4.5vw,32px); font-weight: 800; }
   .hero .sub { font-size: 13px; color: rgba(255,255,255,.75); margin-top: 2px; }
 
-  /* ── Quiz ── */
   .quiz-wrap { max-width: 680px; margin: 0 auto; padding: 32px 16px 48px; }
 
-  /* Progress */
   .progress-bar-wrap { margin-bottom: 32px; }
   .progress-info { display: flex; justify-content: space-between; font-size: 12px; color: var(--muted); margin-bottom: 8px; }
   .progress-track { height: 8px; background: #e5e7eb; border-radius: 99px; overflow: hidden; }
   .progress-fill { height: 100%; background: linear-gradient(90deg, var(--primary), var(--yellow)); border-radius: 99px; transition: width .35s ease; }
 
-  /* Question card */
   .question-card { animation: slideIn .25s ease both; }
   @keyframes slideIn { from { opacity:0; transform:translateX(24px); } to { opacity:1; transform:none; } }
   .q-category { display: inline-block; font-size: 11px; font-weight: 800; letter-spacing: .06em; text-transform: uppercase; background: #fff7ed; color: var(--primary); padding: 3px 12px; border-radius: 99px; margin-bottom: 14px; }
   .q-text { font-family: 'Sora', sans-serif; font-size: clamp(17px,3vw,22px); font-weight: 700; color: var(--text); margin-bottom: 28px; line-height: 1.4; }
 
-  /* Options */
   .options { display: flex; flex-direction: column; gap: 10px; margin-bottom: 32px; }
   .option-btn {
     display: flex; align-items: center; gap: 14px;
@@ -58,16 +53,14 @@
     color: var(--text); transition: all .15s; font-family: 'DM Sans', sans-serif;
   }
   .option-btn:hover { border-color: rgba(217,119,6,.5); background: #fffbeb; }
-  .option-btn.selected { border-color: var(--primary); background: #fff7ed; color: var(--primary-dark, #92400e); }
+  .option-btn.selected { border-color: var(--primary); background: #fff7ed; color: #92400e; }
   .option-letter {
     width: 28px; height: 28px; border-radius: 50%;
     border: 2px solid #d1d5db; display: flex; align-items: center; justify-content: center;
-    font-size: 12px; font-weight: 800; flex-shrink: 0;
-    transition: all .15s;
+    font-size: 12px; font-weight: 800; flex-shrink: 0; transition: all .15s;
   }
   .option-btn.selected .option-letter { background: var(--primary); border-color: var(--primary); color: white; }
 
-  /* Nav buttons */
   .nav-row { display: flex; gap: 12px; }
   .btn-back { width: 100px; height: 48px; border-radius: var(--radius-lg); border: 1px solid var(--border); background: white; font-family: 'Sora', sans-serif; font-weight: 700; font-size: 14px; cursor: pointer; transition: background .2s; flex-shrink: 0; }
   .btn-back:hover:not(:disabled) { background: #f3f4f6; }
@@ -77,7 +70,7 @@
   .btn-next:disabled { opacity: .4; cursor: not-allowed; transform: none; }
   .answered-count { text-align: center; font-size: 12px; color: var(--muted); margin-top: 14px; }
 
-  /* ── Results ── */
+  /* Results */
   #resultsSection { display: none; }
   #resultsSection.show { display: block; }
 
@@ -94,13 +87,18 @@
 
   .results-body { max-width: 760px; margin: 0 auto; padding: 32px 16px 40px; }
 
-  /* Report header */
   .report-header { text-align: center; margin-bottom: 28px; padding-bottom: 24px; border-bottom: 1px solid var(--border); }
   .report-header .eyebrow { font-size: 10px; letter-spacing: .1em; text-transform: uppercase; color: var(--muted); margin-bottom: 4px; }
   .report-header h2 { font-size: 22px; font-weight: 900; }
   .report-header .byline { font-size: 13px; color: var(--muted); margin-top: 6px; }
 
-  /* Profile card */
+  /* Saved banner */
+  .saved-banner {
+    background: #d1fae5; border: 1px solid #6ee7b7; border-radius: var(--radius-lg);
+    padding: 12px 16px; font-size: 13px; color: #065f46; display: flex; align-items: center; gap: 8px;
+    margin-bottom: 20px; font-weight: 600;
+  }
+
   .profile-card { border-radius: var(--radius-xl); border: 1px solid; padding: 24px; margin-bottom: 24px; }
   .profile-card.orange { background: #fff7ed; border-color: #fed7aa; }
   .profile-card.blue   { background: #eff6ff; border-color: #bfdbfe; }
@@ -120,7 +118,6 @@
   .profile-list li { display: flex; align-items: center; gap: 8px; font-size: 13px; }
   .profile-list li::before { content: "✓"; font-size: 11px; width: 16px; flex-shrink: 0; }
 
-  /* RIASEC chart */
   .riasec-card { background: white; border: 1px solid var(--border); border-radius: var(--radius-xl); padding: 24px; margin-bottom: 24px; }
   .riasec-card h3 { font-size: 16px; font-weight: 800; margin-bottom: 18px; }
   .riasec-row { display: flex; align-items: center; gap: 12px; margin-bottom: 10px; }
@@ -139,7 +136,6 @@
   .riasec-fill.teal   { background: linear-gradient(90deg,#0d9488,#0891b2); }
   .riasec-top-star { font-size: 11px; font-weight: 800; color: var(--primary); flex-shrink: 0; }
 
-  /* Secondary profiles */
   .secondary-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin-bottom: 24px; }
   @media(max-width:500px){ .secondary-grid { grid-template-columns: 1fr; } }
   .secondary-card { border-radius: var(--radius-lg); border: 1px solid; padding: 16px; }
@@ -147,14 +143,12 @@
   .sec-title { font-size: 15px; font-weight: 800; }
   .sec-desc { font-size: 12px; opacity: .8; margin-top: 4px; }
 
-  /* SA Opportunities */
   .opp-card { background: white; border: 1px solid var(--border); border-radius: var(--radius-xl); padding: 24px; margin-bottom: 24px; }
   .opp-card h3 { font-size: 16px; font-weight: 800; margin-bottom: 14px; }
   .opp-list { list-style: none; display: flex; flex-direction: column; gap: 10px; }
   .opp-list li { display: flex; align-items: flex-start; gap: 10px; font-size: 13px; color: var(--muted); }
   .opp-list li::before { content: "✓"; color: var(--primary); flex-shrink: 0; margin-top: 1px; }
 
-  /* Learnerships */
   .learnerships-card { background: linear-gradient(135deg, #eef2ff, #eff6ff); border: 1px solid #c7d2fe; border-radius: var(--radius-xl); padding: 24px; margin-bottom: 24px; }
   .learn-header { display: flex; align-items: center; gap: 14px; margin-bottom: 20px; }
   .learn-icon { width: 44px; height: 44px; border-radius: 12px; background: #4f46e5; display: flex; align-items: center; justify-content: center; font-size: 20px; flex-shrink: 0; }
@@ -173,17 +167,14 @@
   .learn-apply:hover { filter: brightness(1.1); }
   .learn-note { text-align: center; font-size: 11px; color: #6366f1; margin-top: 12px; }
 
-  /* Next steps */
   .next-steps { background: linear-gradient(135deg, #fff7ed, #fffbeb); border: 1px solid #fde68a; border-radius: var(--radius-xl); padding: 24px; margin-bottom: 24px; }
   .next-steps h3 { font-size: 16px; font-weight: 800; margin-bottom: 14px; }
   .next-steps ol { list-style: decimal; padding-left: 20px; display: flex; flex-direction: column; gap: 8px; }
   .next-steps li { font-size: 13px; color: var(--muted); line-height: 1.5; }
   .next-steps strong { color: var(--text); }
 
-  /* Report footer */
   .report-footer { text-align: center; font-size: 11px; color: var(--muted); border-top: 1px solid var(--border); padding-top: 16px; line-height: 1.7; margin-bottom: 32px; }
 
-  /* Action buttons */
   .action-row { display: flex; flex-direction: column; gap: 10px; }
   @media(min-width:480px){ .action-row { flex-direction: row; } }
   .btn-primary { flex: 1; height: 52px; border-radius: var(--radius-lg); background: var(--primary); color: white; font-family: 'Sora', sans-serif; font-weight: 800; font-size: 14px; border: none; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px; transition: filter .2s; text-decoration: none; }
@@ -201,14 +192,15 @@
 </style>
 <script src="auth.js"></script>
 <script>
+  var _currentUser = null;
   (function() {
-    Auth.requireAuth(); 
+    _currentUser = Auth.requireAuth();
   })();
 </script>
 </head>
 <body>
 
-<!-- ── Quiz Section ── -->
+<!-- Quiz Section -->
 <div id="quizSection">
   <div class="hero">
     <div class="hero-inner">
@@ -239,7 +231,7 @@
   </div>
 </div>
 
-<!-- ── Results Section ── -->
+<!-- Results Section -->
 <div id="resultsSection">
   <div class="results-hero" id="resultsHero">
     <div class="results-inner no-print">
@@ -253,7 +245,7 @@
 </div>
 
 <script>
-// ── RIASEC Data ───────────────────────────────────────────────────────────────
+// ── RIASEC Data ──────────────────────────────────────────────────────────────
 const RIASEC_PROFILES = {
   R: { type:"R", label:"Realistic (Doer)",         color:"orange", description:"You enjoy hands-on work, physical tasks, tools, and working with real-world objects and machines.", traits:["Practical & hands-on","Mechanically inclined","Enjoys outdoor work","Good with tools & technology","Athletic & physical"], careers:["Civil/Mechanical Engineer","Electrician","Artisan","Farmer/Agriculturalist","Environmental Technologist","Mining Engineer","Vehicle Mechanic","Carpenter"], saOpportunities:["Scarce skills in engineering trades","TVET apprenticeships (electrical, plumbing, welding)","Eskom, Transnet technical learnerships","Mining sector (Northern Cape has major mines)","Agricultural sector (John Taolo Gaetsewe)"] },
   I: { type:"I", label:"Investigative (Thinker)",  color:"blue",   description:"You love analysing, researching, and solving complex intellectual problems.", traits:["Analytical & curious","Loves research","Strong in maths & science","Independent thinker","Detail-oriented"], careers:["Medical Doctor","Data Scientist","Pharmacist","Chemist","Software Developer","Researcher","Geologist","Actuary"], saOpportunities:["STEM bursaries (NRF, Eskom, Sasol)","Research careers at CSIR, MRC, universities","Growing demand for data scientists in SA","Medical & health sciences — NSFAS eligible","Biotech & pharmaceutical sector growth"] },
@@ -263,7 +255,6 @@ const RIASEC_PROFILES = {
   C: { type:"C", label:"Conventional (Organiser)", color:"teal",   description:"You excel with structured tasks, data, organisation, and systematic processes.", traits:["Organised & systematic","Detail-oriented","Reliable & accurate","Follows procedures","Works well with data"], careers:["Accountant/CA(SA)","Auditor","Financial Analyst","Database Administrator","Compliance Officer","Tax Consultant","Secretary","Supply Chain Manager"], saOpportunities:["CA(SA) — highest starting salaries in SA","SAICA Thuthuka Bursary for accounting","Financial sector growth: banking, insurance, FinTech","Shortage of certified auditors in SA","Government needs more financial compliance experts"] },
 };
 
-// ── Questions ─────────────────────────────────────────────────────────────────
 const QUESTIONS = [
   { id:1, category:"Work Preferences", text:"Which activity would you most enjoy doing on a Saturday?", options:[ {text:"Building or repairing something with your hands",types:["R"],weight:3}, {text:"Reading about a scientific discovery or solving a puzzle",types:["I"],weight:3}, {text:"Painting, drawing, writing, or making music",types:["A"],weight:3}, {text:"Volunteering at a community event or helping a friend",types:["S"],weight:3}, {text:"Organising a fundraiser or running a small business idea",types:["E"],weight:3}, {text:"Creating a spreadsheet, budgeting, or organising files",types:["C"],weight:3} ] },
   { id:2, category:"Learning Style", text:"In school, which type of subject do you find most interesting?", options:[ {text:"Technology, woodwork, or agricultural science",types:["R"],weight:3}, {text:"Mathematics, physical sciences, or biology",types:["I"],weight:3}, {text:"Drama, visual arts, music, or creative writing",types:["A"],weight:3}, {text:"Life Orientation, history, or languages",types:["S"],weight:3}, {text:"Business studies or economics",types:["E"],weight:3}, {text:"Accounting, computer applications, or statistics",types:["C"],weight:3} ] },
@@ -292,45 +283,43 @@ const LEARNERSHIPS = [
   { name:"Transport Learnership", provider:"TETA", sector:"Transport", duration:"12 months", desc:"Freight logistics, passenger transport, and supply chain.", url:"https://www.teta.org.za/learnerships/" },
 ];
 
-// ── State ─────────────────────────────────────────────────────────────────────
+// State
 let currentQ = 0;
 let answers  = {};
 
-// ── Quiz ──────────────────────────────────────────────────────────────────────
 function init() {
-  document.getElementById("heroSub").textContent = `${QUESTIONS.length} questions • ~8 minutes • Free`;
-  document.getElementById("answeredCount").textContent = `0 of ${QUESTIONS.length} questions answered`;
+  document.getElementById("heroSub").textContent = QUESTIONS.length + " questions • ~8 minutes • Free";
+  document.getElementById("answeredCount").textContent = "0 of " + QUESTIONS.length + " questions answered";
   renderQuestion();
 }
 
 function renderQuestion() {
-  const q = QUESTIONS[currentQ];
+  const q       = QUESTIONS[currentQ];
   const answered = Object.keys(answers).length;
-  const pct = Math.round((answered / QUESTIONS.length) * 100);
+  const pct     = Math.round((answered / QUESTIONS.length) * 100);
 
-  document.getElementById("qLabel").textContent = `Question ${currentQ+1} of ${QUESTIONS.length}`;
-  document.getElementById("pctLabel").textContent = `${pct}% complete`;
+  document.getElementById("qLabel").textContent = "Question " + (currentQ+1) + " of " + QUESTIONS.length;
+  document.getElementById("pctLabel").textContent = pct + "% complete";
   document.getElementById("progressFill").style.width = pct + "%";
-  document.getElementById("answeredCount").textContent = `${answered} of ${QUESTIONS.length} questions answered`;
+  document.getElementById("answeredCount").textContent = answered + " of " + QUESTIONS.length + " questions answered";
   document.getElementById("btnBack").disabled = currentQ === 0;
 
   const sel = answers[q.id];
   document.getElementById("btnNext").disabled = sel === undefined;
 
   const card = document.getElementById("questionCard");
-  card.innerHTML = `
-    <div class="q-category">${q.category}</div>
-    <div class="q-text">${q.text}</div>
-    <div class="options">
-      ${q.options.map((opt, idx) => `
-        <button class="option-btn ${sel === idx ? "selected" : ""}" onclick="selectAnswer(${idx})">
-          <span class="option-letter">${String.fromCharCode(65+idx)}</span>
-          ${opt.text}
-        </button>
-      `).join("")}
-    </div>
-  `;
-  // Animate
+  card.innerHTML =
+    '<div class="q-category">' + q.category + '</div>' +
+    '<div class="q-text">' + q.text + '</div>' +
+    '<div class="options">' +
+    q.options.map(function(opt, idx) {
+      return '<button class="option-btn ' + (sel === idx ? 'selected' : '') + '" onclick="selectAnswer(' + idx + ')">' +
+        '<span class="option-letter">' + String.fromCharCode(65+idx) + '</span>' +
+        opt.text +
+        '</button>';
+    }).join('') +
+    '</div>';
+
   card.style.animation = "none";
   void card.offsetWidth;
   card.style.animation = "slideIn .25s ease both";
@@ -340,12 +329,11 @@ function selectAnswer(idx) {
   const q = QUESTIONS[currentQ];
   answers[q.id] = idx;
   document.getElementById("btnNext").disabled = false;
-  // Update option visuals
-  document.querySelectorAll(".option-btn").forEach((btn, i) => {
+  document.querySelectorAll(".option-btn").forEach(function(btn, i) {
     btn.classList.toggle("selected", i === idx);
   });
   const answered = Object.keys(answers).length;
-  document.getElementById("answeredCount").textContent = `${answered} of ${QUESTIONS.length} questions answered`;
+  document.getElementById("answeredCount").textContent = answered + " of " + QUESTIONS.length + " questions answered";
   document.getElementById("progressFill").style.width = Math.round((answered / QUESTIONS.length) * 100) + "%";
 }
 
@@ -365,160 +353,132 @@ function goNext() {
 
 function calculateResults() {
   const scores = { R:0, I:0, A:0, S:0, E:0, C:0 };
-  QUESTIONS.forEach(q => {
+  QUESTIONS.forEach(function(q) {
     const idx = answers[q.id];
     if (idx !== undefined) {
       const opt = q.options[idx];
-      opt.types.forEach(t => { scores[t] += opt.weight / opt.types.length; });
+      opt.types.forEach(function(t) { scores[t] += opt.weight / opt.types.length; });
     }
   });
-
-  const sorted = Object.keys(scores).sort((a,b) => scores[b] - scores[a]);
+  const sorted   = Object.keys(scores).sort(function(a,b){ return scores[b]-scores[a]; });
   const topTypes = sorted.slice(0,3);
   showResults(scores, topTypes);
 }
 
-// ── Results ───────────────────────────────────────────────────────────────────
 function showResults(scores, topTypes) {
+  // ── Save to auth history ──────────────────────────────────────────────────
+  if (_currentUser) {
+    try {
+      const primary = RIASEC_PROFILES[topTypes[0]];
+      Auth.savePsychResult(_currentUser.id, {
+        scores:      scores,
+        topTypes:    topTypes,
+        primaryType: topTypes[0],
+        summary:     'Primary type: ' + (primary ? primary.label : topTypes[0]),
+      });
+    } catch(e) { console.warn('Could not save psych result:', e); }
+  }
+
   document.getElementById("quizSection").style.display = "none";
   const rs = document.getElementById("resultsSection");
   rs.classList.add("show");
 
   const primary = RIASEC_PROFILES[topTypes[0]];
-  const today = new Date().toLocaleDateString("en-ZA", { year:"numeric", month:"long", day:"numeric" });
+  const today   = new Date().toLocaleDateString("en-ZA", { year:"numeric", month:"long", day:"numeric" });
 
-  // Hero colour
   const hero = document.getElementById("resultsHero");
-  hero.className = `results-hero ${primary.color}`;
-  document.getElementById("resultsHeroSub").textContent = `Based on your ${QUESTIONS.length} responses`;
+  hero.className = "results-hero " + primary.color;
+  document.getElementById("resultsHeroSub").textContent = "Based on your " + QUESTIONS.length + " responses";
 
-  // Build report
-  const maxScore = Math.max(...Object.values(scores)) || 1;
+  const maxScore = Math.max.apply(null, Object.values(scores)) || 1;
 
-  const riasecRows = ["R","I","A","S","E","C"].map(type => {
-    const p = RIASEC_PROFILES[type];
+  const riasecRows = ["R","I","A","S","E","C"].map(function(type) {
+    const p   = RIASEC_PROFILES[type];
     const pct = Math.round((scores[type] / maxScore) * 100);
-    return `
-      <div class="riasec-row">
-        <div class="riasec-type-label">${type}</div>
-        <div class="riasec-bar-wrap">
-          <div class="riasec-name-row">
-            <span class="riasec-name">${p.label}</span>
-            <span class="riasec-pts">${Math.round(scores[type])} pts</span>
-          </div>
-          <div class="riasec-track">
-            <div class="riasec-fill ${p.color}" style="width:${pct}%"></div>
-          </div>
-        </div>
-        ${topTypes[0] === type ? '<span class="riasec-top-star">Top ★</span>' : '<span style="width:36px"></span>'}
-      </div>
-    `;
-  }).join("");
+    return '<div class="riasec-row">' +
+      '<div class="riasec-type-label">' + type + '</div>' +
+      '<div class="riasec-bar-wrap">' +
+        '<div class="riasec-name-row">' +
+          '<span class="riasec-name">' + p.label + '</span>' +
+          '<span class="riasec-pts">' + Math.round(scores[type]) + ' pts</span>' +
+        '</div>' +
+        '<div class="riasec-track"><div class="riasec-fill ' + p.color + '" style="width:' + pct + '%"></div></div>' +
+      '</div>' +
+      (topTypes[0] === type ? '<span class="riasec-top-star">Top ★</span>' : '<span style="width:36px"></span>') +
+    '</div>';
+  }).join('');
 
-  const secondaryCards = topTypes.slice(1).map(type => {
+  const secondaryCards = topTypes.slice(1).map(function(type) {
     const p = RIASEC_PROFILES[type];
-    return `
-      <div class="secondary-card ${p.color}">
-        <div class="sec-eyebrow" style="color:inherit;opacity:.7">Secondary Profile</div>
-        <div class="sec-title">${p.label}</div>
-        <div class="sec-desc">${p.description}</div>
-      </div>
-    `;
-  }).join("");
+    return '<div class="secondary-card ' + p.color + '">' +
+      '<div class="sec-eyebrow" style="opacity:.7">Secondary Profile</div>' +
+      '<div class="sec-title">' + p.label + '</div>' +
+      '<div class="sec-desc">' + p.description + '</div>' +
+    '</div>';
+  }).join('');
 
-  const learnCards = LEARNERSHIPS.map(l => `
-    <div class="learn-item">
-      <div class="learn-item-top">
-        <div class="learn-name">${l.name}</div>
-        <span class="learn-sector-badge">${l.sector}</span>
-      </div>
-      <div class="learn-meta">${l.provider} • ${l.duration}</div>
-      <div class="learn-desc">${l.desc}</div>
-      <a href="${l.url}" target="_blank" rel="noopener" class="learn-apply">Apply Now ↗</a>
-    </div>
-  `).join("");
+  const learnCards = LEARNERSHIPS.map(function(l) {
+    return '<div class="learn-item">' +
+      '<div class="learn-item-top"><div class="learn-name">' + l.name + '</div><span class="learn-sector-badge">' + l.sector + '</span></div>' +
+      '<div class="learn-meta">' + l.provider + ' • ' + l.duration + '</div>' +
+      '<div class="learn-desc">' + l.desc + '</div>' +
+      '<a href="' + l.url + '" target="_blank" rel="noopener" class="learn-apply">Apply Now ↗</a>' +
+    '</div>';
+  }).join('');
 
-  document.getElementById("reportBody").innerHTML = `
-    <div class="report-header">
-      <div class="eyebrow">Phunya Tsela Career Expo 2026 — Student Career Report</div>
-      <h2>Career Psychometric Summary</h2>
-      <div class="byline">Generated: ${today}</div>
-    </div>
+  document.getElementById("reportBody").innerHTML =
+    '<div class="saved-banner">✅ Your results have been saved to your dashboard.</div>' +
+    '<div class="report-header">' +
+      '<div class="eyebrow">Phunya Tsela Career Expo 2026 — Student Career Report</div>' +
+      '<h2>Career Psychometric Summary</h2>' +
+      '<div class="byline">Generated: ' + today + '</div>' +
+    '</div>' +
 
-    <div class="profile-card ${primary.color}">
-      <div class="profile-card-top">
-        <div>
-          <div class="profile-eyebrow">Primary Career Type</div>
-          <div class="profile-type">${primary.label}</div>
-          <div class="profile-desc">${primary.description}</div>
-        </div>
-        <div class="profile-letter">${primary.type}</div>
-      </div>
-      <div class="profile-grid">
-        <div>
-          <div class="profile-grid-label">Your Key Traits</div>
-          <ul class="profile-list">
-            ${primary.traits.map(t => `<li>${t}</li>`).join("")}
-          </ul>
-        </div>
-        <div>
-          <div class="profile-grid-label">Matching Career Paths</div>
-          <ul class="profile-list">
-            ${primary.careers.slice(0,6).map(c => `<li>${c}</li>`).join("")}
-          </ul>
-        </div>
-      </div>
-    </div>
+    '<div class="profile-card ' + primary.color + '">' +
+      '<div class="profile-card-top">' +
+        '<div>' +
+          '<div class="profile-eyebrow">Primary Career Type</div>' +
+          '<div class="profile-type">' + primary.label + '</div>' +
+          '<div class="profile-desc">' + primary.description + '</div>' +
+        '</div>' +
+        '<div class="profile-letter">' + primary.type + '</div>' +
+      '</div>' +
+      '<div class="profile-grid">' +
+        '<div><div class="profile-grid-label">Your Key Traits</div><ul class="profile-list">' + primary.traits.map(function(t){ return '<li>'+t+'</li>'; }).join('') + '</ul></div>' +
+        '<div><div class="profile-grid-label">Matching Career Paths</div><ul class="profile-list">' + primary.careers.slice(0,6).map(function(c){ return '<li>'+c+'</li>'; }).join('') + '</ul></div>' +
+      '</div>' +
+    '</div>' +
 
-    <div class="riasec-card">
-      <h3>Your RIASEC Profile Scores</h3>
-      ${riasecRows}
-    </div>
+    '<div class="riasec-card"><h3>Your RIASEC Profile Scores</h3>' + riasecRows + '</div>' +
+    (topTypes.length > 1 ? '<div class="secondary-grid">' + secondaryCards + '</div>' : '') +
 
-    ${topTypes.length > 1 ? `<div class="secondary-grid">${secondaryCards}</div>` : ""}
+    '<div class="opp-card"><h3>SA Opportunities for Your Profile</h3><ul class="opp-list">' + primary.saOpportunities.map(function(o){ return '<li>'+o+'</li>'; }).join('') + '</ul></div>' +
 
-    <div class="opp-card">
-      <h3>SA Opportunities for Your Profile</h3>
-      <ul class="opp-list">
-        ${primary.saOpportunities.map(o => `<li>${o}</li>`).join("")}
-      </ul>
-    </div>
+    '<div class="learnerships-card no-print">' +
+      '<div class="learn-header"><div class="learn-icon">💼</div><div><div class="learn-title">Learnerships for Matric Students</div><div class="learn-sub">Paid work-based learning — earn while you learn</div></div></div>' +
+      '<div class="learn-grid">' + learnCards + '</div>' +
+      '<p class="learn-note">Learnerships are NQF-accredited programmes where you receive a monthly stipend while gaining workplace experience</p>' +
+    '</div>' +
 
-    <div class="learnerships-card no-print">
-      <div class="learn-header">
-        <div class="learn-icon">💼</div>
-        <div>
-          <div class="learn-title">Learnerships for Matric Students</div>
-          <div class="learn-sub">Paid work-based learning programmes — earn while you learn</div>
-        </div>
-      </div>
-      <div class="learn-grid">${learnCards}</div>
-      <p class="learn-note">Learnerships are NQF-accredited programmes where you receive a monthly stipend while gaining workplace experience</p>
-    </div>
+    '<div class="next-steps"><h3>📋 Your Next Steps</h3><ol>' +
+      '<li>Use our <strong>APS Calculator</strong> to find specific university courses you qualify for</li>' +
+      '<li>Visit the <strong>Bursary Portal</strong> to find funding for your chosen field</li>' +
+      '<li>Research the top universities offering your preferred courses</li>' +
+      '<li>Apply for <strong>NSFAS</strong> at nsfas.org.za before the closing date (November)</li>' +
+      '<li>Attend the Phunya Tsela Career Expo 2026 to meet employers and universities face-to-face</li>' +
+    '</ol></div>' +
 
-    <div class="next-steps">
-      <h3>📋 Your Next Steps</h3>
-      <ol>
-        <li>Use our <strong>APS Calculator</strong> to find specific university courses you qualify for</li>
-        <li>Visit the <strong>Bursary Portal</strong> to find funding for your chosen field</li>
-        <li>Research the top universities offering your preferred courses</li>
-        <li>Apply for <strong>NSFAS</strong> at nsfas.org.za before the closing date (November)</li>
-        <li>Attend the Phunya Tsela Career Expo 2026 to meet employers and universities face-to-face</li>
-      </ol>
-    </div>
+    '<div class="report-footer">' +
+      '<p>This report was generated by the Phunya Tsela Career Expo Student Portal</p>' +
+      '<p>Kasi Career Expo • kasiexpo.co.za • Kuruman, Northern Cape</p>' +
+      '<p>Results are indicative. Consult a registered career counsellor for professional guidance.</p>' +
+    '</div>';
 
-    <div class="report-footer">
-      <p>This report was generated by the Phunya Tsela Career Expo Student Portal</p>
-      <p>Kasi Career Expo • kasiexpo.co.za • Kuruman, Northern Cape</p>
-      <p>Results are indicative. Consult a registered career counsellor for professional guidance.</p>
-    </div>
-  `;
-
-  document.getElementById("actionRow").innerHTML = `
-    <button class="btn-primary" onclick="window.print()">⬇️ Download / Print My Report</button>
-    <a href="aps-calculator.html" class="btn-outline">Calculate My APS Score</a>
-    <button class="btn-ghost" onclick="restart()">↩ Retake Test</button>
-  `;
+  document.getElementById("actionRow").innerHTML =
+    '<button class="btn-primary" onclick="window.print()">⬇️ Download / Print My Report</button>' +
+    '<a href="aps-calculator.html" class="btn-outline">Calculate My APS Score</a>' +
+    '<a href="dashboard.html" class="btn-outline">View My Dashboard</a>' +
+    '<button class="btn-ghost" onclick="restart()">↩ Retake Test</button>';
 
   window.scrollTo({ top: 0, behavior: "smooth" });
 }

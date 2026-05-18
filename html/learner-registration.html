@@ -483,16 +483,83 @@
     border-radius: var(--radius-lg); padding: 14px 20px;
     font-size: 13px; color: #4c1d95; max-width: 440px; margin: 8px 0 16px; line-height: 1.6;
   }
+
+  /* ── Portal cards ── */
+  .portal-section {
+    width: 100%; max-width: 500px; margin: 28px 0 0;
+  }
+  .portal-heading {
+    font-size: 11px; font-weight: 700; letter-spacing: .1em;
+    text-transform: uppercase; color: #9ca3af; margin-bottom: 14px;
+  }
+  .portal-grid {
+  display: flex;
+  justify-content: center;
+  gap: 12px;
+}
+  .portal-card {
+    display: flex; flex-direction: column; align-items: center; gap: 8px;
+    padding: 18px 10px 14px;
+    border-radius: 14px; text-decoration: none;
+    transition: all .2s; cursor: pointer;
+  }
+  .portal-card.primary {
+    background: #fffbeb; border: 2px solid var(--gold);
+  }
+  .portal-card.secondary {
+    background: var(--white); border: 1.5px solid var(--border);
+  }
+  .portal-card.primary:hover {
+    box-shadow: 0 6px 24px rgba(217,119,6,.2);
+    transform: translateY(-2px);
+  }
+  .portal-card.secondary:hover {
+    border-color: #9ca3af;
+    box-shadow: 0 4px 16px rgba(0,0,0,.07);
+    transform: translateY(-2px);
+  }
+  .portal-card-icon { font-size: 26px; }
+  .portal-card-badge {
+    display: inline-block; font-size: 10px; font-weight: 700;
+    background: #fde68a; color: #92400e;
+    border-radius: 4px; padding: 2px 8px; letter-spacing: .05em;
+  }
+  .portal-card-label {
+    font-size: 13px; font-weight: 700; color: var(--text);
+    text-align: center; line-height: 1.3;
+  }
+  .portal-card.primary .portal-card-label { color: #92400e; }
+  .portal-card-desc {
+    font-size: 11px; color: var(--muted);
+    text-align: center; line-height: 1.4;
+  }
+  .portal-card.primary .portal-card-desc { color: #b45309; }
+
   .btn-home {
     display: inline-flex; align-items: center; gap: 8px;
-    background: linear-gradient(135deg, #f59e0b, #d97706);
-    color: white; font-family: 'Syne', sans-serif;
-    font-weight: 700; font-size: 15px; padding: 14px 32px;
-    border-radius: var(--radius-lg); border: none; cursor: pointer;
-    margin-top: 20px; box-shadow: 0 6px 20px rgba(217,119,6,.35);
-    text-decoration: none; transition: filter .2s;
+    font-size: 14px; font-weight: 600; color: var(--muted);
+    background: transparent; border: 1.5px solid var(--border);
+    border-radius: var(--radius-lg); padding: 10px 22px;
+    cursor: pointer; text-decoration: none;
+    transition: all .2s; margin-top: 24px;
+    font-family: 'Plus Jakarta Sans', sans-serif;
   }
-  .btn-home:hover { filter: brightness(1.08); }
+  .btn-home:hover {
+    background: var(--muted-light); border-color: #9ca3af; color: var(--text);
+  }
+
+  .success-divider {
+    width: 100%; max-width: 500px;
+    border: none; border-top: 1px dashed var(--amber-border);
+    margin: 24px 0 0;
+  }
+
+  @media(max-width: 480px) {
+    .portal-grid { grid-template-columns: 1fr; max-width: 300px; }
+    .hero-inner { padding: 40px 20px 36px; }
+    .form-section { padding: 22px 18px; }
+    .hero-meta { flex-direction: column; align-items: center; }
+  }
 
   /* ── Spinner ── */
   @keyframes spin { to { transform: rotate(360deg); } }
@@ -510,13 +577,6 @@
     margin: 20px 0;
   }
   .field-divider.purple { border-top-color: var(--purple-border); }
-
-  /* ── Responsive ── */
-  @media(max-width: 480px) {
-    .hero-inner { padding: 40px 20px 36px; }
-    .form-section { padding: 22px 18px; }
-    .hero-meta { flex-direction: column; align-items: center; }
-  }
 </style>
 </head>
 <body>
@@ -533,21 +593,44 @@
 
 <main>
 
-  <!-- Success Screen -->
+  <!-- ══════════════════════════════════════════════════════════
+       SUCCESS SCREEN
+  ══════════════════════════════════════════════════════════ -->
   <div id="successScreen">
-    <div class="success-confetti">🎉</div>
+    <div class="success-confetti"></div>
     <div class="success-icon">✓</div>
     <h2>You're Registered!</h2>
     <p>Welcome, <strong id="successName"></strong>! Your registration for <strong>Phunya Tsela Career Expo 2026</strong> has been received.</p>
     <div class="success-ref" id="successRef"></div>
     <div id="successHelpNote" class="success-help-note" style="display:none;">
-      🙋 You've indicated you need help with applications — our team will reach out before the expo to connect you with the right support sessions and advisors.
+       You've indicated you need help with applications — our team will reach out before the expo to connect you with the right support sessions and advisors.
     </div>
     <p style="font-size:13px;">Keep an eye on your inbox and phone — we'll send event updates, programme details, and your entry confirmation to <strong id="successContact"></strong></p>
+
+    <!-- Portal links -->
+    <hr class="success-divider" />
+    <div class="portal-section">
+      <p class="portal-heading">Access your student portal</p>
+      <div class="portal-grid">
+
+        <a class="portal-card primary" href="dashboard.html">
+          <span class="portal-card-icon"></span>
+          <span class="portal-card-badge">Start here</span>
+          <span class="portal-card-label">My Dashboard</span>
+          <span class="portal-card-desc">Track registration &amp; expo tools</span>
+        </a>
+
+
+      </div>
+    </div>
+
     <a href="index.html" class="btn-home">← Back to Expo Home</a>
   </div>
 
-  <!-- Form Wrapper -->
+
+  <!-- ══════════════════════════════════════════════════════════
+       FORM WRAPPER
+  ══════════════════════════════════════════════════════════ -->
   <div class="page-wrap" id="formWrap">
 
     <!-- Hero -->
@@ -622,9 +705,7 @@
       </div>
       <div class="field-row-2">
         <div class="field">
-          <label class="field-label">
-            Cell Number <span class="req">*</span>
-          </label>
+          <label class="field-label">Cell Number <span class="req">*</span></label>
           <input type="tel" id="cellNumber" class="field-input" placeholder="+27 xx xxx xxxx" oninput="updateProgress()" />
         </div>
         <div class="field">
@@ -800,7 +881,7 @@
       </div>
     </div>
 
-    <!-- ── Section 5: Parent / Emergency Contact (merged) ── -->
+    <!-- ── Section 5: Parent / Emergency Contact ── -->
     <div class="form-section" id="sec5">
       <div class="section-header">
         <div class="section-num">5</div>
@@ -961,14 +1042,14 @@ var CHECK_DEFS = {
 };
 
 var HELP_NEEDS_DEFS = [
-  { id: 'hn_funding',     label: 'Funding Applications',        desc: 'NSFAS, bursaries, grants & scholarships' },
-  { id: 'hn_univ',        label: 'University Applications',     desc: 'CAO, direct applications, deadlines' },
-  { id: 'hn_tvet',        label: 'TVET / College Applications', desc: 'Courses, N-levels, artisanship' },
-  { id: 'hn_career',      label: 'Career Guidance',             desc: 'Choosing a career path that suits me' },
-  { id: 'hn_aps',         label: 'APS Score Calculation',       desc: 'Understanding my admission points' },
-  { id: 'hn_cv',          label: 'CV & Cover Letter',           desc: 'Writing my first CV or job application' },
-  { id: 'hn_learnerships',label: 'Learnerships & Internships',  desc: 'Finding workplace training & apprenticeships' },
-  { id: 'hn_skills',      label: 'Skills Programmes',           desc: 'Short courses, artisans, trades' },
+  { id: 'hn_funding',      label: 'Funding Applications',        desc: 'NSFAS, bursaries, grants & scholarships' },
+  { id: 'hn_univ',         label: 'University Applications',     desc: 'CAO, direct applications, deadlines' },
+  { id: 'hn_tvet',         label: 'TVET / College Applications', desc: 'Courses, N-levels, artisanship' },
+  { id: 'hn_career',       label: 'Career Guidance',             desc: 'Choosing a career path that suits me' },
+  { id: 'hn_aps',          label: 'APS Score Calculation',       desc: 'Understanding my admission points' },
+  { id: 'hn_cv',           label: 'CV & Cover Letter',           desc: 'Writing my first CV or job application' },
+  { id: 'hn_learnerships', label: 'Learnerships & Internships',  desc: 'Finding workplace training & apprenticeships' },
+  { id: 'hn_skills',       label: 'Skills Programmes',           desc: 'Short courses, artisans, trades' },
 ];
 
 // ── Build pill groups ─────────────────────────────────────────────────────────
@@ -1025,7 +1106,6 @@ function toggleHelpNeed(el) {
   } else {
     state.helpNeeds = state.helpNeeds.filter(function(v) { return v !== val; });
   }
-  // Show urgency + details if any help need selected
   var hasHelp = state.helpNeeds.length > 0;
   document.getElementById('helpUrgencyWrap').classList.toggle('show', hasHelp);
   document.getElementById('helpDetailsWrap').classList.toggle('show', hasHelp);
@@ -1078,18 +1158,16 @@ function updateProgress() {
     return el && el.value.trim() !== '';
   }).length;
 
-  // guardianRelSelect also required
   var relEl = document.getElementById('guardianRelSelect');
   if (relEl && relEl.value) filled++;
 
-  var total = REQUIRED_FIELDS.length + 1 + 1; // +1 guardianRel, +1 terms
+  var total = REQUIRED_FIELDS.length + 1 + 1;
   if (state.termsAgreed) filled++;
 
   var pct = Math.round((filled / total) * 100);
   document.getElementById('progressBar').style.width = pct + '%';
   document.getElementById('progressPct').textContent = pct + '%';
 
-  // Step labels
   var steps = [
     ['firstName','lastName','cellNumber','dob','gender','homeTown'],
     ['schoolName','grade'],
@@ -1149,64 +1227,60 @@ function handleSubmit() {
   if (!guardianRel)   { showErr('Please select the relationship of your emergency contact to you.'); return; }
   if (!state.termsAgreed) { showErr('Please read and accept the terms and POPIA consent to continue.'); return; }
 
-  // Build FormData
   var fd = new FormData();
   fd.append('email', email || '(not provided)');
 
-  // ── Generate reference number BEFORE submitting so it is captured in the email ──
   var ref = 'PT2026-' + Math.random().toString(36).substr(2,6).toUpperCase();
   fd.append('Registration Reference', ref);
 
   // Section 1 — Personal
-  fd.append('First Name',       firstName);
-  fd.append('Last Name',        lastName);
-  fd.append('Full Name',        firstName + ' ' + lastName);
-  fd.append('Cell Number',      cell);
-  fd.append('Email Address',    email || '—');
-  fd.append('Date of Birth',    dob);
-  fd.append('ID Number',        document.getElementById('idNumber').value.trim() || '—');
-  fd.append('Gender',           gender);
-  fd.append('Home Town',        homeTown);
+  fd.append('First Name',    firstName);
+  fd.append('Last Name',     lastName);
+  fd.append('Full Name',     firstName + ' ' + lastName);
+  fd.append('Cell Number',   cell);
+  fd.append('Email Address', email || '—');
+  fd.append('Date of Birth', dob);
+  fd.append('ID Number',     document.getElementById('idNumber').value.trim() || '—');
+  fd.append('Gender',        gender);
+  fd.append('Home Town',     homeTown);
 
   // Section 2 — School
-  fd.append('School Name',      schoolName);
-  fd.append('Grade / Level',    grade);
-  fd.append('School District',  document.getElementById('schoolDistrict').value || '—');
-  fd.append('Subject Stream',   document.getElementById('stream').value || '—');
-  fd.append('Expected Matric',  state.matricYear || '—');
+  fd.append('School Name',     schoolName);
+  fd.append('Grade / Level',   grade);
+  fd.append('School District', document.getElementById('schoolDistrict').value || '—');
+  fd.append('Subject Stream',  document.getElementById('stream').value || '—');
+  fd.append('Expected Matric', state.matricYear || '—');
 
   // Section 3 — Interests
-  fd.append('Career Interests',  state.careerInterests.length ? state.careerInterests.join(', ') : '—');
-  fd.append('Sessions',          state.sessions.length ? state.sessions.join(', ') : '—');
-  fd.append('Expectations',      document.getElementById('expectations').value.trim() || '—');
-  fd.append('Heard About Expo',  document.getElementById('hearAbout').value || '—');
+  fd.append('Career Interests', state.careerInterests.length ? state.careerInterests.join(', ') : '—');
+  fd.append('Sessions',         state.sessions.length ? state.sessions.join(', ') : '—');
+  fd.append('Expectations',     document.getElementById('expectations').value.trim() || '—');
+  fd.append('Heard About Expo', document.getElementById('hearAbout').value || '—');
 
   // Section 4 — Help
-  fd.append('Help Needed',           state.helpNeeds.length ? state.helpNeeds.join(', ') : 'None indicated');
-  fd.append('Help Urgency',          state.helpUrgency || '—');
-  fd.append('Help Details',          document.getElementById('helpDetails').value.trim() || '—');
-  fd.append('Needs Bursary Info',    state.needsBursary || '—');
+  fd.append('Help Needed',        state.helpNeeds.length ? state.helpNeeds.join(', ') : 'None indicated');
+  fd.append('Help Urgency',       state.helpUrgency || '—');
+  fd.append('Help Details',       document.getElementById('helpDetails').value.trim() || '—');
+  fd.append('Needs Bursary Info', state.needsBursary || '—');
 
   // Section 5 — Parent / Emergency Contact
-  fd.append('Guardian Title',            document.getElementById('guardianTitle').value || '—');
-  fd.append('Guardian Full Name',        guardianName);
-  fd.append('Guardian Contact Number',   guardianPhone);
-  fd.append('Guardian Relationship',     guardianRel);
-  fd.append('Guardian Employment Status',state.guardianEmployed || '—');
-  fd.append('Attending With School',     state.withSchool || '—');
-  fd.append('Teacher / Group Leader',    document.getElementById('teacherName').value.trim() || '—');
-  fd.append('Special Requirements',      document.getElementById('specialReqs').value.trim() || 'None');
+  fd.append('Guardian Title',             document.getElementById('guardianTitle').value || '—');
+  fd.append('Guardian Full Name',         guardianName);
+  fd.append('Guardian Contact Number',    guardianPhone);
+  fd.append('Guardian Relationship',      guardianRel);
+  fd.append('Guardian Employment Status', state.guardianEmployed || '—');
+  fd.append('Attending With School',      state.withSchool || '—');
+  fd.append('Teacher / Group Leader',     document.getElementById('teacherName').value.trim() || '—');
+  fd.append('Special Requirements',       document.getElementById('specialReqs').value.trim() || 'None');
 
   // Consent
   fd.append('Terms & POPIA Agreed', 'Yes');
   fd.append('Event', 'Phunya Tsela Career Expo 2026 — 24–25 June');
 
-  // Disable button
   var btn = document.getElementById('submitBtn');
   btn.disabled = true;
   btn.innerHTML = '<span class="spinner"></span> Registering…';
 
-  // POST to Formspree
   fetch('https://formspree.io/f/mykopvqy', {
     method:  'POST',
     body:    fd,
@@ -1214,13 +1288,10 @@ function handleSubmit() {
   })
   .then(function(res) {
     if (res.ok) {
-      document.getElementById('successName').textContent = firstName + ' ' + lastName;
-      var contact = email ? email : cell;
-      document.getElementById('successContact').textContent = contact;
-      // Display the same ref that was submitted
-      document.getElementById('successRef').textContent = '📋 Ref: ' + ref;
+      document.getElementById('successName').textContent    = firstName + ' ' + lastName;
+      document.getElementById('successContact').textContent = email ? email : cell;
+      document.getElementById('successRef').textContent     = '📋 Ref: ' + ref;
 
-      // Show help note if they selected any help needs
       if (state.helpNeeds.length > 0) {
         document.getElementById('successHelpNote').style.display = 'block';
       }
