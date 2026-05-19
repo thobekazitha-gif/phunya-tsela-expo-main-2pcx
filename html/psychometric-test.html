@@ -6,199 +6,148 @@
 <title>Career Psychometric Test — Phunya Tsela</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;600;700;800;900&family=DM+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="auth.js?v=3.1"></script>
 <style>
-  :root {
-    --primary: #d97706;
-    --yellow: #f59e0b;
-    --bg: #fafaf9;
-    --card: #fff;
-    --border: #e5e7eb;
-    --text: #111827;
-    --muted: #6b7280;
-    --radius: 12px;
-    --radius-lg: 16px;
-    --radius-xl: 20px;
-  }
-  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-  body { font-family: 'DM Sans', sans-serif; background: var(--bg); color: var(--text); min-height: 100vh; }
-  h1,h2,h3,h4 { font-family: 'Sora', sans-serif; }
+  :root { --primary:#d97706; --yellow:#f59e0b; --bg:#fafaf9; --card:#fff; --border:#e5e7eb; --text:#111827; --muted:#6b7280; --radius:12px; --radius-lg:16px; --radius-xl:20px; }
+  *, *::before, *::after { box-sizing:border-box; margin:0; padding:0; }
+  body { font-family:'DM Sans',sans-serif; background:var(--bg); color:var(--text); min-height:100vh; }
+  h1,h2,h3,h4 { font-family:'Sora',sans-serif; }
 
-  .hero { background: linear-gradient(135deg, var(--primary) 0%, var(--yellow) 100%); color: white; padding: 40px 16px 36px; }
-  .hero-inner { max-width: 680px; margin: 0 auto; }
-  .back-btn { display: inline-flex; align-items: center; gap: 6px; color: rgba(255,255,255,.8); font-size: 14px; font-weight: 600; border: none; background: none; cursor: pointer; margin-bottom: 20px; transition: color .2s; }
-  .back-btn:hover { color: white; }
-  .hero-row { display: flex; align-items: center; gap: 16px; }
-  .hero-icon { width: 52px; height: 52px; border-radius: 16px; background: rgba(255,255,255,.2); display: flex; align-items: center; justify-content: center; font-size: 26px; flex-shrink: 0; }
-  .hero h1 { font-size: clamp(22px,4.5vw,32px); font-weight: 800; }
-  .hero .sub { font-size: 13px; color: rgba(255,255,255,.75); margin-top: 2px; }
+  #pageLoader { position:fixed; inset:0; background:var(--bg); display:flex; align-items:center; justify-content:center; z-index:999; transition:opacity .3s; }
+  #pageLoader.hidden { opacity:0; pointer-events:none; }
+  .loader-spinner { width:36px; height:36px; border:3px solid #fde68a; border-top-color:var(--primary); border-radius:50%; animation:loadspin .7s linear infinite; }
+  @keyframes loadspin { to { transform:rotate(360deg); } }
 
-  .quiz-wrap { max-width: 680px; margin: 0 auto; padding: 32px 16px 48px; }
+  .hero { background:linear-gradient(135deg,var(--primary) 0%,var(--yellow) 100%); color:white; padding:40px 16px 36px; }
+  .hero-inner { max-width:680px; margin:0 auto; }
+  .back-btn { display:inline-flex; align-items:center; gap:6px; color:rgba(255,255,255,.8); font-size:14px; font-weight:600; border:none; background:none; cursor:pointer; margin-bottom:20px; transition:color .2s; }
+  .back-btn:hover { color:white; }
+  .hero-row { display:flex; align-items:center; gap:16px; }
+  .hero-icon { width:52px; height:52px; border-radius:16px; background:rgba(255,255,255,.2); display:flex; align-items:center; justify-content:center; font-size:26px; flex-shrink:0; }
+  .hero h1 { font-size:clamp(22px,4.5vw,32px); font-weight:800; }
+  .hero .sub { font-size:13px; color:rgba(255,255,255,.75); margin-top:2px; }
 
-  .progress-bar-wrap { margin-bottom: 32px; }
-  .progress-info { display: flex; justify-content: space-between; font-size: 12px; color: var(--muted); margin-bottom: 8px; }
-  .progress-track { height: 8px; background: #e5e7eb; border-radius: 99px; overflow: hidden; }
-  .progress-fill { height: 100%; background: linear-gradient(90deg, var(--primary), var(--yellow)); border-radius: 99px; transition: width .35s ease; }
+  .quiz-wrap { max-width:680px; margin:0 auto; padding:32px 16px 48px; }
+  .progress-bar-wrap { margin-bottom:32px; }
+  .progress-info { display:flex; justify-content:space-between; font-size:12px; color:var(--muted); margin-bottom:8px; }
+  .progress-track { height:8px; background:#e5e7eb; border-radius:99px; overflow:hidden; }
+  .progress-fill { height:100%; background:linear-gradient(90deg,var(--primary),var(--yellow)); border-radius:99px; transition:width .35s ease; }
 
-  .question-card { animation: slideIn .25s ease both; }
+  .question-card { animation:slideIn .25s ease both; }
   @keyframes slideIn { from { opacity:0; transform:translateX(24px); } to { opacity:1; transform:none; } }
-  .q-category { display: inline-block; font-size: 11px; font-weight: 800; letter-spacing: .06em; text-transform: uppercase; background: #fff7ed; color: var(--primary); padding: 3px 12px; border-radius: 99px; margin-bottom: 14px; }
-  .q-text { font-family: 'Sora', sans-serif; font-size: clamp(17px,3vw,22px); font-weight: 700; color: var(--text); margin-bottom: 28px; line-height: 1.4; }
+  .q-category { display:inline-block; font-size:11px; font-weight:800; letter-spacing:.06em; text-transform:uppercase; background:#fff7ed; color:var(--primary); padding:3px 12px; border-radius:99px; margin-bottom:14px; }
+  .q-text { font-family:'Sora',sans-serif; font-size:clamp(17px,3vw,22px); font-weight:700; color:var(--text); margin-bottom:28px; line-height:1.4; }
 
-  .options { display: flex; flex-direction: column; gap: 10px; margin-bottom: 32px; }
-  .option-btn {
-    display: flex; align-items: center; gap: 14px;
-    padding: 14px 16px; border-radius: var(--radius-lg);
-    border: 2px solid var(--border); background: white;
-    cursor: pointer; text-align: left; font-size: 14px; font-weight: 500;
-    color: var(--text); transition: all .15s; font-family: 'DM Sans', sans-serif;
-  }
-  .option-btn:hover { border-color: rgba(217,119,6,.5); background: #fffbeb; }
-  .option-btn.selected { border-color: var(--primary); background: #fff7ed; color: #92400e; }
-  .option-letter {
-    width: 28px; height: 28px; border-radius: 50%;
-    border: 2px solid #d1d5db; display: flex; align-items: center; justify-content: center;
-    font-size: 12px; font-weight: 800; flex-shrink: 0; transition: all .15s;
-  }
-  .option-btn.selected .option-letter { background: var(--primary); border-color: var(--primary); color: white; }
+  .options { display:flex; flex-direction:column; gap:10px; margin-bottom:32px; }
+  .option-btn { display:flex; align-items:center; gap:14px; padding:14px 16px; border-radius:var(--radius-lg); border:2px solid var(--border); background:white; cursor:pointer; text-align:left; font-size:14px; font-weight:500; color:var(--text); transition:all .15s; font-family:'DM Sans',sans-serif; }
+  .option-btn:hover { border-color:rgba(217,119,6,.5); background:#fffbeb; }
+  .option-btn.selected { border-color:var(--primary); background:#fff7ed; color:#92400e; }
+  .option-letter { width:28px; height:28px; border-radius:50%; border:2px solid #d1d5db; display:flex; align-items:center; justify-content:center; font-size:12px; font-weight:800; flex-shrink:0; transition:all .15s; }
+  .option-btn.selected .option-letter { background:var(--primary); border-color:var(--primary); color:white; }
 
-  .nav-row { display: flex; gap: 12px; }
-  .btn-back { width: 100px; height: 48px; border-radius: var(--radius-lg); border: 1px solid var(--border); background: white; font-family: 'Sora', sans-serif; font-weight: 700; font-size: 14px; cursor: pointer; transition: background .2s; flex-shrink: 0; }
-  .btn-back:hover:not(:disabled) { background: #f3f4f6; }
-  .btn-back:disabled { opacity: .4; cursor: not-allowed; }
-  .btn-next { flex: 1; height: 48px; border-radius: var(--radius-lg); background: var(--primary); color: white; font-family: 'Sora', sans-serif; font-weight: 800; font-size: 14px; border: none; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px; transition: filter .2s, transform .15s; }
-  .btn-next:hover:not(:disabled) { filter: brightness(1.08); transform: translateY(-1px); }
-  .btn-next:disabled { opacity: .4; cursor: not-allowed; transform: none; }
-  .answered-count { text-align: center; font-size: 12px; color: var(--muted); margin-top: 14px; }
+  .nav-row { display:flex; gap:12px; }
+  .btn-back { width:100px; height:48px; border-radius:var(--radius-lg); border:1px solid var(--border); background:white; font-family:'Sora',sans-serif; font-weight:700; font-size:14px; cursor:pointer; transition:background .2s; flex-shrink:0; }
+  .btn-back:hover:not(:disabled) { background:#f3f4f6; }
+  .btn-back:disabled { opacity:.4; cursor:not-allowed; }
+  .btn-next { flex:1; height:48px; border-radius:var(--radius-lg); background:var(--primary); color:white; font-family:'Sora',sans-serif; font-weight:800; font-size:14px; border:none; cursor:pointer; display:flex; align-items:center; justify-content:center; gap:8px; transition:filter .2s, transform .15s; }
+  .btn-next:hover:not(:disabled) { filter:brightness(1.08); transform:translateY(-1px); }
+  .btn-next:disabled { opacity:.4; cursor:not-allowed; transform:none; }
+  .answered-count { text-align:center; font-size:12px; color:var(--muted); margin-top:14px; }
 
-  /* Results */
-  #resultsSection { display: none; }
-  #resultsSection.show { display: block; }
+  #resultsSection { display:none; }
+  #resultsSection.show { display:block; }
 
-  .results-hero { padding: 40px 16px 32px; color: white; }
-  .results-hero.orange { background: linear-gradient(135deg, #f97316, #fb923c); }
-  .results-hero.blue   { background: linear-gradient(135deg, #2563eb, #4f46e5); }
-  .results-hero.purple { background: linear-gradient(135deg, #9333ea, #7c3aed); }
-  .results-hero.green  { background: linear-gradient(135deg, #059669, #0d9488); }
-  .results-hero.red    { background: linear-gradient(135deg, #dc2626, #e11d48); }
-  .results-hero.teal   { background: linear-gradient(135deg, #0d9488, #0891b2); }
-  .results-inner { max-width: 760px; margin: 0 auto; }
-  .results-inner h1 { font-size: clamp(24px,5vw,36px); font-weight: 800; }
-  .results-sub { font-size: 13px; opacity: .75; margin-top: 4px; }
+  .results-hero { padding:40px 16px 32px; color:white; }
+  .results-hero.orange { background:linear-gradient(135deg,#f97316,#fb923c); }
+  .results-hero.blue   { background:linear-gradient(135deg,#2563eb,#4f46e5); }
+  .results-hero.purple { background:linear-gradient(135deg,#9333ea,#7c3aed); }
+  .results-hero.green  { background:linear-gradient(135deg,#059669,#0d9488); }
+  .results-hero.red    { background:linear-gradient(135deg,#dc2626,#e11d48); }
+  .results-hero.teal   { background:linear-gradient(135deg,#0d9488,#0891b2); }
+  .results-inner { max-width:760px; margin:0 auto; }
+  .results-inner h1 { font-size:clamp(24px,5vw,36px); font-weight:800; }
+  .results-sub { font-size:13px; opacity:.75; margin-top:4px; }
+  .results-body { max-width:760px; margin:0 auto; padding:32px 16px 40px; }
 
-  .results-body { max-width: 760px; margin: 0 auto; padding: 32px 16px 40px; }
+  .report-header { text-align:center; margin-bottom:28px; padding-bottom:24px; border-bottom:1px solid var(--border); }
+  .report-header .eyebrow { font-size:10px; letter-spacing:.1em; text-transform:uppercase; color:var(--muted); margin-bottom:4px; }
+  .report-header h2 { font-size:22px; font-weight:900; }
+  .report-header .byline { font-size:13px; color:var(--muted); margin-top:6px; }
 
-  .report-header { text-align: center; margin-bottom: 28px; padding-bottom: 24px; border-bottom: 1px solid var(--border); }
-  .report-header .eyebrow { font-size: 10px; letter-spacing: .1em; text-transform: uppercase; color: var(--muted); margin-bottom: 4px; }
-  .report-header h2 { font-size: 22px; font-weight: 900; }
-  .report-header .byline { font-size: 13px; color: var(--muted); margin-top: 6px; }
+  .saved-banner { background:#d1fae5; border:1px solid #6ee7b7; border-radius:var(--radius-lg); padding:12px 16px; font-size:13px; color:#065f46; display:flex; align-items:center; gap:8px; margin-bottom:20px; font-weight:600; }
 
-  /* Saved banner */
-  .saved-banner {
-    background: #d1fae5; border: 1px solid #6ee7b7; border-radius: var(--radius-lg);
-    padding: 12px 16px; font-size: 13px; color: #065f46; display: flex; align-items: center; gap: 8px;
-    margin-bottom: 20px; font-weight: 600;
-  }
+  .profile-card { border-radius:var(--radius-xl); border:1px solid; padding:24px; margin-bottom:24px; }
+  .profile-card.orange { background:#fff7ed; border-color:#fed7aa; }
+  .profile-card.blue   { background:#eff6ff; border-color:#bfdbfe; }
+  .profile-card.purple { background:#f5f3ff; border-color:#ddd6fe; }
+  .profile-card.green  { background:#ecfdf5; border-color:#a7f3d0; }
+  .profile-card.red    { background:#fff1f2; border-color:#fecdd3; }
+  .profile-card.teal   { background:#f0fdfa; border-color:#99f6e4; }
+  .profile-card-top { display:flex; align-items:flex-start; justify-content:space-between; gap:12px; margin-bottom:20px; }
+  .profile-eyebrow { font-size:10px; font-weight:800; letter-spacing:.08em; text-transform:uppercase; margin-bottom:4px; }
+  .profile-type { font-size:22px; font-weight:900; }
+  .profile-desc { font-size:14px; opacity:.85; margin-top:4px; }
+  .profile-letter { font-size:52px; font-weight:900; opacity:.2; font-family:'Sora',sans-serif; }
+  .profile-grid { display:grid; grid-template-columns:1fr 1fr; gap:16px; }
+  @media(max-width:500px){ .profile-grid { grid-template-columns:1fr; } }
+  .profile-grid-label { font-size:10px; font-weight:800; text-transform:uppercase; letter-spacing:.06em; margin-bottom:8px; }
+  .profile-list { list-style:none; display:flex; flex-direction:column; gap:5px; }
+  .profile-list li { display:flex; align-items:center; gap:8px; font-size:13px; }
+  .profile-list li::before { content:"✓"; font-size:11px; width:16px; flex-shrink:0; }
 
-  .profile-card { border-radius: var(--radius-xl); border: 1px solid; padding: 24px; margin-bottom: 24px; }
-  .profile-card.orange { background: #fff7ed; border-color: #fed7aa; }
-  .profile-card.blue   { background: #eff6ff; border-color: #bfdbfe; }
-  .profile-card.purple { background: #f5f3ff; border-color: #ddd6fe; }
-  .profile-card.green  { background: #ecfdf5; border-color: #a7f3d0; }
-  .profile-card.red    { background: #fff1f2; border-color: #fecdd3; }
-  .profile-card.teal   { background: #f0fdfa; border-color: #99f6e4; }
-  .profile-card-top { display: flex; align-items: flex-start; justify-content: space-between; gap: 12px; margin-bottom: 20px; }
-  .profile-eyebrow { font-size: 10px; font-weight: 800; letter-spacing: .08em; text-transform: uppercase; margin-bottom: 4px; }
-  .profile-type { font-size: 22px; font-weight: 900; }
-  .profile-desc { font-size: 14px; opacity: .85; margin-top: 4px; }
-  .profile-letter { font-size: 52px; font-weight: 900; opacity: .2; font-family: 'Sora', sans-serif; }
-  .profile-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
-  @media(max-width:500px){ .profile-grid { grid-template-columns: 1fr; } }
-  .profile-grid-label { font-size: 10px; font-weight: 800; text-transform: uppercase; letter-spacing: .06em; margin-bottom: 8px; }
-  .profile-list { list-style: none; display: flex; flex-direction: column; gap: 5px; }
-  .profile-list li { display: flex; align-items: center; gap: 8px; font-size: 13px; }
-  .profile-list li::before { content: "✓"; font-size: 11px; width: 16px; flex-shrink: 0; }
+  .riasec-card { background:white; border:1px solid var(--border); border-radius:var(--radius-xl); padding:24px; margin-bottom:24px; }
+  .riasec-card h3 { font-size:16px; font-weight:800; margin-bottom:18px; }
+  .riasec-row { display:flex; align-items:center; gap:12px; margin-bottom:10px; }
+  .riasec-type-label { width:22px; font-size:13px; font-weight:800; text-align:center; color:var(--muted); flex-shrink:0; }
+  .riasec-bar-wrap { flex:1; }
+  .riasec-name-row { display:flex; justify-content:space-between; margin-bottom:4px; font-size:11px; }
+  .riasec-name { font-weight:700; color:var(--text); }
+  .riasec-pts { color:var(--muted); }
+  .riasec-track { height:7px; background:#f3f4f6; border-radius:99px; overflow:hidden; }
+  .riasec-fill { height:100%; border-radius:99px; transition:width .8s ease; }
+  .riasec-fill.orange { background:linear-gradient(90deg,#f97316,#fb923c); }
+  .riasec-fill.blue   { background:linear-gradient(90deg,#2563eb,#4f46e5); }
+  .riasec-fill.purple { background:linear-gradient(90deg,#9333ea,#7c3aed); }
+  .riasec-fill.green  { background:linear-gradient(90deg,#059669,#0d9488); }
+  .riasec-fill.red    { background:linear-gradient(90deg,#dc2626,#e11d48); }
+  .riasec-fill.teal   { background:linear-gradient(90deg,#0d9488,#0891b2); }
+  .riasec-top-star { font-size:11px; font-weight:800; color:var(--primary); flex-shrink:0; }
 
-  .riasec-card { background: white; border: 1px solid var(--border); border-radius: var(--radius-xl); padding: 24px; margin-bottom: 24px; }
-  .riasec-card h3 { font-size: 16px; font-weight: 800; margin-bottom: 18px; }
-  .riasec-row { display: flex; align-items: center; gap: 12px; margin-bottom: 10px; }
-  .riasec-type-label { width: 22px; font-size: 13px; font-weight: 800; text-align: center; color: var(--muted); flex-shrink: 0; }
-  .riasec-bar-wrap { flex: 1; }
-  .riasec-name-row { display: flex; justify-content: space-between; margin-bottom: 4px; font-size: 11px; }
-  .riasec-name { font-weight: 700; color: var(--text); }
-  .riasec-pts { color: var(--muted); }
-  .riasec-track { height: 7px; background: #f3f4f6; border-radius: 99px; overflow: hidden; }
-  .riasec-fill { height: 100%; border-radius: 99px; transition: width .8s ease; }
-  .riasec-fill.orange { background: linear-gradient(90deg,#f97316,#fb923c); }
-  .riasec-fill.blue   { background: linear-gradient(90deg,#2563eb,#4f46e5); }
-  .riasec-fill.purple { background: linear-gradient(90deg,#9333ea,#7c3aed); }
-  .riasec-fill.green  { background: linear-gradient(90deg,#059669,#0d9488); }
-  .riasec-fill.red    { background: linear-gradient(90deg,#dc2626,#e11d48); }
-  .riasec-fill.teal   { background: linear-gradient(90deg,#0d9488,#0891b2); }
-  .riasec-top-star { font-size: 11px; font-weight: 800; color: var(--primary); flex-shrink: 0; }
+  .secondary-grid { display:grid; grid-template-columns:1fr 1fr; gap:14px; margin-bottom:24px; }
+  @media(max-width:500px){ .secondary-grid { grid-template-columns:1fr; } }
+  .secondary-card { border-radius:var(--radius-lg); border:1px solid; padding:16px; }
+  .sec-eyebrow { font-size:9px; font-weight:800; letter-spacing:.08em; text-transform:uppercase; margin-bottom:4px; }
+  .sec-title { font-size:15px; font-weight:800; }
+  .sec-desc { font-size:12px; opacity:.8; margin-top:4px; }
 
-  .secondary-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin-bottom: 24px; }
-  @media(max-width:500px){ .secondary-grid { grid-template-columns: 1fr; } }
-  .secondary-card { border-radius: var(--radius-lg); border: 1px solid; padding: 16px; }
-  .sec-eyebrow { font-size: 9px; font-weight: 800; letter-spacing: .08em; text-transform: uppercase; margin-bottom: 4px; }
-  .sec-title { font-size: 15px; font-weight: 800; }
-  .sec-desc { font-size: 12px; opacity: .8; margin-top: 4px; }
+  .opp-card { background:white; border:1px solid var(--border); border-radius:var(--radius-xl); padding:24px; margin-bottom:24px; }
+  .opp-card h3 { font-size:16px; font-weight:800; margin-bottom:14px; }
+  .opp-list { list-style:none; display:flex; flex-direction:column; gap:10px; }
+  .opp-list li { display:flex; align-items:flex-start; gap:10px; font-size:13px; color:var(--muted); }
+  .opp-list li::before { content:"✓"; color:var(--primary); flex-shrink:0; margin-top:1px; }
 
-  .opp-card { background: white; border: 1px solid var(--border); border-radius: var(--radius-xl); padding: 24px; margin-bottom: 24px; }
-  .opp-card h3 { font-size: 16px; font-weight: 800; margin-bottom: 14px; }
-  .opp-list { list-style: none; display: flex; flex-direction: column; gap: 10px; }
-  .opp-list li { display: flex; align-items: flex-start; gap: 10px; font-size: 13px; color: var(--muted); }
-  .opp-list li::before { content: "✓"; color: var(--primary); flex-shrink: 0; margin-top: 1px; }
+  .next-steps { background:linear-gradient(135deg,#fff7ed,#fffbeb); border:1px solid #fde68a; border-radius:var(--radius-xl); padding:24px; margin-bottom:24px; }
+  .next-steps h3 { font-size:16px; font-weight:800; margin-bottom:14px; }
+  .next-steps ol { list-style:decimal; padding-left:20px; display:flex; flex-direction:column; gap:8px; }
+  .next-steps li { font-size:13px; color:var(--muted); line-height:1.5; }
+  .next-steps strong { color:var(--text); }
 
-  .learnerships-card { background: linear-gradient(135deg, #eef2ff, #eff6ff); border: 1px solid #c7d2fe; border-radius: var(--radius-xl); padding: 24px; margin-bottom: 24px; }
-  .learn-header { display: flex; align-items: center; gap: 14px; margin-bottom: 20px; }
-  .learn-icon { width: 44px; height: 44px; border-radius: 12px; background: #4f46e5; display: flex; align-items: center; justify-content: center; font-size: 20px; flex-shrink: 0; }
-  .learn-title { font-size: 18px; font-weight: 800; color: #3730a3; }
-  .learn-sub { font-size: 13px; color: #6366f1; margin-top: 2px; }
-  .learn-grid { display: grid; gap: 12px; grid-template-columns: 1fr; }
-  @media(min-width:560px){ .learn-grid { grid-template-columns: 1fr 1fr; } }
-  .learn-item { background: white; border: 1px solid #c7d2fe; border-radius: var(--radius); padding: 14px; transition: border-color .2s; }
-  .learn-item:hover { border-color: #6366f1; }
-  .learn-item-top { display: flex; align-items: flex-start; justify-content: space-between; gap: 8px; margin-bottom: 4px; }
-  .learn-name { font-size: 13px; font-weight: 800; color: #3730a3; }
-  .learn-sector-badge { font-size: 10px; font-weight: 800; padding: 2px 8px; border-radius: 99px; background: #e0e7ff; color: #3730a3; white-space: nowrap; flex-shrink: 0; }
-  .learn-meta { font-size: 11px; color: var(--muted); margin-bottom: 6px; }
-  .learn-desc { font-size: 11px; color: var(--muted); margin-bottom: 10px; line-height: 1.5; }
-  .learn-apply { display: inline-flex; align-items: center; gap: 6px; background: #4f46e5; color: white; font-size: 11px; font-weight: 800; padding: 6px 12px; border-radius: 8px; text-decoration: none; transition: filter .2s; }
-  .learn-apply:hover { filter: brightness(1.1); }
-  .learn-note { text-align: center; font-size: 11px; color: #6366f1; margin-top: 12px; }
+  .report-footer { text-align:center; font-size:11px; color:var(--muted); border-top:1px solid var(--border); padding-top:16px; line-height:1.7; margin-bottom:32px; }
 
-  .next-steps { background: linear-gradient(135deg, #fff7ed, #fffbeb); border: 1px solid #fde68a; border-radius: var(--radius-xl); padding: 24px; margin-bottom: 24px; }
-  .next-steps h3 { font-size: 16px; font-weight: 800; margin-bottom: 14px; }
-  .next-steps ol { list-style: decimal; padding-left: 20px; display: flex; flex-direction: column; gap: 8px; }
-  .next-steps li { font-size: 13px; color: var(--muted); line-height: 1.5; }
-  .next-steps strong { color: var(--text); }
-
-  .report-footer { text-align: center; font-size: 11px; color: var(--muted); border-top: 1px solid var(--border); padding-top: 16px; line-height: 1.7; margin-bottom: 32px; }
-
-  .action-row { display: flex; flex-direction: column; gap: 10px; }
-  @media(min-width:480px){ .action-row { flex-direction: row; } }
-  .btn-primary { flex: 1; height: 52px; border-radius: var(--radius-lg); background: var(--primary); color: white; font-family: 'Sora', sans-serif; font-weight: 800; font-size: 14px; border: none; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px; transition: filter .2s; text-decoration: none; }
-  .btn-primary:hover { filter: brightness(1.08); }
-  .btn-outline { flex: 1; height: 52px; border-radius: var(--radius-lg); background: white; border: 1px solid var(--border); color: var(--text); font-family: 'Sora', sans-serif; font-weight: 700; font-size: 14px; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px; transition: background .2s; text-decoration: none; }
-  .btn-outline:hover { background: #f3f4f6; }
-  .btn-ghost { height: 52px; padding: 0 20px; border-radius: var(--radius-lg); background: none; border: none; color: var(--muted); font-family: 'Sora', sans-serif; font-weight: 700; font-size: 14px; cursor: pointer; display: flex; align-items: center; gap: 8px; transition: color .2s; }
-  .btn-ghost:hover { color: var(--text); }
-
-  @media print {
-    .no-print { display: none !important; }
-    body { background: white; }
-    .results-hero { print-color-adjust: exact; -webkit-print-color-adjust: exact; }
-  }
+  .action-row { display:flex; flex-direction:column; gap:10px; }
+  @media(min-width:480px){ .action-row { flex-direction:row; } }
+  .btn-primary { flex:1; height:52px; border-radius:var(--radius-lg); background:var(--primary); color:white; font-family:'Sora',sans-serif; font-weight:800; font-size:14px; border:none; cursor:pointer; display:flex; align-items:center; justify-content:center; gap:8px; transition:filter .2s; text-decoration:none; }
+  .btn-primary:hover { filter:brightness(1.08); }
+  .btn-outline { flex:1; height:52px; border-radius:var(--radius-lg); background:white; border:1px solid var(--border); color:var(--text); font-family:'Sora',sans-serif; font-weight:700; font-size:14px; cursor:pointer; display:flex; align-items:center; justify-content:center; gap:8px; transition:background .2s; text-decoration:none; }
+  .btn-outline:hover { background:#f3f4f6; }
+  .btn-ghost { height:52px; padding:0 20px; border-radius:var(--radius-lg); background:none; border:none; color:var(--muted); font-family:'Sora',sans-serif; font-weight:700; font-size:14px; cursor:pointer; display:flex; align-items:center; gap:8px; transition:color .2s; }
+  .btn-ghost:hover { color:var(--text); }
 </style>
-<script src="auth.js"></script>
-<script>
-  var _currentUser = null;
-  (function() {
-    _currentUser = Auth.requireAuth();
-  })();
-</script>
 </head>
 <body>
+
+<div id="pageLoader"><div class="loader-spinner"></div></div>
 
 <!-- Quiz Section -->
 <div id="quizSection">
@@ -209,7 +158,7 @@
         <div class="hero-icon">🧠</div>
         <div>
           <h1>Career Psychometric Test</h1>
-          <p class="sub" id="heroSub">Loading...</p>
+          <p class="sub" id="heroSub">Loading…</p>
         </div>
       </div>
     </div>
@@ -245,8 +194,7 @@
 </div>
 
 <script>
-// ── RIASEC Data ──────────────────────────────────────────────────────────────
-const RIASEC_PROFILES = {
+var RIASEC_PROFILES = {
   R: { type:"R", label:"Realistic (Doer)",         color:"orange", description:"You enjoy hands-on work, physical tasks, tools, and working with real-world objects and machines.", traits:["Practical & hands-on","Mechanically inclined","Enjoys outdoor work","Good with tools & technology","Athletic & physical"], careers:["Civil/Mechanical Engineer","Electrician","Artisan","Farmer/Agriculturalist","Environmental Technologist","Mining Engineer","Vehicle Mechanic","Carpenter"], saOpportunities:["Scarce skills in engineering trades","TVET apprenticeships (electrical, plumbing, welding)","Eskom, Transnet technical learnerships","Mining sector (Northern Cape has major mines)","Agricultural sector (John Taolo Gaetsewe)"] },
   I: { type:"I", label:"Investigative (Thinker)",  color:"blue",   description:"You love analysing, researching, and solving complex intellectual problems.", traits:["Analytical & curious","Loves research","Strong in maths & science","Independent thinker","Detail-oriented"], careers:["Medical Doctor","Data Scientist","Pharmacist","Chemist","Software Developer","Researcher","Geologist","Actuary"], saOpportunities:["STEM bursaries (NRF, Eskom, Sasol)","Research careers at CSIR, MRC, universities","Growing demand for data scientists in SA","Medical & health sciences — NSFAS eligible","Biotech & pharmaceutical sector growth"] },
   A: { type:"A", label:"Artistic (Creator)",       color:"purple", description:"You express yourself through creativity, art, design, and original thinking.", traits:["Creative & imaginative","Original thinker","Expressive & intuitive","Values aesthetics","Dislikes rigid structure"], careers:["Graphic Designer","Architect","Musician","Journalist","Fashion Designer","Film Director","Copywriter","UX Designer"], saOpportunities:["Growing creative economy in SA","Digital media & content creation demand","Architecture & urban design for growing cities","SABC, independent media opportunities","Tourism sector needs creative talent"] },
@@ -255,48 +203,48 @@ const RIASEC_PROFILES = {
   C: { type:"C", label:"Conventional (Organiser)", color:"teal",   description:"You excel with structured tasks, data, organisation, and systematic processes.", traits:["Organised & systematic","Detail-oriented","Reliable & accurate","Follows procedures","Works well with data"], careers:["Accountant/CA(SA)","Auditor","Financial Analyst","Database Administrator","Compliance Officer","Tax Consultant","Secretary","Supply Chain Manager"], saOpportunities:["CA(SA) — highest starting salaries in SA","SAICA Thuthuka Bursary for accounting","Financial sector growth: banking, insurance, FinTech","Shortage of certified auditors in SA","Government needs more financial compliance experts"] },
 };
 
-const QUESTIONS = [
-  { id:1, category:"Work Preferences", text:"Which activity would you most enjoy doing on a Saturday?", options:[ {text:"Building or repairing something with your hands",types:["R"],weight:3}, {text:"Reading about a scientific discovery or solving a puzzle",types:["I"],weight:3}, {text:"Painting, drawing, writing, or making music",types:["A"],weight:3}, {text:"Volunteering at a community event or helping a friend",types:["S"],weight:3}, {text:"Organising a fundraiser or running a small business idea",types:["E"],weight:3}, {text:"Creating a spreadsheet, budgeting, or organising files",types:["C"],weight:3} ] },
-  { id:2, category:"Learning Style", text:"In school, which type of subject do you find most interesting?", options:[ {text:"Technology, woodwork, or agricultural science",types:["R"],weight:3}, {text:"Mathematics, physical sciences, or biology",types:["I"],weight:3}, {text:"Drama, visual arts, music, or creative writing",types:["A"],weight:3}, {text:"Life Orientation, history, or languages",types:["S"],weight:3}, {text:"Business studies or economics",types:["E"],weight:3}, {text:"Accounting, computer applications, or statistics",types:["C"],weight:3} ] },
-  { id:3, category:"Problem Solving", text:"When you face a difficult problem, what is your usual approach?", options:[ {text:"Try to fix or build a solution practically",types:["R"],weight:3}, {text:"Research and analyse all the information carefully",types:["I"],weight:3}, {text:"Think creatively and come up with an original solution",types:["A"],weight:3}, {text:"Talk it through with others and get support",types:["S"],weight:3}, {text:"Take charge, make a decision, and lead others",types:["E"],weight:3}, {text:"Make a structured plan and follow it step by step",types:["C"],weight:3} ] },
-  { id:4, category:"Work Environment", text:"Which type of workplace appeals to you most?", options:[ {text:"Outdoors, a workshop, lab, or construction site",types:["R"],weight:3}, {text:"A research institute, lab, or university",types:["I"],weight:3}, {text:"A studio, design agency, or media company",types:["A"],weight:3}, {text:"A school, hospital, NGO, or community centre",types:["S"],weight:3}, {text:"A boardroom, startup office, or courtroom",types:["E"],weight:3}, {text:"A corporate office with clear processes and structure",types:["C"],weight:3} ] },
-  { id:5, category:"Natural Talents", text:"Which of these describes your strongest natural talent?", options:[ {text:"Making, fixing, or building physical things",types:["R"],weight:3}, {text:"Understanding complex scientific or mathematical ideas",types:["I"],weight:3}, {text:"Creating beautiful or meaningful things",types:["A"],weight:3}, {text:"Understanding and helping people",types:["S"],weight:3}, {text:"Persuading, inspiring, and leading others",types:["E"],weight:3}, {text:"Keeping things organised, accurate, and efficient",types:["C"],weight:3} ] },
-  { id:6, category:"Values & Impact", text:"What matters most to you in a future career?", options:[ {text:"Creating physical products or maintaining important systems",types:["R"],weight:3}, {text:"Making new discoveries or advancing human knowledge",types:["I"],weight:3}, {text:"Expressing my creativity and inspiring others",types:["A"],weight:3}, {text:"Making a positive difference in people's lives",types:["S"],weight:3}, {text:"Building wealth, power, and influence",types:["E"],weight:3}, {text:"Stability, clear progression, and financial security",types:["C"],weight:3} ] },
-  { id:7, category:"People & Teams", text:"In a group project, what role do you naturally take?", options:[ {text:"The one who actually builds or creates the physical product",types:["R"],weight:3}, {text:"The researcher who gathers all the information",types:["I"],weight:3}, {text:"The one who makes it look good and creative",types:["A"],weight:3}, {text:"The one who keeps everyone happy and working together",types:["S"],weight:3}, {text:"The leader who directs everyone and presents results",types:["E"],weight:3}, {text:"The one who organises timelines and checks quality",types:["C"],weight:3} ] },
-  { id:8, category:"Future Vision", text:"In 10 years, which scenario excites you most?", options:[ {text:"I've built or engineered something that thousands of people use",types:["R"],weight:3}, {text:"I've made a discovery or invention that changes the world",types:["I"],weight:3}, {text:"My art, writing, or design is recognised nationally",types:["A"],weight:3}, {text:"I've helped thousands of people in my community",types:["S"],weight:3}, {text:"I run a successful business or lead a major organisation",types:["E"],weight:3}, {text:"I'm a top expert in finance, law, or administration",types:["C"],weight:3} ] },
-  { id:9, category:"Daily Activities", text:"Which daily task sounds most satisfying?", options:[ {text:"Fixing machinery or building something with your hands",types:["R"],weight:3}, {text:"Analysing data or writing a research report",types:["I"],weight:3}, {text:"Designing a poster, logo, or creative piece",types:["A"],weight:3}, {text:"Counselling someone through a difficult time",types:["S"],weight:3}, {text:"Pitching an idea or closing a business deal",types:["E"],weight:3}, {text:"Auditing financial records or managing data",types:["C"],weight:3} ] },
-  { id:10, category:"Technology & Innovation", text:"How do you relate to technology?", options:[ {text:"I like using tools and physical tech — machines, equipment",types:["R"],weight:3}, {text:"I love coding, algorithms, and understanding how tech works",types:["I"],weight:3}, {text:"I use tech for creative expression — design, music, video",types:["A"],weight:3}, {text:"I use tech to connect with and help others",types:["S"],weight:3}, {text:"I see tech as a tool to grow my business or influence",types:["E"],weight:3}, {text:"I use tech for organisation — spreadsheets, databases",types:["C"],weight:3} ] },
-  { id:11, category:"Challenges", text:"What kind of challenge energises you most?", options:[ {text:"A physical or mechanical challenge to solve",types:["R"],weight:3}, {text:"A scientific or intellectual mystery",types:["I"],weight:3}, {text:"Creating something original that no one has made before",types:["A"],weight:3}, {text:"Helping someone through a really tough personal situation",types:["S"],weight:3}, {text:"Turning a struggling situation into a success",types:["E"],weight:3}, {text:"Untangling a complex financial or administrative mess",types:["C"],weight:3} ] },
-  { id:12, category:"Skills & Strengths", text:"Which skill would you most like to be known for?", options:[ {text:"Technical and mechanical expertise",types:["R"],weight:3}, {text:"Scientific analysis and research",types:["I"],weight:3}, {text:"Creative design and artistic expression",types:["A"],weight:3}, {text:"Empathy and ability to support others",types:["S"],weight:3}, {text:"Leadership and entrepreneurship",types:["E"],weight:3}, {text:"Precision, organisation, and financial management",types:["C"],weight:3} ] },
+var QUESTIONS = [
+  { id:1, category:"Work Preferences", text:"Which activity would you most enjoy doing on a Saturday?", options:[{text:"Building or repairing something with your hands",types:["R"],weight:3},{text:"Reading about a scientific discovery or solving a puzzle",types:["I"],weight:3},{text:"Painting, drawing, writing, or making music",types:["A"],weight:3},{text:"Volunteering at a community event or helping a friend",types:["S"],weight:3},{text:"Organising a fundraiser or running a small business idea",types:["E"],weight:3},{text:"Creating a spreadsheet, budgeting, or organising files",types:["C"],weight:3}] },
+  { id:2, category:"Learning Style", text:"In school, which type of subject do you find most interesting?", options:[{text:"Technology, woodwork, or agricultural science",types:["R"],weight:3},{text:"Mathematics, physical sciences, or biology",types:["I"],weight:3},{text:"Drama, visual arts, music, or creative writing",types:["A"],weight:3},{text:"Life Orientation, history, or languages",types:["S"],weight:3},{text:"Business studies or economics",types:["E"],weight:3},{text:"Accounting, computer applications, or statistics",types:["C"],weight:3}] },
+  { id:3, category:"Problem Solving", text:"When you face a difficult problem, what is your usual approach?", options:[{text:"Try to fix or build a solution practically",types:["R"],weight:3},{text:"Research and analyse all the information carefully",types:["I"],weight:3},{text:"Think creatively and come up with an original solution",types:["A"],weight:3},{text:"Talk it through with others and get support",types:["S"],weight:3},{text:"Take charge, make a decision, and lead others",types:["E"],weight:3},{text:"Make a structured plan and follow it step by step",types:["C"],weight:3}] },
+  { id:4, category:"Work Environment", text:"Which type of workplace appeals to you most?", options:[{text:"Outdoors, a workshop, lab, or construction site",types:["R"],weight:3},{text:"A research institute, lab, or university",types:["I"],weight:3},{text:"A studio, design agency, or media company",types:["A"],weight:3},{text:"A school, hospital, NGO, or community centre",types:["S"],weight:3},{text:"A boardroom, startup office, or courtroom",types:["E"],weight:3},{text:"A corporate office with clear processes and structure",types:["C"],weight:3}] },
+  { id:5, category:"Natural Talents", text:"Which of these describes your strongest natural talent?", options:[{text:"Making, fixing, or building physical things",types:["R"],weight:3},{text:"Understanding complex scientific or mathematical ideas",types:["I"],weight:3},{text:"Creating beautiful or meaningful things",types:["A"],weight:3},{text:"Understanding and helping people",types:["S"],weight:3},{text:"Persuading, inspiring, and leading others",types:["E"],weight:3},{text:"Keeping things organised, accurate, and efficient",types:["C"],weight:3}] },
+  { id:6, category:"Values & Impact", text:"What matters most to you in a future career?", options:[{text:"Creating physical products or maintaining important systems",types:["R"],weight:3},{text:"Making new discoveries or advancing human knowledge",types:["I"],weight:3},{text:"Expressing my creativity and inspiring others",types:["A"],weight:3},{text:"Making a positive difference in people's lives",types:["S"],weight:3},{text:"Building wealth, power, and influence",types:["E"],weight:3},{text:"Stability, clear progression, and financial security",types:["C"],weight:3}] },
+  { id:7, category:"People & Teams", text:"In a group project, what role do you naturally take?", options:[{text:"The one who actually builds or creates the physical product",types:["R"],weight:3},{text:"The researcher who gathers all the information",types:["I"],weight:3},{text:"The one who makes it look good and creative",types:["A"],weight:3},{text:"The one who keeps everyone happy and working together",types:["S"],weight:3},{text:"The leader who directs everyone and presents results",types:["E"],weight:3},{text:"The one who organises timelines and checks quality",types:["C"],weight:3}] },
+  { id:8, category:"Future Vision", text:"In 10 years, which scenario excites you most?", options:[{text:"I've built or engineered something that thousands of people use",types:["R"],weight:3},{text:"I've made a discovery or invention that changes the world",types:["I"],weight:3},{text:"My art, writing, or design is recognised nationally",types:["A"],weight:3},{text:"I've helped thousands of people in my community",types:["S"],weight:3},{text:"I run a successful business or lead a major organisation",types:["E"],weight:3},{text:"I'm a top expert in finance, law, or administration",types:["C"],weight:3}] },
+  { id:9, category:"Daily Activities", text:"Which daily task sounds most satisfying?", options:[{text:"Fixing machinery or building something with your hands",types:["R"],weight:3},{text:"Analysing data or writing a research report",types:["I"],weight:3},{text:"Designing a poster, logo, or creative piece",types:["A"],weight:3},{text:"Counselling someone through a difficult time",types:["S"],weight:3},{text:"Pitching an idea or closing a business deal",types:["E"],weight:3},{text:"Auditing financial records or managing data",types:["C"],weight:3}] },
+  { id:10, category:"Technology & Innovation", text:"How do you relate to technology?", options:[{text:"I like using tools and physical tech — machines, equipment",types:["R"],weight:3},{text:"I love coding, algorithms, and understanding how tech works",types:["I"],weight:3},{text:"I use tech for creative expression — design, music, video",types:["A"],weight:3},{text:"I use tech to connect with and help others",types:["S"],weight:3},{text:"I see tech as a tool to grow my business or influence",types:["E"],weight:3},{text:"I use tech for organisation — spreadsheets, databases",types:["C"],weight:3}] },
+  { id:11, category:"Challenges", text:"What kind of challenge energises you most?", options:[{text:"A physical or mechanical challenge to solve",types:["R"],weight:3},{text:"A scientific or intellectual mystery",types:["I"],weight:3},{text:"Creating something original that no one has made before",types:["A"],weight:3},{text:"Helping someone through a really tough personal situation",types:["S"],weight:3},{text:"Turning a struggling situation into a success",types:["E"],weight:3},{text:"Untangling a complex financial or administrative mess",types:["C"],weight:3}] },
+  { id:12, category:"Skills & Strengths", text:"Which skill would you most like to be known for?", options:[{text:"Technical and mechanical expertise",types:["R"],weight:3},{text:"Scientific analysis and research",types:["I"],weight:3},{text:"Creative design and artistic expression",types:["A"],weight:3},{text:"Empathy and ability to support others",types:["S"],weight:3},{text:"Leadership and entrepreneurship",types:["E"],weight:3},{text:"Precision, organisation, and financial management",types:["C"],weight:3}] },
 ];
 
-const LEARNERSHIPS = [
-  { name:"SETA IT Learnership", provider:"MICT SETA", sector:"ICT", duration:"12 months", desc:"End-user computing & IT support. Earn a stipend while gaining NQF Level 3.", url:"https://www.mictseta.org.za/learnerships/" },
-  { name:"Banking Learnership", provider:"BANKSETA", sector:"Finance", duration:"12 months", desc:"Introduction to banking and financial services. National Certificate in Banking.", url:"https://www.bankseta.org.za/learnerships/" },
-  { name:"Retail Learnership", provider:"W&RSETA", sector:"Retail", duration:"12 months", desc:"Customer service, retail operations, stock management. NQF Level 2/3.", url:"https://www.wrseta.org.za/learnerships/" },
-  { name:"Construction Learnership", provider:"CETA", sector:"Construction", duration:"18 months", desc:"Site safety, project administration, and building trades.", url:"https://www.ceta.org.za/learnerships/" },
-  { name:"Eskom Learnership", provider:"Eskom", sector:"Energy", duration:"12 months", desc:"Electrical, maintenance, and technical learnerships for matric students.", url:"https://www.eskom.co.za/careers/learnerships/" },
-  { name:"Public Sector Learnership", provider:"PSETA", sector:"Government", duration:"12 months", desc:"Office administration, records management, and public service.", url:"https://www.pseta.gov.za/learnerships/" },
-  { name:"Agri Learnership", provider:"AgriSETA", sector:"Agriculture", duration:"12 months", desc:"Crop production, animal husbandry, and agribusiness.", url:"https://www.agriseta.co.za/learnerships/" },
-  { name:"Tourism Learnership", provider:"CATHSSETA", sector:"Tourism", duration:"12 months", desc:"Hospitality, travel operations, and guiding services.", url:"https://www.cathsseta.org.za/learnerships/" },
-  { name:"Mining Learnership", provider:"MQA", sector:"Mining", duration:"24 months", desc:"Surface and underground mining. Northern Cape is a major mining province.", url:"https://www.mqa.org.za/learnerships/" },
-  { name:"Transport Learnership", provider:"TETA", sector:"Transport", duration:"12 months", desc:"Freight logistics, passenger transport, and supply chain.", url:"https://www.teta.org.za/learnerships/" },
-];
+var currentQ = 0;
+var answers  = {};
+var _user    = null;
 
-// State
-let currentQ = 0;
-let answers  = {};
+// ── Boot ──────────────────────────────────────────────────────────────────
+document.addEventListener('DOMContentLoaded', async function () {
+  _user = await Auth.requireAuth();
+  if (!_user) return;
 
-function init() {
+  var loader = document.getElementById('pageLoader');
+  loader.classList.add('hidden');
+  setTimeout(function () { loader.style.display = 'none'; }, 350);
+
   document.getElementById("heroSub").textContent = QUESTIONS.length + " questions • ~8 minutes • Free";
   document.getElementById("answeredCount").textContent = "0 of " + QUESTIONS.length + " questions answered";
   renderQuestion();
+});
+
+async function doLogout() {
+  await Auth.logout();
+  window.location.href = 'login.html';
 }
 
 function renderQuestion() {
-  const q       = QUESTIONS[currentQ];
-  const answered = Object.keys(answers).length;
-  const pct     = Math.round((answered / QUESTIONS.length) * 100);
+  var q       = QUESTIONS[currentQ];
+  var answered = Object.keys(answers).length;
+  var pct     = Math.round((answered / QUESTIONS.length) * 100);
 
   document.getElementById("qLabel").textContent = "Question " + (currentQ+1) + " of " + QUESTIONS.length;
   document.getElementById("pctLabel").textContent = pct + "% complete";
@@ -304,19 +252,17 @@ function renderQuestion() {
   document.getElementById("answeredCount").textContent = answered + " of " + QUESTIONS.length + " questions answered";
   document.getElementById("btnBack").disabled = currentQ === 0;
 
-  const sel = answers[q.id];
+  var sel = answers[q.id];
   document.getElementById("btnNext").disabled = sel === undefined;
 
-  const card = document.getElementById("questionCard");
+  var card = document.getElementById("questionCard");
   card.innerHTML =
     '<div class="q-category">' + q.category + '</div>' +
     '<div class="q-text">' + q.text + '</div>' +
     '<div class="options">' +
     q.options.map(function(opt, idx) {
       return '<button class="option-btn ' + (sel === idx ? 'selected' : '') + '" onclick="selectAnswer(' + idx + ')">' +
-        '<span class="option-letter">' + String.fromCharCode(65+idx) + '</span>' +
-        opt.text +
-        '</button>';
+        '<span class="option-letter">' + String.fromCharCode(65+idx) + '</span>' + opt.text + '</button>';
     }).join('') +
     '</div>';
 
@@ -326,140 +272,95 @@ function renderQuestion() {
 }
 
 function selectAnswer(idx) {
-  const q = QUESTIONS[currentQ];
+  var q = QUESTIONS[currentQ];
   answers[q.id] = idx;
   document.getElementById("btnNext").disabled = false;
-  document.querySelectorAll(".option-btn").forEach(function(btn, i) {
-    btn.classList.toggle("selected", i === idx);
-  });
-  const answered = Object.keys(answers).length;
+  document.querySelectorAll(".option-btn").forEach(function(btn, i) { btn.classList.toggle("selected", i === idx); });
+  var answered = Object.keys(answers).length;
   document.getElementById("answeredCount").textContent = answered + " of " + QUESTIONS.length + " questions answered";
   document.getElementById("progressFill").style.width = Math.round((answered / QUESTIONS.length) * 100) + "%";
 }
 
-function goPrev() {
-  if (currentQ > 0) { currentQ--; renderQuestion(); }
-}
-
+function goPrev() { if (currentQ > 0) { currentQ--; renderQuestion(); } }
 function goNext() {
   if (answers[QUESTIONS[currentQ].id] === undefined) return;
-  if (currentQ < QUESTIONS.length - 1) {
-    currentQ++;
-    renderQuestion();
-  } else {
-    calculateResults();
-  }
+  if (currentQ < QUESTIONS.length - 1) { currentQ++; renderQuestion(); }
+  else calculateResults();
 }
 
 function calculateResults() {
-  const scores = { R:0, I:0, A:0, S:0, E:0, C:0 };
+  var scores = { R:0, I:0, A:0, S:0, E:0, C:0 };
   QUESTIONS.forEach(function(q) {
-    const idx = answers[q.id];
+    var idx = answers[q.id];
     if (idx !== undefined) {
-      const opt = q.options[idx];
+      var opt = q.options[idx];
       opt.types.forEach(function(t) { scores[t] += opt.weight / opt.types.length; });
     }
   });
-  const sorted   = Object.keys(scores).sort(function(a,b){ return scores[b]-scores[a]; });
-  const topTypes = sorted.slice(0,3);
+  var sorted   = Object.keys(scores).sort(function(a,b){ return scores[b]-scores[a]; });
+  var topTypes = sorted.slice(0,3);
   showResults(scores, topTypes);
 }
 
 function showResults(scores, topTypes) {
-  // ── Save to auth history ──────────────────────────────────────────────────
-  if (_currentUser) {
+  // Save result
+  if (_user) {
     try {
-      const primary = RIASEC_PROFILES[topTypes[0]];
-      Auth.savePsychResult(_currentUser.id, {
-        scores:      scores,
-        topTypes:    topTypes,
-        primaryType: topTypes[0],
-        summary:     'Primary type: ' + (primary ? primary.label : topTypes[0]),
+      var primary = RIASEC_PROFILES[topTypes[0]];
+      Auth.savePsychResult(_user.id, {
+        scores, topTypes, primaryType: topTypes[0],
+        summary: 'Primary type: ' + (primary ? primary.label : topTypes[0]),
       });
     } catch(e) { console.warn('Could not save psych result:', e); }
   }
 
   document.getElementById("quizSection").style.display = "none";
-  const rs = document.getElementById("resultsSection");
+  var rs = document.getElementById("resultsSection");
   rs.classList.add("show");
 
-  const primary = RIASEC_PROFILES[topTypes[0]];
-  const today   = new Date().toLocaleDateString("en-ZA", { year:"numeric", month:"long", day:"numeric" });
+  var primary = RIASEC_PROFILES[topTypes[0]];
+  var today   = new Date().toLocaleDateString("en-ZA", { year:"numeric", month:"long", day:"numeric" });
+  var maxScore = Math.max.apply(null, Object.values(scores).concat([1]));
 
-  const hero = document.getElementById("resultsHero");
+  var hero = document.getElementById("resultsHero");
   hero.className = "results-hero " + primary.color;
   document.getElementById("resultsHeroSub").textContent = "Based on your " + QUESTIONS.length + " responses";
 
-  const maxScore = Math.max.apply(null, Object.values(scores)) || 1;
-
-  const riasecRows = ["R","I","A","S","E","C"].map(function(type) {
-    const p   = RIASEC_PROFILES[type];
-    const pct = Math.round((scores[type] / maxScore) * 100);
+  var riasecRows = ["R","I","A","S","E","C"].map(function(type) {
+    var p   = RIASEC_PROFILES[type];
+    var pct = Math.round((scores[type] / maxScore) * 100);
     return '<div class="riasec-row">' +
       '<div class="riasec-type-label">' + type + '</div>' +
       '<div class="riasec-bar-wrap">' +
-        '<div class="riasec-name-row">' +
-          '<span class="riasec-name">' + p.label + '</span>' +
-          '<span class="riasec-pts">' + Math.round(scores[type]) + ' pts</span>' +
-        '</div>' +
+        '<div class="riasec-name-row"><span class="riasec-name">' + p.label + '</span><span class="riasec-pts">' + Math.round(scores[type]) + ' pts</span></div>' +
         '<div class="riasec-track"><div class="riasec-fill ' + p.color + '" style="width:' + pct + '%"></div></div>' +
       '</div>' +
       (topTypes[0] === type ? '<span class="riasec-top-star">Top ★</span>' : '<span style="width:36px"></span>') +
     '</div>';
   }).join('');
 
-  const secondaryCards = topTypes.slice(1).map(function(type) {
-    const p = RIASEC_PROFILES[type];
-    return '<div class="secondary-card ' + p.color + '">' +
-      '<div class="sec-eyebrow" style="opacity:.7">Secondary Profile</div>' +
-      '<div class="sec-title">' + p.label + '</div>' +
-      '<div class="sec-desc">' + p.description + '</div>' +
-    '</div>';
-  }).join('');
-
-  const learnCards = LEARNERSHIPS.map(function(l) {
-    return '<div class="learn-item">' +
-      '<div class="learn-item-top"><div class="learn-name">' + l.name + '</div><span class="learn-sector-badge">' + l.sector + '</span></div>' +
-      '<div class="learn-meta">' + l.provider + ' • ' + l.duration + '</div>' +
-      '<div class="learn-desc">' + l.desc + '</div>' +
-      '<a href="' + l.url + '" target="_blank" rel="noopener" class="learn-apply">Apply Now ↗</a>' +
-    '</div>';
+  var secondaryCards = topTypes.slice(1).map(function(type) {
+    var p = RIASEC_PROFILES[type];
+    return '<div class="secondary-card ' + p.color + '"><div class="sec-eyebrow" style="opacity:.7">Secondary Profile</div><div class="sec-title">' + p.label + '</div><div class="sec-desc">' + p.description + '</div></div>';
   }).join('');
 
   document.getElementById("reportBody").innerHTML =
     '<div class="saved-banner">✅ Your results have been saved to your dashboard.</div>' +
-    '<div class="report-header">' +
-      '<div class="eyebrow">Phunya Tsela Career Expo 2026 — Student Career Report</div>' +
-      '<h2>Career Psychometric Summary</h2>' +
-      '<div class="byline">Generated: ' + today + '</div>' +
-    '</div>' +
-
+    '<div class="report-header"><div class="eyebrow">Phunya Tsela Career Expo 2026 — Student Career Report</div><h2>Career Psychometric Summary</h2><div class="byline">Generated: ' + today + '</div></div>' +
     '<div class="profile-card ' + primary.color + '">' +
-      '<div class="profile-card-top">' +
-        '<div>' +
-          '<div class="profile-eyebrow">Primary Career Type</div>' +
-          '<div class="profile-type">' + primary.label + '</div>' +
-          '<div class="profile-desc">' + primary.description + '</div>' +
-        '</div>' +
-        '<div class="profile-letter">' + primary.type + '</div>' +
-      '</div>' +
+      '<div class="profile-card-top"><div>' +
+        '<div class="profile-eyebrow">Primary Career Type</div>' +
+        '<div class="profile-type">' + primary.label + '</div>' +
+        '<div class="profile-desc">' + primary.description + '</div>' +
+      '</div><div class="profile-letter">' + primary.type + '</div></div>' +
       '<div class="profile-grid">' +
         '<div><div class="profile-grid-label">Your Key Traits</div><ul class="profile-list">' + primary.traits.map(function(t){ return '<li>'+t+'</li>'; }).join('') + '</ul></div>' +
         '<div><div class="profile-grid-label">Matching Career Paths</div><ul class="profile-list">' + primary.careers.slice(0,6).map(function(c){ return '<li>'+c+'</li>'; }).join('') + '</ul></div>' +
       '</div>' +
     '</div>' +
-
     '<div class="riasec-card"><h3>Your RIASEC Profile Scores</h3>' + riasecRows + '</div>' +
     (topTypes.length > 1 ? '<div class="secondary-grid">' + secondaryCards + '</div>' : '') +
-
     '<div class="opp-card"><h3>SA Opportunities for Your Profile</h3><ul class="opp-list">' + primary.saOpportunities.map(function(o){ return '<li>'+o+'</li>'; }).join('') + '</ul></div>' +
-
-    '<div class="learnerships-card no-print">' +
-      '<div class="learn-header"><div class="learn-icon">💼</div><div><div class="learn-title">Learnerships for Matric Students</div><div class="learn-sub">Paid work-based learning — earn while you learn</div></div></div>' +
-      '<div class="learn-grid">' + learnCards + '</div>' +
-      '<p class="learn-note">Learnerships are NQF-accredited programmes where you receive a monthly stipend while gaining workplace experience</p>' +
-    '</div>' +
-
     '<div class="next-steps"><h3>📋 Your Next Steps</h3><ol>' +
       '<li>Use our <strong>APS Calculator</strong> to find specific university courses you qualify for</li>' +
       '<li>Visit the <strong>Bursary Portal</strong> to find funding for your chosen field</li>' +
@@ -467,7 +368,6 @@ function showResults(scores, topTypes) {
       '<li>Apply for <strong>NSFAS</strong> at nsfas.org.za before the closing date (November)</li>' +
       '<li>Attend the Phunya Tsela Career Expo 2026 to meet employers and universities face-to-face</li>' +
     '</ol></div>' +
-
     '<div class="report-footer">' +
       '<p>This report was generated by the Phunya Tsela Career Expo Student Portal</p>' +
       '<p>Kasi Career Expo • kasiexpo.co.za • Kuruman, Northern Cape</p>' +
@@ -475,7 +375,6 @@ function showResults(scores, topTypes) {
     '</div>';
 
   document.getElementById("actionRow").innerHTML =
-    '<button class="btn-primary" onclick="window.print()">⬇️ Download / Print My Report</button>' +
     '<a href="aps-calculator.html" class="btn-outline">Calculate My APS Score</a>' +
     '<a href="dashboard.html" class="btn-outline">View My Dashboard</a>' +
     '<button class="btn-ghost" onclick="restart()">↩ Retake Test</button>';
@@ -484,15 +383,12 @@ function showResults(scores, topTypes) {
 }
 
 function restart() {
-  currentQ = 0;
-  answers  = {};
+  currentQ = 0; answers = {};
   document.getElementById("quizSection").style.display = "block";
   document.getElementById("resultsSection").classList.remove("show");
   renderQuestion();
   window.scrollTo({ top: 0, behavior: "smooth" });
 }
-
-init();
 </script>
 </body>
 </html>

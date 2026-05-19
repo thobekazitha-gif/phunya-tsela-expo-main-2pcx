@@ -6,139 +6,81 @@
 <title>My Dashboard — Phunya Tsela</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;600;700;800;900&family=DM+Sans:wght@400;500;600&display=swap" rel="stylesheet">
-<script src="auth.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="auth.js?v=3.1"></script>
 <style>
   :root {
-    --primary: #d97706;
-    --primary-dark: #b45309;
-    --yellow: #f59e0b;
-    --bg: #fafaf9;
-    --border: #e5e7eb;
-    --text: #111827;
-    --muted: #6b7280;
-    --success: #10b981;
-    --radius: 12px;
-    --radius-lg: 16px;
-    --radius-xl: 20px;
+    --primary: #d97706; --primary-dark: #b45309; --yellow: #f59e0b;
+    --bg: #fafaf9; --border: #e5e7eb; --text: #111827; --muted: #6b7280;
+    --success: #10b981; --radius: 12px; --radius-lg: 16px; --radius-xl: 20px;
   }
   *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
   body { font-family: 'DM Sans', sans-serif; background: var(--bg); color: var(--text); min-height: 100vh; }
   h1,h2,h3,h4 { font-family: 'Sora', sans-serif; }
 
-  /* ── Hero ── */
-  .hero {
-    background: linear-gradient(135deg, var(--primary) 0%, var(--yellow) 100%);
-    color: white; padding: 40px 16px 36px;
+  /* Page-level loading state */
+  #pageLoader {
+    position: fixed; inset: 0; background: var(--bg);
+    display: flex; align-items: center; justify-content: center;
+    z-index: 999; transition: opacity .3s;
   }
-  .hero-inner { max-width: 860px; margin: 0 auto; }
-  .back-btn {
-    display: inline-flex; align-items: center; gap: 6px;
-    color: rgba(255,255,255,.8); font-size: 14px; font-weight: 600;
-    border: none; background: none; cursor: pointer; margin-bottom: 20px;
-    transition: color .2s; text-decoration: none;
+  #pageLoader.hidden { opacity: 0; pointer-events: none; }
+  .loader-spinner {
+    width: 36px; height: 36px; border: 3px solid #fde68a;
+    border-top-color: var(--primary); border-radius: 50%;
+    animation: spin .7s linear infinite;
   }
-  .back-btn:hover { color: white; }
+  @keyframes spin { to { transform: rotate(360deg); } }
 
+  .hero { background: linear-gradient(135deg, var(--primary) 0%, var(--yellow) 100%); color: white; padding: 40px 16px 36px; }
+  .hero-inner { max-width: 860px; margin: 0 auto; }
+  .back-btn { display: inline-flex; align-items: center; gap: 6px; color: rgba(255,255,255,.8); font-size: 14px; font-weight: 600; border: none; background: none; cursor: pointer; margin-bottom: 20px; transition: color .2s; text-decoration: none; }
+  .back-btn:hover { color: white; }
   .hero-top { display: flex; align-items: flex-start; justify-content: space-between; gap: 16px; flex-wrap: wrap; }
   .hero-user { display: flex; align-items: center; gap: 16px; }
-  .avatar {
-    width: 60px; height: 60px; border-radius: 50%;
-    background: rgba(255,255,255,.25); display: flex; align-items: center;
-    justify-content: center; font-size: 24px; font-family: 'Sora', sans-serif;
-    font-weight: 900; flex-shrink: 0; border: 2px solid rgba(255,255,255,.4);
-  }
+  .avatar { width: 60px; height: 60px; border-radius: 50%; background: rgba(255,255,255,.25); display: flex; align-items: center; justify-content: center; font-size: 22px; font-family: 'Sora', sans-serif; font-weight: 900; flex-shrink: 0; border: 2px solid rgba(255,255,255,.4); }
   .hero-name { font-size: clamp(20px,4vw,28px); font-weight: 900; }
   .hero-meta { font-size: 13px; opacity: .8; margin-top: 3px; }
-  .logout-btn {
-    display: inline-flex; align-items: center; gap: 6px;
-    background: rgba(255,255,255,.15); border: 1px solid rgba(255,255,255,.3);
-    color: white; font-size: 13px; font-weight: 700; font-family: 'DM Sans', sans-serif;
-    padding: 9px 16px; border-radius: 10px; cursor: pointer; transition: background .2s;
-    white-space: nowrap; flex-shrink: 0;
-  }
+  .logout-btn { display: inline-flex; align-items: center; gap: 6px; background: rgba(255,255,255,.15); border: 1px solid rgba(255,255,255,.3); color: white; font-size: 13px; font-weight: 700; font-family: 'DM Sans', sans-serif; padding: 9px 16px; border-radius: 10px; cursor: pointer; transition: background .2s; white-space: nowrap; flex-shrink: 0; }
   .logout-btn:hover { background: rgba(255,255,255,.25); }
-
-  /* Stat pills */
   .hero-stats { display: flex; gap: 10px; flex-wrap: wrap; margin-top: 24px; }
-  .stat-pill {
-    background: rgba(255,255,255,.18); border: 1px solid rgba(255,255,255,.25);
-    border-radius: 99px; padding: 6px 16px; font-size: 13px; font-weight: 600;
-    display: flex; align-items: center; gap: 6px;
-  }
+  .stat-pill { background: rgba(255,255,255,.18); border: 1px solid rgba(255,255,255,.25); border-radius: 99px; padding: 6px 16px; font-size: 13px; font-weight: 600; display: flex; align-items: center; gap: 6px; }
 
-  /* ── Main ── */
   .main { max-width: 860px; margin: 0 auto; padding: 36px 16px 60px; }
+  .section-title { font-size: 18px; font-weight: 800; margin-bottom: 16px; display: flex; align-items: center; gap: 8px; }
 
-  /* Quick actions */
-  .section-title {
-    font-size: 18px; font-weight: 800; margin-bottom: 16px;
-    display: flex; align-items: center; gap: 8px;
-  }
   .tool-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap: 14px; margin-bottom: 40px; }
-  .tool-card {
-    background: white; border: 1px solid var(--border); border-radius: var(--radius-lg);
-    padding: 20px; cursor: pointer; transition: all .2s; text-decoration: none; color: var(--text);
-    display: flex; flex-direction: column; gap: 10px;
-  }
+  .tool-card { background: white; border: 1px solid var(--border); border-radius: var(--radius-lg); padding: 20px; cursor: pointer; transition: all .2s; text-decoration: none; color: var(--text); display: flex; flex-direction: column; gap: 10px; }
   .tool-card:hover { border-color: var(--primary); box-shadow: 0 4px 20px rgba(0,0,0,.08); transform: translateY(-2px); }
   .tool-icon { font-size: 28px; }
   .tool-name { font-family: 'Sora', sans-serif; font-size: 15px; font-weight: 800; }
   .tool-desc { font-size: 12px; color: var(--muted); line-height: 1.5; }
-  .tool-badge {
-    display: inline-flex; align-items: center; gap: 4px;
-    font-size: 10px; font-weight: 800; padding: 3px 10px; border-radius: 99px;
-  }
-  .badge-done   { background: #d1fae5; color: #065f46; }
-  .badge-new    { background: #fff7ed; color: #92400e; }
+  .tool-badge { display: inline-flex; align-items: center; gap: 4px; font-size: 10px; font-weight: 800; padding: 3px 10px; border-radius: 99px; }
+  .badge-done { background: #d1fae5; color: #065f46; }
+  .badge-new  { background: #fff7ed; color: #92400e; }
 
-  /* History section */
   .history-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 16px; }
-  .clear-btn {
-    font-size: 12px; color: var(--muted); background: none; border: none; cursor: pointer;
-    font-family: 'DM Sans', sans-serif; font-weight: 600; transition: color .2s;
-  }
+  .clear-btn { font-size: 12px; color: var(--muted); background: none; border: none; cursor: pointer; font-family: 'DM Sans', sans-serif; font-weight: 600; transition: color .2s; }
   .clear-btn:hover { color: #ef4444; }
-
-  .history-empty {
-    background: white; border: 1px dashed var(--border); border-radius: var(--radius-lg);
-    padding: 48px 24px; text-align: center;
-  }
+  .history-empty { background: white; border: 1px dashed var(--border); border-radius: var(--radius-lg); padding: 48px 24px; text-align: center; }
   .history-empty .emoji { font-size: 36px; margin-bottom: 12px; }
   .history-empty p { font-size: 14px; color: var(--muted); }
-
   .history-list { display: flex; flex-direction: column; gap: 12px; }
-
-  .history-card {
-    background: white; border: 1px solid var(--border); border-radius: var(--radius-lg);
-    padding: 20px; transition: border-color .2s;
-  }
-  .history-card:hover { border-color: #d1d5db; }
-
+  .history-card { background: white; border: 1px solid var(--border); border-radius: var(--radius-lg); padding: 20px; }
   .hc-top { display: flex; align-items: flex-start; justify-content: space-between; gap: 12px; margin-bottom: 14px; }
   .hc-icon-wrap { display: flex; align-items: center; gap: 12px; }
-  .hc-icon {
-    width: 44px; height: 44px; border-radius: 12px;
-    display: flex; align-items: center; justify-content: center; font-size: 20px; flex-shrink: 0;
-  }
+  .hc-icon { width: 44px; height: 44px; border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 20px; flex-shrink: 0; }
   .hc-icon.psych { background: linear-gradient(135deg, #f97316, #fb923c); }
   .hc-icon.aps   { background: linear-gradient(135deg, #2563eb, #4f46e5); }
   .hc-label { font-size: 15px; font-weight: 800; }
   .hc-date  { font-size: 12px; color: var(--muted); margin-top: 2px; }
-  .hc-time  { font-size: 12px; color: var(--muted); white-space: nowrap; flex-shrink: 0; }
 
-  /* Psych result inside history card */
   .psych-result-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); gap: 10px; }
-  .psych-result-box {
-    border-radius: var(--radius); padding: 12px;
-    border: 1px solid transparent;
-  }
+  .psych-result-box { border-radius: var(--radius); padding: 12px; border: 1px solid transparent; }
   .psych-result-box.primary { background: #fff7ed; border-color: #fde68a; }
   .psych-result-box.secondary { background: #f9fafb; border-color: var(--border); }
   .prb-eyebrow { font-size: 9px; font-weight: 800; letter-spacing: .08em; text-transform: uppercase; color: var(--muted); margin-bottom: 4px; }
   .prb-label { font-size: 14px; font-weight: 800; }
-  .prb-desc  { font-size: 11px; color: var(--muted); margin-top: 3px; line-height: 1.4; }
-
-  /* RIASEC mini bar */
   .riasec-mini { margin-top: 14px; display: flex; flex-direction: column; gap: 6px; }
   .riasec-mini-row { display: flex; align-items: center; gap: 8px; }
   .riasec-mini-label { width: 14px; font-size: 11px; font-weight: 800; color: var(--muted); flex-shrink: 0; }
@@ -152,7 +94,6 @@
   .riasec-mini-fill.teal   { background: linear-gradient(90deg,#0d9488,#0891b2); }
   .riasec-mini-pts { width: 28px; font-size: 10px; color: var(--muted); text-align: right; flex-shrink: 0; }
 
-  /* APS result inside history card */
   .aps-result-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(120px, 1fr)); gap: 8px; margin-bottom: 14px; }
   .aps-score-box { background: #eff6ff; border: 1px solid #bfdbfe; border-radius: var(--radius); padding: 12px; text-align: center; }
   .aps-score-box .score-num { font-size: 28px; font-weight: 900; font-family: 'Sora', sans-serif; color: #1d4ed8; }
@@ -161,20 +102,10 @@
   .aps-subject-tag { background: #f3f4f6; border: 1px solid var(--border); border-radius: 8px; padding: 4px 10px; font-size: 11px; font-weight: 600; }
   .aps-subject-tag span { color: var(--primary); margin-left: 4px; font-weight: 800; }
 
-  /* View full report btn */
-  .view-report-btn {
-    margin-top: 14px; display: inline-flex; align-items: center; gap: 6px;
-    background: var(--primary); color: white; font-family: 'Sora', sans-serif;
-    font-weight: 700; font-size: 12px; padding: 8px 16px; border-radius: 8px;
-    text-decoration: none; border: none; cursor: pointer; transition: filter .2s;
-  }
+  .view-report-btn { margin-top: 14px; display: inline-flex; align-items: center; gap: 6px; background: var(--primary); color: white; font-family: 'Sora', sans-serif; font-weight: 700; font-size: 12px; padding: 8px 16px; border-radius: 8px; text-decoration: none; border: none; cursor: pointer; transition: filter .2s; }
   .view-report-btn:hover { filter: brightness(1.08); }
 
-  /* Profile section */
-  .profile-card {
-    background: white; border: 1px solid var(--border); border-radius: var(--radius-xl);
-    padding: 24px; margin-bottom: 40px;
-  }
+  .profile-card { background: white; border: 1px solid var(--border); border-radius: var(--radius-xl); padding: 24px; margin-bottom: 40px; }
   .profile-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); gap: 12px; }
   .profile-field-label { font-size: 10px; font-weight: 800; text-transform: uppercase; letter-spacing: .06em; color: var(--muted); margin-bottom: 4px; }
   .profile-field-value { font-size: 14px; color: var(--text); font-weight: 600; }
@@ -183,15 +114,18 @@
 </head>
 <body>
 
+<!-- Full-page loader shown until auth resolves -->
+<div id="pageLoader"><div class="loader-spinner"></div></div>
+
 <!-- Hero -->
 <div class="hero">
   <div class="hero-inner">
     <a href="index.html" class="back-btn">← Back to Home</a>
     <div class="hero-top">
       <div class="hero-user">
-        <div class="avatar" id="avatarEl">?</div>
+        <div class="avatar" id="avatarEl">…</div>
         <div>
-          <div class="hero-name" id="heroName">Loading...</div>
+          <div class="hero-name" id="heroName">Loading…</div>
           <div class="hero-meta" id="heroMeta"></div>
         </div>
       </div>
@@ -202,26 +136,20 @@
 </div>
 
 <div class="main">
-
-  <!-- Quick Actions -->
   <div class="section-title">🚀 Student Tools</div>
   <div class="tool-grid" id="toolGrid"></div>
 
-  <!-- Profile -->
   <div class="section-title">👤 My Profile</div>
   <div class="profile-card" id="profileCard"></div>
 
-  <!-- History -->
   <div class="history-header">
     <div class="section-title" style="margin-bottom:0">📋 My Activity History</div>
-    <button class="clear-btn" onclick="confirmClearHistory()">Clear History</button>
+    <button class="clear-btn" id="clearBtn">Clear History</button>
   </div>
   <div id="historyContainer"></div>
-
 </div>
 
 <script>
-// ── RIASEC colour map ──────────────────────────────────────────────────────
 const RIASEC_META = {
   R: { label:'Realistic (Doer)',         color:'orange' },
   I: { label:'Investigative (Thinker)',  color:'blue'   },
@@ -231,209 +159,162 @@ const RIASEC_META = {
   C: { label:'Conventional (Organiser)', color:'teal'   },
 };
 
-// ── Init ──────────────────────────────────────────────────────────────────
-const user = Auth.requireAuth();
-if (!user) throw new Error('not logged in'); // requireAuth already redirects
+var _user = null; // will be set once auth resolves
 
-// Populate hero
-document.getElementById('avatarEl').textContent =
-  (user.firstName[0] + user.lastName[0]).toUpperCase();
-document.getElementById('heroName').textContent =
-  user.firstName + ' ' + user.lastName;
-document.getElementById('heroMeta').textContent = user.email;
+// ── Boot: wait for auth then paint the page ───────────────────────────────
+document.addEventListener('DOMContentLoaded', async function () {
+  _user = await Auth.requireAuth();
+  if (!_user) return; // Auth.requireAuth already redirected to login
 
-// History for stats
-const history = Auth.loadHistory(user.id);
-const psychHistory = history.filter(h => h.type === 'psych');
-const apsHistory   = history.filter(h => h.type === 'aps');
-const hasPsych     = psychHistory.length > 0;
-const hasAPS       = apsHistory.length > 0;
+  // Hide loader
+  var loader = document.getElementById('pageLoader');
+  loader.classList.add('hidden');
+  setTimeout(function () { loader.style.display = 'none'; }, 350);
 
-// Stats pills
-const statsEl = document.getElementById('heroStats');
-const pills = [
-  hasPsych ? `🧠 ${psychHistory.length} Psychometric test${psychHistory.length > 1 ? 's' : ''}` : '🧠 Psychometric test — not taken yet',
-  hasAPS   ? `📐 ${apsHistory.length} APS calculation${apsHistory.length > 1 ? 's' : ''}` : '📐 APS Calculator — not used yet',
-  `📚 Bursary Portal — available`,
-];
-statsEl.innerHTML = pills.map(p => `<div class="stat-pill">${p}</div>`).join('');
+  // Populate hero
+  var initials = ((_user.firstName || '?')[0] + (_user.lastName || '?')[0]).toUpperCase();
+  document.getElementById('avatarEl').textContent = initials;
+  document.getElementById('heroName').textContent  = (_user.firstName + ' ' + _user.lastName).trim() || _user.email;
+  document.getElementById('heroMeta').textContent  = _user.email;
 
-// Tool grid
-const tools = [
-  { icon:'🧠', name:'Career Psychometric Test', desc:'Discover your RIASEC profile and matching career paths.', href:'psychometric-test.html', done: hasPsych },
-  { icon:'📐', name:'APS Calculator', desc:'Calculate your Admission Point Score for university entry.', href:'aps-calculator.html', done: hasAPS },
-  { icon:'📚', name:'Bursary Portal', desc:'Search 20+ South African bursaries and funding opportunities.', href:'bursary-portal.html', done: false },
-];
+  // Stats
+  var history      = Auth.loadHistory(_user.id);
+  var psychHistory = history.filter(function (h) { return h.type === 'psych'; });
+  var apsHistory   = history.filter(function (h) { return h.type === 'aps'; });
+  var hasPsych     = psychHistory.length > 0;
+  var hasAPS       = apsHistory.length > 0;
 
-document.getElementById('toolGrid').innerHTML = tools.map(t => `
-  <a href="${t.href}" class="tool-card">
-    <div style="display:flex;align-items:center;justify-content:space-between;gap:8px">
-      <div class="tool-icon">${t.icon}</div>
-      <span class="tool-badge ${t.done ? 'badge-done' : 'badge-new'}">${t.done ? '✓ Completed' : 'Try Now'}</span>
-    </div>
-    <div class="tool-name">${t.name}</div>
-    <div class="tool-desc">${t.desc}</div>
-  </a>
-`).join('');
+  document.getElementById('heroStats').innerHTML = [
+    hasPsych ? '🧠 ' + psychHistory.length + ' Psychometric test' + (psychHistory.length > 1 ? 's' : '') : '🧠 Psychometric test — not taken yet',
+    hasAPS   ? '📐 ' + apsHistory.length + ' APS calculation' + (apsHistory.length > 1 ? 's' : '') : '📐 APS Calculator — not used yet',
+    '📚 Bursary Portal — available',
+  ].map(function (p) { return '<div class="stat-pill">' + p + '</div>'; }).join('');
 
-// Profile card
-document.getElementById('profileCard').innerHTML = `
-  <div class="profile-grid">
-    <div>
-      <div class="profile-field-label">First Name</div>
-      <div class="profile-field-value">${user.firstName}</div>
-    </div>
-    <div>
-      <div class="profile-field-label">Last Name</div>
-      <div class="profile-field-value">${user.lastName}</div>
-    </div>
-    <div>
-      <div class="profile-field-label">Email</div>
-      <div class="profile-field-value">${user.email}</div>
-    </div>
-    <div>
-      <div class="profile-field-label">Grade</div>
-      <div class="profile-field-value ${!user.grade ? 'empty' : ''}">${user.grade || 'Not specified'}</div>
-    </div>
-    <div>
-      <div class="profile-field-label">School</div>
-      <div class="profile-field-value ${!user.school ? 'empty' : ''}">${user.school || 'Not specified'}</div>
-    </div>
-  </div>
-`;
+  // Tool grid
+  var tools = [
+    { icon:'🧠', name:'Career Psychometric Test', desc:'Discover your RIASEC profile and matching career paths.', href:'psychometric-test.html', done: hasPsych },
+    { icon:'📐', name:'APS Calculator',           desc:'Calculate your Admission Point Score for university entry.', href:'aps-calculator.html', done: hasAPS },
+    { icon:'📚', name:'Bursary Portal',            desc:'Search 20+ South African bursaries and funding opportunities.', href:'bursary-portal.html', done: false },
+  ];
+  document.getElementById('toolGrid').innerHTML = tools.map(function (t) {
+    return '<a href="' + t.href + '" class="tool-card">' +
+      '<div style="display:flex;align-items:center;justify-content:space-between;gap:8px">' +
+        '<div class="tool-icon">' + t.icon + '</div>' +
+        '<span class="tool-badge ' + (t.done ? 'badge-done' : 'badge-new') + '">' + (t.done ? '✓ Completed' : 'Try Now') + '</span>' +
+      '</div>' +
+      '<div class="tool-name">' + t.name + '</div>' +
+      '<div class="tool-desc">' + t.desc + '</div>' +
+    '</a>';
+  }).join('');
 
-// ── History render ────────────────────────────────────────────────────────
+  // Profile card
+  document.getElementById('profileCard').innerHTML = '<div class="profile-grid">' + [
+    { label:'First Name', val: _user.firstName },
+    { label:'Last Name',  val: _user.lastName  },
+    { label:'Email',      val: _user.email      },
+    { label:'Grade',      val: _user.grade      },
+    { label:'School',     val: _user.school     },
+  ].map(function (f) {
+    var empty = !f.val;
+    return '<div><div class="profile-field-label">' + f.label + '</div>' +
+      '<div class="profile-field-value' + (empty ? ' empty' : '') + '">' + (f.val || 'Not specified') + '</div></div>';
+  }).join('') + '</div>';
+
+  // Wire clear button
+  document.getElementById('clearBtn').addEventListener('click', confirmClearHistory);
+
+  renderHistory();
+});
+
+// ── History ────────────────────────────────────────────────────────────────
 function renderHistory() {
-  const history = Auth.loadHistory(user.id);
-  const container = document.getElementById('historyContainer');
+  var history   = Auth.loadHistory(_user.id);
+  var container = document.getElementById('historyContainer');
 
   if (history.length === 0) {
-    container.innerHTML = `
-      <div class="history-empty">
-        <div class="emoji">🗂️</div>
-        <p>No activity yet. Complete a psychometric test or APS calculation to see your history here.</p>
-      </div>
-    `;
+    container.innerHTML = '<div class="history-empty"><div class="emoji">🗂️</div><p>No activity yet. Complete a psychometric test or APS calculation to see your history here.</p></div>';
     return;
   }
-
-  container.innerHTML = `<div class="history-list">${history.map(renderHistoryCard).join('')}</div>`;
+  container.innerHTML = '<div class="history-list">' + history.map(renderHistoryCard).join('') + '</div>';
 }
 
 function renderHistoryCard(entry) {
-  const date = new Date(entry.savedAt);
-  const dateStr = date.toLocaleDateString('en-ZA', { year:'numeric', month:'short', day:'numeric' });
-  const timeStr = date.toLocaleTimeString('en-ZA', { hour:'2-digit', minute:'2-digit' });
+  var date    = new Date(entry.savedAt);
+  var dateStr = date.toLocaleDateString('en-ZA', { year:'numeric', month:'short', day:'numeric' });
+  var timeStr = date.toLocaleTimeString('en-ZA', { hour:'2-digit', minute:'2-digit' });
 
-  let bodyHtml = '';
+  var bodyHtml;
+  if      (entry.type === 'psych' && entry.data) bodyHtml = renderPsychBody(entry.data);
+  else if (entry.type === 'aps'   && entry.data) bodyHtml = renderAPSBody(entry.data);
+  else bodyHtml = '<p style="font-size:13px;color:var(--muted)">' + (entry.summary || 'No details available.') + '</p>';
 
-  if (entry.type === 'psych' && entry.data) {
-    bodyHtml = renderPsychBody(entry.data);
-  } else if (entry.type === 'aps' && entry.data) {
-    bodyHtml = renderAPSBody(entry.data);
-  } else {
-    bodyHtml = `<p style="font-size:13px;color:var(--muted)">${entry.summary || 'No details available.'}</p>`;
-  }
+  var iconClass = entry.type === 'psych' ? 'psych' : 'aps';
+  var iconEmoji = entry.type === 'psych' ? '🧠' : '📐';
+  var label     = entry.type === 'psych' ? 'Career Psychometric Test' : 'APS Calculator';
 
-  const iconClass = entry.type === 'psych' ? 'psych' : 'aps';
-  const iconEmoji = entry.type === 'psych' ? '🧠' : '📐';
-  const label     = entry.type === 'psych' ? 'Career Psychometric Test' : 'APS Calculator';
-
-  return `
-    <div class="history-card">
-      <div class="hc-top">
-        <div class="hc-icon-wrap">
-          <div class="hc-icon ${iconClass}">${iconEmoji}</div>
-          <div>
-            <div class="hc-label">${label}</div>
-            <div class="hc-date">${dateStr} at ${timeStr}</div>
-          </div>
-        </div>
-      </div>
-      ${bodyHtml}
-    </div>
-  `;
+  return '<div class="history-card">' +
+    '<div class="hc-top"><div class="hc-icon-wrap">' +
+      '<div class="hc-icon ' + iconClass + '">' + iconEmoji + '</div>' +
+      '<div><div class="hc-label">' + label + '</div><div class="hc-date">' + dateStr + ' at ' + timeStr + '</div></div>' +
+    '</div></div>' +
+    bodyHtml +
+  '</div>';
 }
 
 function renderPsychBody(data) {
-  const scores   = data.scores   || {};
-  const topTypes = data.topTypes || [];
-  if (!topTypes.length) return `<p style="font-size:13px;color:var(--muted)">Result data unavailable.</p>`;
+  var scores   = data.scores   || {};
+  var topTypes = data.topTypes || [];
+  if (!topTypes.length) return '<p style="font-size:13px;color:var(--muted)">Result data unavailable.</p>';
 
-  const primary   = RIASEC_META[topTypes[0]] || {};
-  const secondary = topTypes.slice(1).map(t => RIASEC_META[t]).filter(Boolean);
+  var primary   = RIASEC_META[topTypes[0]] || {};
+  var secondary = topTypes.slice(1).map(function (t) { return { type: t, meta: RIASEC_META[t] }; }).filter(function (x) { return x.meta; });
+  var maxScore  = Math.max.apply(null, Object.values(scores).concat([1]));
 
-  const maxScore = Math.max(...Object.values(scores), 1);
-
-  const riasecBars = Object.entries(scores).map(([type, score]) => {
-    const meta = RIASEC_META[type] || { color:'orange' };
-    const pct  = Math.round((score / maxScore) * 100);
-    return `
-      <div class="riasec-mini-row">
-        <div class="riasec-mini-label">${type}</div>
-        <div class="riasec-mini-track">
-          <div class="riasec-mini-fill ${meta.color}" style="width:${pct}%"></div>
-        </div>
-        <div class="riasec-mini-pts">${Math.round(score)}</div>
-      </div>
-    `;
+  var riasecBars = Object.entries(scores).map(function (kv) {
+    var type = kv[0], score = kv[1];
+    var meta = RIASEC_META[type] || { color:'orange' };
+    var pct  = Math.round((score / maxScore) * 100);
+    return '<div class="riasec-mini-row"><div class="riasec-mini-label">' + type + '</div>' +
+      '<div class="riasec-mini-track"><div class="riasec-mini-fill ' + meta.color + '" style="width:' + pct + '%"></div></div>' +
+      '<div class="riasec-mini-pts">' + Math.round(score) + '</div></div>';
   }).join('');
 
-  const profileBoxes = [
-    `<div class="psych-result-box primary">
-      <div class="prb-eyebrow">Primary Type</div>
-      <div class="prb-label">${topTypes[0]} — ${primary.label || ''}</div>
-    </div>`,
-    ...secondary.map(s => `
-      <div class="psych-result-box secondary">
-        <div class="prb-eyebrow">Secondary</div>
-        <div class="prb-label">${topTypes[secondary.indexOf(s)+1]} — ${s.label}</div>
-      </div>
-    `)
-  ].join('');
+  var profileBoxes = [
+    '<div class="psych-result-box primary"><div class="prb-eyebrow">Primary Type</div><div class="prb-label">' + topTypes[0] + ' — ' + (primary.label || '') + '</div></div>',
+  ].concat(secondary.map(function (s) {
+    return '<div class="psych-result-box secondary"><div class="prb-eyebrow">Secondary</div><div class="prb-label">' + s.type + ' — ' + s.meta.label + '</div></div>';
+  })).join('');
 
-  return `
-    <div class="psych-result-grid">${profileBoxes}</div>
-    <div class="riasec-mini">${riasecBars}</div>
-    <a href="psychometric-test.html" class="view-report-btn">Retake Test →</a>
-  `;
+  return '<div class="psych-result-grid">' + profileBoxes + '</div>' +
+    '<div class="riasec-mini">' + riasecBars + '</div>' +
+    '<a href="psychometric-test.html" class="view-report-btn">Retake Test →</a>';
 }
 
 function renderAPSBody(data) {
-  const subjects = data.subjects || [];
-  const apsScore = data.apsScore || data.total || 0;
+  var subjects = data.subjects || [];
+  var apsScore = data.apsScore || data.total || 0;
 
-  const subjectTags = subjects.filter(s => s.name).map(s =>
-    `<span class="aps-subject-tag">${s.name}<span>${s.points || s.aps || ''}</span></span>`
-  ).join('');
+  var subjectTags = subjects.filter(function (s) { return s.name; }).map(function (s) {
+    return '<span class="aps-subject-tag">' + s.name + '<span>' + (s.points || s.aps || '') + '</span></span>';
+  }).join('');
 
-  return `
-    <div class="aps-result-grid">
-      <div class="aps-score-box">
-        <div class="score-num">${apsScore}</div>
-        <div class="score-label">APS Score</div>
-      </div>
-    </div>
-    ${subjectTags ? `<div class="aps-subject-list">${subjectTags}</div>` : ''}
-    <a href="aps-calculator.html" class="view-report-btn">Recalculate →</a>
-  `;
+  return '<div class="aps-result-grid"><div class="aps-score-box"><div class="score-num">' + apsScore + '</div><div class="score-label">APS Score</div></div></div>' +
+    (subjectTags ? '<div class="aps-subject-list">' + subjectTags + '</div>' : '') +
+    '<a href="aps-calculator.html" class="view-report-btn">Recalculate →</a>';
 }
 
-// ── Actions ───────────────────────────────────────────────────────────────
-function doLogout() {
-  Auth.logout();
+// ── Actions ────────────────────────────────────────────────────────────────
+async function doLogout() {
+  await Auth.logout();
   window.location.href = 'index.html';
 }
 
 function confirmClearHistory() {
   if (confirm('Are you sure you want to clear your entire activity history? This cannot be undone.')) {
-    Auth.clearHistory(user.id);
+    Auth.clearHistory(_user.id);
     renderHistory();
   }
 }
-
-// Run
-renderHistory();
 </script>
 </body>
 </html>

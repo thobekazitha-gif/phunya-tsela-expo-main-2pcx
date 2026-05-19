@@ -3,194 +3,499 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Register — Phunya Tsela</title>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;600;700;800;900&family=DM+Sans:wght@400;500;600&display=swap" rel="stylesheet">
-<!-- ?v=2 forces the browser to fetch the new auth.js, bypassing any cache -->
-<script src="auth.js?v=2"></script>
-<style>
-  :root {
-    --primary: #d97706; --yellow: #f59e0b; --bg: #fafaf9;
-    --border: #e5e7eb; --text: #111827; --muted: #6b7280;
-    --error: #ef4444; --radius: 12px; --radius-lg: 16px; --radius-xl: 20px;
-  }
-  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-  body { font-family: 'DM Sans', sans-serif; background: var(--bg); color: var(--text); min-height: 100vh; display: flex; flex-direction: column; }
-  h1,h2,h3 { font-family: 'Sora', sans-serif; }
 
-  .page { flex: 1; display: flex; align-items: center; justify-content: center; padding: 40px 16px; }
-  .card { background: white; border-radius: var(--radius-xl); border: 1px solid var(--border); box-shadow: 0 8px 40px rgba(0,0,0,.07); width: 100%; max-width: 480px; overflow: hidden; }
-  .card-header { background: linear-gradient(135deg, var(--primary), var(--yellow)); padding: 32px 32px 28px; text-align: center; color: white; }
-  .logo { font-size: 40px; margin-bottom: 10px; }
-  .card-header h1 { font-size: 26px; font-weight: 900; }
-  .card-header p { font-size: 13px; opacity: .8; margin-top: 4px; }
-  .card-body { padding: 32px; }
-  .name-row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
-  .form-group { margin-bottom: 16px; }
-  .form-group label { display: block; font-size: 13px; font-weight: 700; color: var(--text); margin-bottom: 6px; }
-  .form-group input, .form-group select {
-    width: 100%; padding: 11px 14px; border: 1px solid var(--border);
-    border-radius: var(--radius); font-size: 14px; font-family: 'DM Sans', sans-serif;
-    background: white; outline: none; transition: border-color .2s, box-shadow .2s;
+<title>Register — Phunya Tsela</title>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;600;700;800;900&family=DM+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="auth.js?v=3"></script>
+
+<style>
+
+:root{
+  --primary:#d97706;
+  --yellow:#f59e0b;
+  --bg:#fafaf9;
+  --border:#e5e7eb;
+  --text:#111827;
+  --muted:#6b7280;
+  --error:#ef4444;
+  --radius:12px;
+  --radius-lg:16px;
+  --radius-xl:20px;
+}
+
+*{
+  box-sizing:border-box;
+  margin:0;
+  padding:0;
+}
+
+body{
+  font-family:'DM Sans',sans-serif;
+  background:var(--bg);
+  color:var(--text);
+  min-height:100vh;
+  display:flex;
+  flex-direction:column;
+}
+
+h1,h2,h3{
+  font-family:'Sora',sans-serif;
+}
+
+.page{
+  flex:1;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  padding:40px 16px;
+}
+
+.card{
+  background:white;
+  border-radius:var(--radius-xl);
+  border:1px solid var(--border);
+  box-shadow:0 8px 40px rgba(0,0,0,.07);
+  width:100%;
+  max-width:480px;
+  overflow:hidden;
+}
+
+.card-header{
+  background:linear-gradient(
+    135deg,
+    var(--primary),
+    var(--yellow)
+  );
+
+  padding:32px 32px 28px;
+  text-align:center;
+  color:white;
+}
+
+.logo{
+  font-size:40px;
+  margin-bottom:10px;
+}
+
+.card-header h1{
+  font-size:26px;
+  font-weight:900;
+}
+
+.card-header p{
+  font-size:13px;
+  opacity:.8;
+  margin-top:4px;
+}
+
+.card-body{
+  padding:32px;
+}
+
+.name-row{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:12px;
+}
+
+.form-group{
+  margin-bottom:16px;
+}
+
+.form-group label{
+  display:block;
+  font-size:13px;
+  font-weight:700;
+  margin-bottom:6px;
+}
+
+.form-group input,
+.form-group select{
+  width:100%;
+  padding:11px 14px;
+  border:1px solid var(--border);
+  border-radius:var(--radius);
+  font-size:14px;
+  background:white;
+  outline:none;
+}
+
+.form-group input:focus,
+.form-group select:focus{
+  border-color:var(--primary);
+  box-shadow:0 0 0 3px #fde68a44;
+}
+
+.error-field{
+  border-color:var(--error)!important;
+}
+
+.password-hint{
+  font-size:11px;
+  color:var(--muted);
+  margin-top:5px;
+}
+
+.error-banner{
+  background:#fef2f2;
+  border:1px solid #fecaca;
+  border-radius:var(--radius);
+  padding:10px 14px;
+  font-size:13px;
+  color:#b91c1c;
+  margin-bottom:18px;
+  display:none;
+}
+
+.error-banner.show{
+  display:block;
+}
+
+.submit-btn{
+  width:100%;
+  height:50px;
+  border:none;
+  border-radius:var(--radius-lg);
+  background:var(--primary);
+  color:white;
+  font-family:'Sora',sans-serif;
+  font-weight:800;
+  font-size:15px;
+  cursor:pointer;
+  margin-top:8px;
+}
+
+.submit-btn:disabled{
+  opacity:.6;
+}
+
+.card-footer{
+  text-align:center;
+  padding:20px;
+  border-top:1px solid var(--border);
+}
+
+.card-footer a{
+  color:var(--primary);
+  font-weight:700;
+  text-decoration:none;
+}
+
+.back-link{
+  text-align:center;
+  margin-bottom:24px;
+}
+
+.back-link a{
+  color:var(--muted);
+  text-decoration:none;
+  font-size:13px;
+}
+
+.spinner{
+  width:18px;
+  height:18px;
+  border:2px solid rgba(255,255,255,.3);
+  border-top-color:white;
+  border-radius:50%;
+  animation:spin .6s linear infinite;
+  margin:auto;
+}
+
+@keyframes spin{
+  to{
+    transform:rotate(360deg);
   }
-  .form-group input:focus, .form-group select:focus { border-color: var(--primary); box-shadow: 0 0 0 3px #fde68a44; }
-  .form-group input.error-field { border-color: var(--error); box-shadow: 0 0 0 3px #fca5a544; }
-  .password-hint { font-size: 11px; color: var(--muted); margin-top: 5px; }
-  .error-banner { background: #fef2f2; border: 1px solid #fecaca; border-radius: var(--radius); padding: 10px 14px; font-size: 13px; color: #b91c1c; margin-bottom: 18px; display: none; align-items: center; gap: 8px; }
-  .error-banner.show { display: flex; }
-  .submit-btn { width: 100%; height: 50px; border-radius: var(--radius-lg); background: var(--primary); color: white; font-family: 'Sora', sans-serif; font-weight: 800; font-size: 15px; border: none; cursor: pointer; transition: filter .2s, transform .15s; margin-top: 4px; display: flex; align-items: center; justify-content: center; gap: 8px; }
-  .submit-btn:hover:not(:disabled) { filter: brightness(1.08); transform: translateY(-1px); }
-  .submit-btn:disabled { opacity: .5; cursor: not-allowed; }
-  .card-footer { text-align: center; padding: 18px 32px 24px; border-top: 1px solid var(--border); }
-  .card-footer p { font-size: 13px; color: var(--muted); }
-  .card-footer a { color: var(--primary); font-weight: 700; text-decoration: none; }
-  .back-link { text-align: center; margin-bottom: 24px; }
-  .back-link a { font-size: 13px; color: var(--muted); text-decoration: none; }
-  .spinner { width: 18px; height: 18px; border: 2px solid rgba(255,255,255,.3); border-top-color: white; border-radius: 50%; animation: spin .6s linear infinite; }
-  @keyframes spin { to { transform: rotate(360deg); } }
-  .optional-label { font-size: 10px; font-weight: 400; color: var(--muted); margin-left: 4px; }
+}
+
 </style>
 </head>
+
 <body>
+
 <div class="page">
-  <div style="width:100%;max-width:480px">
-    <div class="back-link"><a href="index.html">← Back to Home</a></div>
-    <div class="card">
-      <div class="card-header">
-        <div class="logo">🎓</div>
-        <h1>Create Your Account</h1>
-        <p>Free access to all Phunya Tsela student tools</p>
-      </div>
-      <div class="card-body">
-        <div class="error-banner" id="errorBanner">
-          <span>⚠️</span> <span id="errorText"></span>
-        </div>
-        <div class="name-row">
-          <div class="form-group">
-            <label for="firstName">First Name</label>
-            <input type="text" id="firstName" placeholder="e.g. Lebo" autocomplete="given-name">
-          </div>
-          <div class="form-group">
-            <label for="lastName">Last Name</label>
-            <input type="text" id="lastName" placeholder="e.g. Dlamini" autocomplete="family-name">
-          </div>
-        </div>
-        <div class="form-group">
-          <label for="email">Email Address</label>
-          <input type="email" id="email" placeholder="your@email.com" autocomplete="email">
-        </div>
-        <div class="form-group">
-          <label for="password">Password</label>
-          <input type="password" id="password" placeholder="At least 6 characters" autocomplete="new-password">
-          <p class="password-hint">Minimum 6 characters</p>
-        </div>
-        <div class="form-group">
-          <label for="confirmPassword">Confirm Password</label>
-          <input type="password" id="confirmPassword" placeholder="Repeat your password" autocomplete="new-password">
-        </div>
-        <div class="form-group">
-          <label for="grade">Grade <span class="optional-label">(optional)</span></label>
-          <select id="grade">
-            <option value="">Select your grade</option>
-            <option>Grade 8</option><option>Grade 9</option><option>Grade 10</option>
-            <option>Grade 11</option><option>Grade 12</option>
-            <option>Matric passed</option>
-            <option>Already at university/college</option>
-          </select>
-        </div>
-        <div class="form-group">
-          <label for="school">School Name <span class="optional-label">(optional)</span></label>
-          <input type="text" id="school" placeholder="e.g. Kuruman High School" autocomplete="organization">
-        </div>
-        <button class="submit-btn" id="registerBtn" onclick="doRegister()">Create My Free Account</button>
-      </div>
-      <div class="card-footer">
-        <p>Already have an account? <a href="login.html">Sign in →</a></p>
-      </div>
-    </div>
-  </div>
+
+<div style="width:100%;max-width:480px">
+
+<div class="back-link">
+  <a href="index.html">
+    ← Back to Home
+  </a>
+</div>
+
+<div class="card">
+
+<div class="card-header">
+  <div class="logo">🎓</div>
+  <h1>Create Your Account</h1>
+  <p>Free access to all Phunya Tsela student tools</p>
+</div>
+
+<div class="card-body">
+
+<div class="error-banner" id="errorBanner">
+  <span id="errorText"></span>
+</div>
+
+<div class="name-row">
+
+<div class="form-group">
+<label>First Name</label>
+<input type="text" id="firstName">
+</div>
+
+<div class="form-group">
+<label>Last Name</label>
+<input type="text" id="lastName">
+</div>
+
+</div>
+
+<div class="form-group">
+<label>Email Address</label>
+<input type="email" id="email">
+</div>
+
+<div class="form-group">
+<label>Password</label>
+<input type="password" id="password">
+<p class="password-hint">
+Minimum 6 characters
+</p>
+</div>
+
+<div class="form-group">
+<label>Confirm Password</label>
+<input type="password" id="confirmPassword">
+</div>
+
+<div class="form-group">
+<label>Grade</label>
+
+<select id="grade">
+<option value="">Select grade</option>
+<option>Grade 8</option>
+<option>Grade 9</option>
+<option>Grade 10</option>
+<option>Grade 11</option>
+<option>Grade 12</option>
+</select>
+
+</div>
+
+<div class="form-group">
+<label>School Name</label>
+<input type="text" id="school">
+</div>
+
+<button
+  class="submit-btn"
+  id="registerBtn"
+  onclick="doRegister()">
+
+  Create My Free Account
+
+</button>
+
+</div>
+
+<div class="card-footer">
+
+<p>
+Already have an account?
+
+<a href="login.html">
+Sign in →
+</a>
+</p>
+
+</div>
+
+</div>
+</div>
 </div>
 
 <script>
-  // Redirect if already logged in
-  (function() {
-    try {
-      if (Auth && Auth.getSession && Auth.getSession()) {
-        window.location.href = 'index.html';
-      }
-    } catch(e) {}
-  })();
 
-  function showError(msg) {
-    document.getElementById('errorText').textContent = msg;
-    document.getElementById('errorBanner').classList.add('show');
+async function checkSession(){
+
+  var session =
+    await Auth.getSession();
+
+  if(session){
+    window.location.href =
+      'dashboard.html';
   }
 
-  function clearError() {
-    document.getElementById('errorBanner').classList.remove('show');
-    var ids = ['firstName','lastName','email','password','confirmPassword'];
-    for (var i = 0; i < ids.length; i++) {
-      document.getElementById(ids[i]).classList.remove('error-field');
+}
+
+checkSession();
+
+function showError(msg){
+
+  document.getElementById(
+    'errorText'
+  ).textContent = msg;
+
+  document.getElementById(
+    'errorBanner'
+  ).classList.add('show');
+
+}
+
+function clearError(){
+
+  document.getElementById(
+    'errorBanner'
+  ).classList.remove('show');
+
+}
+
+function setLoading(yes){
+
+  var btn =
+    document.getElementById(
+      'registerBtn'
+    );
+
+  btn.disabled = yes;
+
+  btn.innerHTML = yes
+
+    ? '<div class="spinner"></div>'
+
+    : 'Create My Free Account';
+
+}
+
+async function doRegister(){
+
+  clearError();
+
+  var firstName =
+    document.getElementById(
+      'firstName'
+    ).value.trim();
+
+  var lastName =
+    document.getElementById(
+      'lastName'
+    ).value.trim();
+
+  var email =
+    document.getElementById(
+      'email'
+    ).value.trim();
+
+  var password =
+    document.getElementById(
+      'password'
+    ).value;
+
+  var confirmPassword =
+    document.getElementById(
+      'confirmPassword'
+    ).value;
+
+  var grade =
+    document.getElementById(
+      'grade'
+    ).value;
+
+  var school =
+    document.getElementById(
+      'school'
+    ).value.trim();
+
+  if(!firstName){
+    showError('Enter first name');
+    return;
+  }
+
+  if(!lastName){
+    showError('Enter last name');
+    return;
+  }
+
+  if(!email){
+    showError('Enter email');
+    return;
+  }
+
+  if(password.length < 6){
+    showError('Password too short');
+    return;
+  }
+
+  if(password !== confirmPassword){
+    showError('Passwords do not match');
+    return;
+  }
+
+  setLoading(true);
+
+  try{
+
+    var result =
+      await Auth.register({
+
+        firstName:firstName,
+        lastName:lastName,
+        email:email,
+        password:password,
+        grade:grade,
+        school:school
+
+      });
+
+    setLoading(false);
+
+    if(result.ok){
+
+      alert(
+        'Account created successfully!'
+      );
+
+      window.location.href =
+        'dashboard.html';
+
+    }else{
+
+      showError(
+        result.error
+      );
+
     }
+
+  }catch(e){
+
+    setLoading(false);
+
+    showError(
+      e.message
+    );
+
   }
 
-  function markError(id) {
-    var el = document.getElementById(id);
-    if (el) el.classList.add('error-field');
+}
+
+document.addEventListener(
+  'keydown',
+  function(e){
+
+    if(e.key === 'Enter'){
+      doRegister();
+    }
+
   }
+);
 
-  function setLoading(yes) {
-    var btn = document.getElementById('registerBtn');
-    btn.disabled = yes;
-    btn.innerHTML = yes ? '<div class="spinner"></div> Creating account...' : 'Create My Free Account';
-  }
-
-  function doRegister() {
-    clearError();
-
-    var firstName       = document.getElementById('firstName').value.trim();
-    var lastName        = document.getElementById('lastName').value.trim();
-    var email           = document.getElementById('email').value.trim();
-    var password        = document.getElementById('password').value;
-    var confirmPassword = document.getElementById('confirmPassword').value;
-    var grade           = document.getElementById('grade').value;
-    var school          = document.getElementById('school').value.trim();
-
-    if (!firstName)                       { showError('Please enter your first name.');            markError('firstName');       return; }
-    if (!lastName)                        { showError('Please enter your last name.');             markError('lastName');        return; }
-    if (!email || email.indexOf('@') < 0) { showError('Please enter a valid email address.');     markError('email');           return; }
-    if (!password || password.length < 6) { showError('Password must be at least 6 characters.'); markError('password');       return; }
-    if (password !== confirmPassword)     { showError('Passwords do not match.');                 markError('confirmPassword'); return; }
-
-    setLoading(true);
-
-    setTimeout(function() {
-      try {
-        var result = Auth.register({
-          firstName: firstName,
-          lastName:  lastName,
-          email:     email,
-          password:  password,
-          grade:     grade,
-          school:    school
-        });
-        setLoading(false);
-        if (result.ok) {
-          window.location.href = 'dashboard.html';
-        } else {
-          showError(result.error);
-        }
-      } catch(e) {
-        setLoading(false);
-        showError('Something went wrong: ' + e.message);
-        console.error('Registration error:', e);
-      }
-    }, 400);
-  }
-
-  document.addEventListener('keydown', function(e) {
-    if (e.key === 'Enter') doRegister();
-  });
 </script>
+
 </body>
 </html>

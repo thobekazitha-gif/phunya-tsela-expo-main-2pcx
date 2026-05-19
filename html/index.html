@@ -43,6 +43,11 @@
           <svg class="chevron" xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 9l-7 7-7-7"/></svg>
         </button>
         <div class="dropdown-menu" id="student-tools-menu">
+          <!-- Student Dashboard — only shown when logged in -->
+          <button class="dropdown-item nav-dashboard-item" id="nav-dashboard-btn" data-route="/dashboard" style="display:none;">
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg>
+            Student Dashboard
+          </button>
           <button class="dropdown-item" data-route="/bursary-portal">
             <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg>
             Bursary Portal
@@ -60,10 +65,16 @@
     </nav>
 
     <div class="header-actions">
+      <!-- When logged out: show Student Login button -->
       <button class="btn-student-login" id="student-login-btn">
         <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="8" r="5"/><path d="M20 21a8 8 0 1 0-16 0"/></svg>
         Student Login
       </button>
+      <!-- When logged in: show student's name linking to dashboard -->
+      <a href="dashboard.html" class="btn-student-name" id="student-name-btn" style="display:none;">
+        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="8" r="5"/><path d="M20 21a8 8 0 1 0-16 0"/></svg>
+        <span id="student-name-label">Student</span>
+      </a>
       <a href="exhibitor-signup.html" target="_blank" rel="noopener noreferrer" class="btn-primary" data-cta="header-book-now">
         Book Now
       </a>
@@ -87,6 +98,11 @@
 
       <div class="mobile-section-divider">
         <p class="mobile-section-label">Student Tools</p>
+        <!-- Mobile Dashboard (shown when logged in) -->
+        <a href="dashboard.html" class="mobile-tool-btn mobile-dashboard-btn" id="mobile-dashboard-btn" style="display:none; text-decoration:none;">
+          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg>
+          Student Dashboard
+        </a>
         <button class="mobile-tool-btn" data-route="/bursary-portal">
           <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg>
           Bursary Portal
@@ -102,10 +118,16 @@
       </div>
 
       <div class="mobile-section-divider">
+        <!-- Mobile: logged-out state -->
         <button class="btn-outline w-full" id="mobile-login-btn">
           <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="8" r="5"/><path d="M20 21a8 8 0 1 0-16 0"/></svg>
           Student Login / Sign Up
         </button>
+        <!-- Mobile: logged-in state -->
+        <a href="dashboard.html" class="btn-outline w-full" id="mobile-go-dashboard-btn" style="display:none; text-decoration:none; text-align:center;">
+          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg>
+          My Dashboard
+        </a>
       </div>
     </nav>
   </div>
@@ -150,6 +172,16 @@
     <div class="hero-student-tools animate-fade-in-delay">
       <p class="student-tools-label">Student Tools — Free for Learners</p>
       <div class="student-tools-row">
+        <!-- Dashboard button: shown only when logged in -->
+        <a href="dashboard.html" class="btn-student-tool btn-dashboard-tool hero-dashboard-btn" id="hero-dashboard-btn" style="display:none; text-decoration:none;">
+          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg>
+          My Dashboard
+        </a>
+        <!-- Dashboard button: shown only when logged out (opens login modal) -->
+        <button class="btn-student-tool btn-dashboard-tool hero-dashboard-gated-btn" id="hero-dashboard-gated-btn" onclick="openAuthModalForDashboard()">
+          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg>
+          Student Dashboard
+        </button>
         <button class="btn-student-tool btn-primary-tool" data-route="/bursary-portal">
           <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg>
           Bursary Portal
@@ -878,9 +910,295 @@
   from { opacity:0; transform:scale(.92) translateY(12px); }
   to   { opacity:1; transform:scale(1) translateY(0); }
 }
+
+/* ===== Student Name Button (logged-in nav state) ===== */
+.btn-student-name {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0.45rem 1rem;
+  border-radius: 999px;
+  font-family: 'Space Grotesk', sans-serif;
+  font-weight: 600;
+  font-size: 0.875rem;
+  color: hsl(var(--primary, 220 90% 50%));
+  background: transparent;
+  border: 1.5px solid hsl(var(--primary, 220 90% 50%) / 0.3);
+  text-decoration: none;
+  transition: background 0.2s, border-color 0.2s;
+  white-space: nowrap;
+  max-width: 180px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.btn-student-name:hover {
+  background: hsl(var(--primary, 220 90% 50%) / 0.08);
+  border-color: hsl(var(--primary, 220 90% 50%) / 0.6);
+}
+
+/* ===== Dashboard tool button in hero ===== */
+.btn-dashboard-tool {
+  background: linear-gradient(135deg, #1e3a5f, #2563eb);
+  color: #fff;
+  border: none;
+  padding: 0.5rem 1rem;
+  border-radius: 8px;
+  font-family: 'Space Grotesk', sans-serif;
+  font-weight: 600;
+  font-size: 0.8125rem;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  cursor: pointer;
+  transition: filter 0.2s, transform 0.15s;
+  text-decoration: none;
+}
+.btn-dashboard-tool:hover {
+  filter: brightness(1.1);
+  transform: translateY(-1px);
+}
+
+/* Dashboard item in nav dropdown — visually distinct */
+.nav-dashboard-item {
+  border-bottom: 1px solid rgba(0,0,0,0.07);
+  margin-bottom: 4px;
+  padding-bottom: 8px;
+  font-weight: 700 !important;
+  color: #1d4ed8 !important;
+}
 </style>
 
 <script>
+/* ================================================================
+   AUTH STATE MANAGEMENT
+   Reads/writes to sessionStorage so state persists across page
+   refreshes within the same browser session.
+   ================================================================ */
+
+var SESSION_KEY = 'kce_student';
+
+function getStudentSession() {
+  try {
+    var raw = sessionStorage.getItem(SESSION_KEY);
+    return raw ? JSON.parse(raw) : null;
+  } catch(e) { return null; }
+}
+
+function setStudentSession(data) {
+  try { sessionStorage.setItem(SESSION_KEY, JSON.stringify(data)); } catch(e) {}
+}
+
+function clearStudentSession() {
+  try { sessionStorage.removeItem(SESSION_KEY); } catch(e) {}
+}
+
+/* ----------------------------------------------------------------
+   applyAuthState — called on page load AND after login/logout
+   Updates every auth-sensitive element on the page.
+---------------------------------------------------------------- */
+function applyAuthState() {
+  var student = getStudentSession();
+  var isLoggedIn = !!student;
+
+  /* ---- Header: Student Login btn vs Student Name btn ---- */
+  var loginBtn    = document.getElementById('student-login-btn');
+  var nameBtn     = document.getElementById('student-name-btn');
+  var nameLabel   = document.getElementById('student-name-label');
+
+  if (isLoggedIn) {
+    if (loginBtn)  loginBtn.style.display  = 'none';
+    if (nameBtn)   nameBtn.style.display   = 'inline-flex';
+    if (nameLabel) nameLabel.textContent   = student.firstName || 'My Account';
+  } else {
+    if (loginBtn)  loginBtn.style.display  = 'inline-flex';
+    if (nameBtn)   nameBtn.style.display   = 'none';
+  }
+
+  /* ---- Nav dropdown: Student Dashboard item ---- */
+  var navDashBtn = document.getElementById('nav-dashboard-btn');
+  if (navDashBtn) {
+    navDashBtn.style.display = isLoggedIn ? 'flex' : 'none';
+    navDashBtn.onclick = function() { window.location.href = 'dashboard.html'; };
+  }
+
+  /* ---- Hero: Student Dashboard buttons ---- */
+  var heroDashBtn       = document.getElementById('hero-dashboard-btn');        // linked (logged in)
+  var heroDashGatedBtn  = document.getElementById('hero-dashboard-gated-btn');  // opens modal (logged out)
+
+  if (isLoggedIn) {
+    if (heroDashBtn)      heroDashBtn.style.display      = 'inline-flex';
+    if (heroDashGatedBtn) heroDashGatedBtn.style.display = 'none';
+  } else {
+    if (heroDashBtn)      heroDashBtn.style.display      = 'none';
+    if (heroDashGatedBtn) heroDashGatedBtn.style.display = 'inline-flex';
+  }
+
+  /* ---- Mobile nav: dashboard link and login/dashboard btn ---- */
+  var mobileDashBtn      = document.getElementById('mobile-dashboard-btn');
+  var mobileLoginBtn     = document.getElementById('mobile-login-btn');
+  var mobileGoDashBtn    = document.getElementById('mobile-go-dashboard-btn');
+
+  if (isLoggedIn) {
+    if (mobileDashBtn)   mobileDashBtn.style.display   = 'flex';
+    if (mobileLoginBtn)  mobileLoginBtn.style.display  = 'none';
+    if (mobileGoDashBtn) mobileGoDashBtn.style.display = 'flex';
+  } else {
+    if (mobileDashBtn)   mobileDashBtn.style.display   = 'none';
+    if (mobileLoginBtn)  mobileLoginBtn.style.display  = 'flex';
+    if (mobileGoDashBtn) mobileGoDashBtn.style.display = 'none';
+  }
+}
+
+/* ================================================================
+   MODAL HELPERS
+================================================================ */
+function openAuthModal() {
+  var modal = document.getElementById('auth-modal');
+  if (modal) {
+    modal.style.display = 'flex';
+    modal.classList.add('active');
+    document.body.style.overflow = 'hidden';
+  }
+}
+
+function closeAuthModal() {
+  var modal = document.getElementById('auth-modal');
+  if (modal) {
+    modal.style.display = 'none';
+    modal.classList.remove('active');
+    document.body.style.overflow = '';
+  }
+}
+
+/* Called by the "Student Dashboard" gated button when logged out */
+function openAuthModalForDashboard() {
+  var desc = document.getElementById('modal-desc');
+  if (desc) desc.textContent = 'Please log in to access your Student Dashboard.';
+  openAuthModal();
+}
+
+/* ================================================================
+   SIMULATED AUTH (replace with your real Firebase / Supabase logic)
+   On successful login/signup, call: onAuthSuccess(firstName, email)
+================================================================ */
+function onAuthSuccess(firstName, email) {
+  setStudentSession({ firstName: firstName, email: email });
+  closeAuthModal();
+  applyAuthState();
+  // If there was a pending dashboard redirect, go now
+  if (window._pendingDashboardRedirect) {
+    window._pendingDashboardRedirect = false;
+    window.location.href = 'dashboard.html';
+  }
+}
+
+/* ================================================================
+   WIRE UP EXISTING AUTH FORM
+   This hooks into the existing #auth-form without replacing its logic.
+================================================================ */
+document.addEventListener('DOMContentLoaded', function() {
+
+  /* Run auth state on load */
+  applyAuthState();
+
+  /* Header login button → open modal */
+  var loginBtn = document.getElementById('student-login-btn');
+  if (loginBtn) {
+    loginBtn.addEventListener('click', function() { openAuthModal(); });
+  }
+
+  /* Mobile login button → open modal */
+  var mobileLoginBtn = document.getElementById('mobile-login-btn');
+  if (mobileLoginBtn) {
+    mobileLoginBtn.addEventListener('click', function() { openAuthModal(); });
+  }
+
+  /* Modal close button */
+  var closeBtn = document.getElementById('modal-close-btn');
+  if (closeBtn) {
+    closeBtn.addEventListener('click', function() { closeAuthModal(); });
+  }
+
+  /* Close modal on overlay click */
+  var authModal = document.getElementById('auth-modal');
+  if (authModal) {
+    authModal.addEventListener('click', function(e) {
+      if (e.target === authModal) closeAuthModal();
+    });
+  }
+
+  /* ---- Intercept the existing auth form submission ---- */
+  var authForm = document.getElementById('auth-form');
+  if (authForm) {
+    authForm.addEventListener('submit', function(e) {
+      /* Let the existing script.js handle the real auth logic.
+         We listen for a custom event it fires, OR we patch in here.
+         For safety we also handle a naive fallback below. */
+      /* The existing script may call its own handler — we don't
+         override e.preventDefault() so it still fires. We use a
+         MutationObserver on the modal to detect when it closes
+         after a successful login (script.js hides it). */
+    });
+  }
+
+  /* ---- MutationObserver: detect when script.js closes the modal
+         after successful auth, then sync our state. ---- */
+  var authModalEl = document.getElementById('auth-modal');
+  if (authModalEl && window.MutationObserver) {
+    var observer = new MutationObserver(function(mutations) {
+      mutations.forEach(function(m) {
+        if (m.type === 'attributes' && m.attributeName === 'class') {
+          /* script.js removes 'active' class on success */
+          if (!authModalEl.classList.contains('active')) {
+            /* Try to read first name from filled form fields */
+            var firstName = '';
+            var fnField = document.getElementById('first-name');
+            var emailField = document.getElementById('auth-email');
+            /* For login (no first-name field), try email prefix */
+            if (fnField && fnField.value.trim()) {
+              firstName = fnField.value.trim();
+            } else if (emailField && emailField.value.trim()) {
+              firstName = emailField.value.trim().split('@')[0];
+            }
+            if (firstName && !getStudentSession()) {
+              onAuthSuccess(firstName, emailField ? emailField.value.trim() : '');
+            }
+          }
+        }
+      });
+    });
+    observer.observe(authModalEl, { attributes: true });
+  }
+
+  /* ---- Tab switching (login vs signup) ---- */
+  var tabLogin  = document.getElementById('tab-login');
+  var tabSignup = document.getElementById('tab-signup');
+  var submitBtn = document.getElementById('auth-submit');
+
+  if (tabLogin && tabSignup) {
+    tabLogin.addEventListener('click', function() {
+      tabLogin.classList.add('active');
+      tabSignup.classList.remove('active');
+      var sf = document.getElementById('signup-fields');
+      if (sf) sf.style.display = 'none';
+      if (submitBtn) submitBtn.textContent = 'Login';
+    });
+    tabSignup.addEventListener('click', function() {
+      tabSignup.classList.add('active');
+      tabLogin.classList.remove('active');
+      var sf = document.getElementById('signup-fields');
+      if (sf) sf.style.display = 'block';
+      if (submitBtn) submitBtn.textContent = 'Create Account';
+    });
+  }
+
+});
+</script>
+
+<script>
+/* ================================================================
+   PROSPECTUS MODAL
+================================================================ */
 function openProspectusModal(e) {
   e.preventDefault();
   var modal = document.getElementById('prospectus-modal');
@@ -892,7 +1210,6 @@ function openProspectusModal(e) {
 function closeProspectusModal() {
   document.getElementById('prospectus-modal').style.display = 'none';
   document.body.style.overflow = '';
-  // Reset form
   ['prosp-fname','prosp-lname','prosp-org','prosp-phone','prosp-email'].forEach(function(id){
     document.getElementById(id).value = '';
   });
@@ -914,7 +1231,6 @@ function handleProspectusSubmit() {
   var email = document.getElementById('prosp-email').value.trim();
   var err   = document.getElementById('prosp-error');
 
-  // Validate
   if (!fname || !lname) { showProspErr('Please enter your first and last name.'); return; }
   if (!org)             { showProspErr('Please enter your institution or organisation.'); return; }
   if (!phone)           { showProspErr('Please enter your contact number.'); return; }
@@ -922,12 +1238,10 @@ function handleProspectusSubmit() {
 
   err.style.display = 'none';
 
-  // Disable button + loading state
   var btn = document.getElementById('prosp-submit-btn');
   btn.disabled = true;
   btn.innerHTML = '<span style="width:16px;height:16px;border-radius:50%;border:2.5px solid rgba(255,255,255,.4);border-top-color:#fff;animation:prospSpin .8s linear infinite;display:inline-block;"></span> Sending…';
 
-  // POST to Formspree
   var fd = new FormData();
   fd.append('email',       email);
   fd.append('First Name',  fname);
@@ -941,7 +1255,6 @@ function handleProspectusSubmit() {
   })
   .then(function(res) {
     if (res.ok) {
-      // Trigger download then close modal
       var a = document.createElement('a');
       a.href = 'files/Download KCE_Phunya_Tsela_2026_Prospectus.pdf';
       a.download = 'KCE_Phunya_Tsela_2026_Prospectus.pdf';
@@ -967,7 +1280,7 @@ function handleProspectusSubmit() {
 
 function showProspErr(msg) {
   var err = document.getElementById('prosp-error');
-  err.textContent = '⚠️ ' + msg;
+  err.textContent =  msg;
   err.style.display = 'block';
 }
 </script>

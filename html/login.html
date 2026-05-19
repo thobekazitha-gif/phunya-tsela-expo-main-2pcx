@@ -6,160 +6,106 @@
 <title>Login — Phunya Tsela</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;600;700;800;900&family=DM+Sans:wght@400;500;600&display=swap" rel="stylesheet">
-<!-- ?v=2 forces the browser to fetch the new auth.js, bypassing any cache -->
-<script src="auth.js?v=2"></script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="auth.js?v=3.1"></script>
 <style>
-  :root {
-    --primary: #d97706; --yellow: #f59e0b; --bg: #fafaf9;
-    --border: #e5e7eb; --text: #111827; --muted: #6b7280;
-    --error: #ef4444; --success: #10b981;
-    --radius: 12px; --radius-lg: 16px; --radius-xl: 20px;
-  }
-  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-  body { font-family: 'DM Sans', sans-serif; background: var(--bg); color: var(--text); min-height: 100vh; display: flex; flex-direction: column; }
-  h1,h2,h3 { font-family: 'Sora', sans-serif; }
-
-  .page { flex: 1; display: flex; align-items: center; justify-content: center; padding: 40px 16px; }
-  .card { background: white; border-radius: var(--radius-xl); border: 1px solid var(--border); box-shadow: 0 8px 40px rgba(0,0,0,.07); width: 100%; max-width: 440px; overflow: hidden; }
-  .card-header { background: linear-gradient(135deg, var(--primary), var(--yellow)); padding: 32px 32px 28px; text-align: center; color: white; }
-  .logo { font-size: 40px; margin-bottom: 10px; }
-  .card-header h1 { font-size: 26px; font-weight: 900; }
-  .card-header p { font-size: 13px; opacity: .8; margin-top: 4px; }
-  .card-body { padding: 32px; }
-  .form-group { margin-bottom: 18px; }
-  .form-group label { display: block; font-size: 13px; font-weight: 700; color: var(--text); margin-bottom: 6px; }
-  .form-group input { width: 100%; padding: 11px 14px; border: 1px solid var(--border); border-radius: var(--radius); font-size: 14px; font-family: 'DM Sans', sans-serif; background: white; outline: none; transition: border-color .2s, box-shadow .2s; }
-  .form-group input:focus { border-color: var(--primary); box-shadow: 0 0 0 3px #fde68a44; }
-  .form-group input.error-field { border-color: var(--error); box-shadow: 0 0 0 3px #fca5a544; }
-  .error-banner { background: #fef2f2; border: 1px solid #fecaca; border-radius: var(--radius); padding: 10px 14px; font-size: 13px; color: #b91c1c; margin-bottom: 18px; display: none; align-items: center; gap: 8px; }
-  .error-banner.show { display: flex; }
-  .submit-btn { width: 100%; height: 50px; border-radius: var(--radius-lg); background: var(--primary); color: white; font-family: 'Sora', sans-serif; font-weight: 800; font-size: 15px; border: none; cursor: pointer; transition: filter .2s, transform .15s; margin-top: 4px; display: flex; align-items: center; justify-content: center; gap: 8px; }
-  .submit-btn:hover:not(:disabled) { filter: brightness(1.08); transform: translateY(-1px); }
-  .submit-btn:disabled { opacity: .5; cursor: not-allowed; }
-  .register-cta { margin-top: 14px; background: #fff7ed; border: 1px solid #fcd34d; border-radius: var(--radius-lg); padding: 14px 16px; display: flex; align-items: center; justify-content: space-between; gap: 10px; }
-  .register-cta p { font-size: 13px; color: #92400e; }
-  .register-cta a { display: inline-flex; align-items: center; gap: 5px; background: var(--primary); color: white; font-family: 'Sora', sans-serif; font-weight: 700; font-size: 12px; padding: 7px 14px; border-radius: 8px; text-decoration: none; white-space: nowrap; transition: filter .2s; flex-shrink: 0; }
-  .register-cta a:hover { filter: brightness(1.08); }
-  .card-footer { text-align: center; padding: 18px 32px 24px; border-top: 1px solid var(--border); }
-  .card-footer p { font-size: 13px; color: var(--muted); }
-  .card-footer a { color: var(--primary); font-weight: 700; text-decoration: none; }
-  .back-link { text-align: center; margin-bottom: 24px; }
-  .back-link a { font-size: 13px; color: var(--muted); text-decoration: none; }
-  .spinner { width: 18px; height: 18px; border: 2px solid rgba(255,255,255,.3); border-top-color: white; border-radius: 50%; animation: spin .6s linear infinite; }
-  @keyframes spin { to { transform: rotate(360deg); } }
-  .redirect-notice { background: #fffbeb; border: 1px solid #fcd34d; border-radius: var(--radius); padding: 10px 14px; font-size: 13px; color: #92400e; margin-bottom: 18px; display: none; align-items: center; gap: 8px; }
-  .redirect-notice.show { display: flex; }
+body { font-family:'DM Sans',sans-serif; background:#fafaf9; display:flex; justify-content:center; align-items:center; min-height:100vh; margin:0; }
+.card { width:100%; max-width:420px; background:white; border-radius:20px; border:1px solid #e5e7eb; overflow:hidden; box-shadow:0 8px 40px rgba(0,0,0,.07); }
+.header { background:linear-gradient(135deg,#d97706,#f59e0b); color:white; text-align:center; padding:32px; }
+.header h1 { font-family:'Sora',sans-serif; font-size:26px; font-weight:900; margin:0 0 4px; }
+.header p { margin:0; font-size:13px; opacity:.8; }
+.body { padding:32px; }
+.form-group { margin-bottom:16px; }
+.form-group label { display:block; font-size:13px; font-weight:700; margin-bottom:6px; }
+input { width:100%; height:48px; padding:0 14px; border-radius:12px; border:1px solid #e5e7eb; font-size:14px; font-family:'DM Sans',sans-serif; box-sizing:border-box; outline:none; transition:border-color .2s; }
+input:focus { border-color:#d97706; box-shadow:0 0 0 3px #fde68a44; }
+.forgot { text-align:right; margin-top:6px; }
+.forgot a { color:#d97706; text-decoration:none; font-size:13px; font-weight:600; }
+button.submit-btn { width:100%; height:50px; border:none; border-radius:14px; margin-top:8px; background:#d97706; color:white; font-family:'Sora',sans-serif; font-weight:800; font-size:15px; cursor:pointer; transition:filter .2s; }
+button.submit-btn:hover { filter:brightness(1.08); }
+button.submit-btn:disabled { opacity:.6; cursor:not-allowed; }
+.error { background:#fef2f2; border:1px solid #fecaca; color:#b91c1c; padding:12px 14px; border-radius:12px; margin-bottom:16px; font-size:13px; display:none; }
+.error.show { display:block; }
+.footer { text-align:center; padding:20px; border-top:1px solid #eee; font-size:14px; }
+.footer a { color:#d97706; font-weight:700; text-decoration:none; }
+.spinner { width:18px; height:18px; border:2px solid rgba(255,255,255,.3); border-top-color:white; border-radius:50%; animation:spin .6s linear infinite; display:inline-block; vertical-align:middle; }
+@keyframes spin { to { transform:rotate(360deg); } }
 </style>
 </head>
 <body>
-<div class="page">
-  <div style="width:100%;max-width:440px">
-    <div class="back-link"><a href="index.html">← Back to Home</a></div>
-    <div class="card">
-      <div class="card-header">
-        <div class="logo">🎓</div>
-        <h1>Welcome Back</h1>
-        <p>Sign in to your Phunya Tsela account</p>
-      </div>
-      <div class="card-body">
-        <div class="redirect-notice" id="redirectNotice">
-          🔒 <span>Please sign in to access this feature.</span>
-        </div>
-        <div class="error-banner" id="errorBanner">
-          <span>⚠️</span> <span id="errorText"></span>
-        </div>
-        <div class="form-group">
-          <label for="email">Email Address</label>
-          <input type="email" id="email" placeholder="your@email.com" autocomplete="email">
-        </div>
-        <div class="form-group">
-          <label for="password">Password</label>
-          <input type="password" id="password" placeholder="Your password" autocomplete="current-password">
-        </div>
-        <button class="submit-btn" id="loginBtn" onclick="doLogin()">Sign In</button>
-        <div class="register-cta">
-          <p>New to Phunya Tsela? Create a free account to access all tools.</p>
-          <a href="register.html">Register Free →</a>
-        </div>
-      </div>
-      <div class="card-footer">
-        <p>Don't have an account? <a href="register.html">Create one free →</a></p>
-      </div>
+
+<div class="card">
+  <div class="header">
+    <h1>Welcome Back 👋</h1>
+    <p>Sign in to your Phunya Tsela account</p>
+  </div>
+  <div class="body">
+    <div class="error" id="errorBox"></div>
+    <div class="form-group">
+      <label>Email Address</label>
+      <input type="email" id="email" placeholder="you@example.com" autocomplete="email">
     </div>
+    <div class="form-group">
+      <label>Password</label>
+      <input type="password" id="password" placeholder="Your password" autocomplete="current-password">
+      <div class="forgot"><a href="forgot-password.html">Forgot Password?</a></div>
+    </div>
+    <button class="submit-btn" id="loginBtn" onclick="doLogin()">Sign In</button>
+  </div>
+  <div class="footer">
+    Don't have an account? <a href="register.html">Register →</a>
   </div>
 </div>
 
 <script>
-  // Redirect if already logged in
-  (function() {
-    try {
-      if (Auth && Auth.getSession && Auth.getSession()) {
-        var p = new URLSearchParams(window.location.search);
-        window.location.href = p.get('redirect') || 'index.html';
-        return;
-      }
-      var p = new URLSearchParams(window.location.search);
-      if (p.get('redirect')) {
-        document.getElementById('redirectNotice').classList.add('show');
-      }
-    } catch(e) {}
-  })();
-
-  function getRedirect() {
-    try {
-      var p = new URLSearchParams(window.location.search);
-      return p.get('redirect') || 'index.html';
-    } catch(e) { return 'index.html'; }
+// Check if already logged in — redirect immediately
+(async function () {
+  var user = await Auth.getSession();
+  if (user) {
+    var params = new URLSearchParams(window.location.search);
+    window.location.href = params.get('redirect') || 'dashboard.html';
   }
+})();
 
-  function showError(msg) {
-    document.getElementById('errorText').textContent = msg;
-    document.getElementById('errorBanner').classList.add('show');
-    var ml = msg.toLowerCase();
-    document.getElementById('email').classList.toggle('error-field',    ml.indexOf('email') >= 0 || ml.indexOf('account') >= 0);
-    document.getElementById('password').classList.toggle('error-field', ml.indexOf('password') >= 0);
+function showError(msg) {
+  var box = document.getElementById('errorBox');
+  box.textContent = msg;
+  box.classList.add('show');
+}
+function clearError() {
+  document.getElementById('errorBox').classList.remove('show');
+}
+function setLoading(yes) {
+  var btn = document.getElementById('loginBtn');
+  btn.disabled = yes;
+  btn.innerHTML = yes ? '<span class="spinner"></span>' : 'Sign In';
+}
+
+async function doLogin() {
+  clearError();
+  var email    = document.getElementById('email').value.trim();
+  var password = document.getElementById('password').value;
+
+  if (!email)    { showError('Please enter your email.'); return; }
+  if (!password) { showError('Please enter your password.'); return; }
+
+  setLoading(true);
+  try {
+    var result = await Auth.login({ email, password });
+    if (result.ok) {
+      var params = new URLSearchParams(window.location.search);
+      window.location.href = params.get('redirect') || 'dashboard.html';
+    } else {
+      showError(result.error);
+      setLoading(false);
+    }
+  } catch (e) {
+    showError(e.message);
+    setLoading(false);
   }
+}
 
-  function clearError() {
-    document.getElementById('errorBanner').classList.remove('show');
-    document.getElementById('email').classList.remove('error-field');
-    document.getElementById('password').classList.remove('error-field');
-  }
-
-  function setLoading(yes) {
-    var btn = document.getElementById('loginBtn');
-    btn.disabled = yes;
-    btn.innerHTML = yes ? '<div class="spinner"></div> Signing in...' : 'Sign In';
-  }
-
-  function doLogin() {
-    clearError();
-    var email    = document.getElementById('email').value.trim();
-    var password = document.getElementById('password').value;
-    if (!email)    { showError('Please enter your email address.'); return; }
-    if (!password) { showError('Please enter your password.');      return; }
-
-    setLoading(true);
-    setTimeout(function() {
-      try {
-        var result = Auth.login({ email: email, password: password });
-        setLoading(false);
-        if (result.ok) {
-          window.location.href = getRedirect();
-        } else {
-          showError(result.error);
-        }
-      } catch(e) {
-        setLoading(false);
-        showError('Something went wrong: ' + e.message);
-        console.error('Login error:', e);
-      }
-    }, 400);
-  }
-
-  document.addEventListener('keydown', function(e) {
-    if (e.key === 'Enter') doLogin();
-  });
+document.addEventListener('keydown', function (e) { if (e.key === 'Enter') doLogin(); });
 </script>
 </body>
 </html>
