@@ -8,6 +8,8 @@
 <link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;600;700;800;900&family=DM+Sans:wght@400;500;600&display=swap" rel="stylesheet">
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="auth.js?v=3.1"></script>
+<!-- PDF Generation -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 <style>
   :root { --primary:#d97706; --yellow:#f59e0b; --bg:#fafaf9; --card:#fff; --border:#e5e7eb; --text:#111827; --muted:#6b7280; --radius:12px; --radius-lg:16px; --radius-xl:20px; }
   *, *::before, *::after { box-sizing:border-box; margin:0; padding:0; }
@@ -135,14 +137,22 @@
 
   .report-footer { text-align:center; font-size:11px; color:var(--muted); border-top:1px solid var(--border); padding-top:16px; line-height:1.7; margin-bottom:32px; }
 
-  .action-row { display:flex; flex-direction:column; gap:10px; }
-  @media(min-width:480px){ .action-row { flex-direction:row; } }
-  .btn-primary { flex:1; height:52px; border-radius:var(--radius-lg); background:var(--primary); color:white; font-family:'Sora',sans-serif; font-weight:800; font-size:14px; border:none; cursor:pointer; display:flex; align-items:center; justify-content:center; gap:8px; transition:filter .2s; text-decoration:none; }
+  .action-row { display:flex; flex-direction:column; gap:10px; max-width:760px; margin:0 auto; padding:0 16px 40px; }
+  @media(min-width:480px){ .action-row { flex-direction:row; flex-wrap:wrap; } }
+  .btn-primary { flex:1; height:52px; border-radius:var(--radius-lg); background:var(--primary); color:white; font-family:'Sora',sans-serif; font-weight:800; font-size:14px; border:none; cursor:pointer; display:flex; align-items:center; justify-content:center; gap:8px; transition:filter .2s; text-decoration:none; min-width:160px; }
   .btn-primary:hover { filter:brightness(1.08); }
-  .btn-outline { flex:1; height:52px; border-radius:var(--radius-lg); background:white; border:1px solid var(--border); color:var(--text); font-family:'Sora',sans-serif; font-weight:700; font-size:14px; cursor:pointer; display:flex; align-items:center; justify-content:center; gap:8px; transition:background .2s; text-decoration:none; }
+  .btn-outline { flex:1; height:52px; border-radius:var(--radius-lg); background:white; border:1px solid var(--border); color:var(--text); font-family:'Sora',sans-serif; font-weight:700; font-size:14px; cursor:pointer; display:flex; align-items:center; justify-content:center; gap:8px; transition:background .2s; text-decoration:none; min-width:160px; }
   .btn-outline:hover { background:#f3f4f6; }
   .btn-ghost { height:52px; padding:0 20px; border-radius:var(--radius-lg); background:none; border:none; color:var(--muted); font-family:'Sora',sans-serif; font-weight:700; font-size:14px; cursor:pointer; display:flex; align-items:center; gap:8px; transition:color .2s; }
   .btn-ghost:hover { color:var(--text); }
+
+  /* PDF download button */
+  .btn-pdf { flex:1; height:52px; border-radius:var(--radius-lg); background:linear-gradient(135deg,#1e40af,#2563eb); color:white; font-family:'Sora',sans-serif; font-weight:800; font-size:14px; border:none; cursor:pointer; display:flex; align-items:center; justify-content:center; gap:8px; transition:filter .2s; min-width:160px; }
+  .btn-pdf:hover { filter:brightness(1.1); }
+  .btn-pdf:disabled { opacity:.6; cursor:not-allowed; }
+
+  /* Spinner inside button */
+  .btn-spinner { width:16px; height:16px; border:2px solid rgba(255,255,255,.4); border-top-color:white; border-radius:50%; animation:loadspin .6s linear infinite; display:inline-block; }
 </style>
 </head>
 <body>
@@ -183,14 +193,14 @@
 <!-- Results Section -->
 <div id="resultsSection">
   <div class="results-hero" id="resultsHero">
-    <div class="results-inner no-print">
+    <div class="results-inner">
       <button class="back-btn" onclick="window.history.back()">← Back to Home</button>
       <h1>Your Career Profile</h1>
       <p class="results-sub" id="resultsHeroSub"></p>
     </div>
   </div>
   <div class="results-body" id="reportBody"></div>
-  <div class="results-body action-row no-print" id="actionRow"></div>
+  <div class="action-row" id="actionRow"></div>
 </div>
 
 <script>
@@ -221,6 +231,8 @@ var QUESTIONS = [
 var currentQ = 0;
 var answers  = {};
 var _user    = null;
+var _lastScores = null;
+var _lastTopTypes = null;
 
 // ── Boot ──────────────────────────────────────────────────────────────────
 document.addEventListener('DOMContentLoaded', async function () {
@@ -231,15 +243,10 @@ document.addEventListener('DOMContentLoaded', async function () {
   loader.classList.add('hidden');
   setTimeout(function () { loader.style.display = 'none'; }, 350);
 
-  document.getElementById("heroSub").textContent = QUESTIONS.length + " questions • ~8 minutes • Free";
+  document.getElementById("heroSub").textContent = QUESTIONS.length + " questions \u2022 ~8 minutes \u2022 Free";
   document.getElementById("answeredCount").textContent = "0 of " + QUESTIONS.length + " questions answered";
   renderQuestion();
 });
-
-async function doLogout() {
-  await Auth.logout();
-  window.location.href = 'login.html';
-}
 
 function renderQuestion() {
   var q       = QUESTIONS[currentQ];
@@ -299,6 +306,8 @@ function calculateResults() {
   });
   var sorted   = Object.keys(scores).sort(function(a,b){ return scores[b]-scores[a]; });
   var topTypes = sorted.slice(0,3);
+  _lastScores   = scores;
+  _lastTopTypes = topTypes;
   showResults(scores, topTypes);
 }
 
@@ -308,7 +317,7 @@ function showResults(scores, topTypes) {
     try {
       var primary = RIASEC_PROFILES[topTypes[0]];
       Auth.savePsychResult(_user.id, {
-        scores, topTypes, primaryType: topTypes[0],
+        scores: scores, topTypes: topTypes, primaryType: topTypes[0],
         summary: 'Primary type: ' + (primary ? primary.label : topTypes[0]),
       });
     } catch(e) { console.warn('Could not save psych result:', e); }
@@ -335,7 +344,7 @@ function showResults(scores, topTypes) {
         '<div class="riasec-name-row"><span class="riasec-name">' + p.label + '</span><span class="riasec-pts">' + Math.round(scores[type]) + ' pts</span></div>' +
         '<div class="riasec-track"><div class="riasec-fill ' + p.color + '" style="width:' + pct + '%"></div></div>' +
       '</div>' +
-      (topTypes[0] === type ? '<span class="riasec-top-star">Top ★</span>' : '<span style="width:36px"></span>') +
+      (topTypes[0] === type ? '<span class="riasec-top-star">Top \u2605</span>' : '<span style="width:36px"></span>') +
     '</div>';
   }).join('');
 
@@ -345,8 +354,8 @@ function showResults(scores, topTypes) {
   }).join('');
 
   document.getElementById("reportBody").innerHTML =
-    '<div class="saved-banner">✅ Your results have been saved to your dashboard.</div>' +
-    '<div class="report-header"><div class="eyebrow">Phunya Tsela Career Expo 2026 — Student Career Report</div><h2>Career Psychometric Summary</h2><div class="byline">Generated: ' + today + '</div></div>' +
+    '<div class="saved-banner">\u2705 Your results have been saved to your dashboard.</div>' +
+    '<div class="report-header"><div class="eyebrow">Phunya Tsela Career Expo 2026 \u2014 Student Career Report</div><h2>Career Psychometric Summary</h2><div class="byline">Generated: ' + today + '</div></div>' +
     '<div class="profile-card ' + primary.color + '">' +
       '<div class="profile-card-top"><div>' +
         '<div class="profile-eyebrow">Primary Career Type</div>' +
@@ -361,7 +370,7 @@ function showResults(scores, topTypes) {
     '<div class="riasec-card"><h3>Your RIASEC Profile Scores</h3>' + riasecRows + '</div>' +
     (topTypes.length > 1 ? '<div class="secondary-grid">' + secondaryCards + '</div>' : '') +
     '<div class="opp-card"><h3>SA Opportunities for Your Profile</h3><ul class="opp-list">' + primary.saOpportunities.map(function(o){ return '<li>'+o+'</li>'; }).join('') + '</ul></div>' +
-    '<div class="next-steps"><h3>📋 Your Next Steps</h3><ol>' +
+    '<div class="next-steps"><h3>\uD83D\uDCCB Your Next Steps</h3><ol>' +
       '<li>Use our <strong>APS Calculator</strong> to find specific university courses you qualify for</li>' +
       '<li>Visit the <strong>Bursary Portal</strong> to find funding for your chosen field</li>' +
       '<li>Research the top universities offering your preferred courses</li>' +
@@ -370,16 +379,220 @@ function showResults(scores, topTypes) {
     '</ol></div>' +
     '<div class="report-footer">' +
       '<p>This report was generated by the Phunya Tsela Career Expo Student Portal</p>' +
-      '<p>Kasi Career Expo • kasiexpo.co.za • Kuruman, Northern Cape</p>' +
+      '<p>Kasi Career Expo \u2022 kasiexpo.co.za \u2022 Kuruman, Northern Cape</p>' +
       '<p>Results are indicative. Consult a registered career counsellor for professional guidance.</p>' +
     '</div>';
 
   document.getElementById("actionRow").innerHTML =
+    '<button class="btn-pdf" id="btnDownloadPdf" onclick="downloadPsychPDF(this)">&#128196; Download PDF Report</button>' +
     '<a href="aps-calculator.html" class="btn-outline">Calculate My APS Score</a>' +
     '<a href="dashboard.html" class="btn-outline">View My Dashboard</a>' +
-    '<button class="btn-ghost" onclick="restart()">↩ Retake Test</button>';
+    '<button class="btn-ghost" onclick="restart()">\u21A9 Retake Test</button>';
 
   window.scrollTo({ top: 0, behavior: "smooth" });
+}
+
+// ── PDF Generation ─────────────────────────────────────────────────────────
+function downloadPsychPDF(btn) {
+  btn.disabled = true;
+  btn.innerHTML = '<span class="btn-spinner"></span> Generating PDF…';
+
+  try {
+    var scores   = _lastScores;
+    var topTypes = _lastTopTypes;
+    var primary  = RIASEC_PROFILES[topTypes[0]];
+    var today    = new Date().toLocaleDateString("en-ZA", { year:"numeric", month:"long", day:"numeric" });
+    var userName = _user ? (_user.firstName + ' ' + _user.lastName).trim() : 'Student';
+
+    var jsPDF = window.jspdf.jsPDF;
+    var doc = new jsPDF({ unit:'mm', format:'a4' });
+    var W = 210, margin = 18, y = 0, lineH = 6;
+
+    var COLOR_MAP = {
+      orange: [249,115,22], blue: [37,99,235], purple: [147,51,234],
+      green:  [5,150,105],  red:  [220,38,38], teal:   [13,148,136],
+    };
+    var primaryColor = COLOR_MAP[primary.color] || [217,119,6];
+
+    // ── Header banner ──
+    doc.setFillColor(primaryColor[0], primaryColor[1], primaryColor[2]);
+    doc.rect(0, 0, W, 42, 'F');
+
+    doc.setTextColor(255,255,255);
+    doc.setFont('helvetica','bold');
+    doc.setFontSize(9);
+    doc.text('PHUNYA TSELA CAREER EXPO 2026  |  STUDENT CAREER REPORT', margin, 14);
+
+    doc.setFontSize(20);
+    doc.text('Career Psychometric Report', margin, 27);
+
+    doc.setFont('helvetica','normal');
+    doc.setFontSize(10);
+    doc.text(userName + '  |  Generated: ' + today, margin, 36);
+
+    y = 52;
+
+    // ── Primary type card ──
+    doc.setFillColor(255,247,237);
+    doc.setDrawColor(primaryColor[0], primaryColor[1], primaryColor[2]);
+    doc.setLineWidth(0.5);
+    doc.roundedRect(margin, y, W - margin*2, 52, 3, 3, 'FD');
+
+    doc.setTextColor(120,53,15);
+    doc.setFont('helvetica','bold');
+    doc.setFontSize(8);
+    doc.text('PRIMARY CAREER TYPE', margin+6, y+8);
+
+    doc.setTextColor(primaryColor[0], primaryColor[1], primaryColor[2]);
+    doc.setFontSize(16);
+    doc.text(primary.label, margin+6, y+18);
+
+    // Big letter watermark
+    doc.setTextColor(primaryColor[0], primaryColor[1], primaryColor[2]);
+    doc.setFont('helvetica','bold');
+    doc.setFontSize(48);
+    doc.setTextColor(primaryColor[0], primaryColor[1], primaryColor[2]);
+    doc.setGState && doc.setGState(doc.GState && new doc.GState({opacity:0.12}));
+    doc.text(primary.type, W - margin - 20, y + 46);
+    doc.setGState && doc.setGState(doc.GState && new doc.GState({opacity:1}));
+
+    doc.setTextColor(80,80,80);
+    doc.setFont('helvetica','normal');
+    doc.setFontSize(9);
+    var descLines = doc.splitTextToSize(primary.description, W - margin*2 - 12);
+    doc.text(descLines, margin+6, y+27);
+    y += 60;
+
+    // ── Traits & Careers two columns ──
+    var colW = (W - margin*2 - 8) / 2;
+
+    // Traits
+    doc.setFillColor(249,250,251);
+    doc.setDrawColor(229,231,235);
+    doc.roundedRect(margin, y, colW, 52, 2, 2, 'FD');
+    doc.setTextColor(primaryColor[0], primaryColor[1], primaryColor[2]);
+    doc.setFont('helvetica','bold');
+    doc.setFontSize(8);
+    doc.text('KEY TRAITS', margin+5, y+8);
+    doc.setFont('helvetica','normal');
+    doc.setTextColor(55,65,81);
+    doc.setFontSize(9);
+    primary.traits.forEach(function(t, i) { doc.text('\u2022 ' + t, margin+5, y+16+(i*7)); });
+
+    // Careers
+    doc.setFillColor(249,250,251);
+    doc.setDrawColor(229,231,235);
+    doc.roundedRect(margin+colW+8, y, colW, 52, 2, 2, 'FD');
+    doc.setTextColor(primaryColor[0], primaryColor[1], primaryColor[2]);
+    doc.setFont('helvetica','bold');
+    doc.setFontSize(8);
+    doc.text('MATCHING CAREER PATHS', margin+colW+13, y+8);
+    doc.setFont('helvetica','normal');
+    doc.setTextColor(55,65,81);
+    doc.setFontSize(9);
+    primary.careers.slice(0,6).forEach(function(c, i) { doc.text('\u2022 ' + c, margin+colW+13, y+16+(i*7)); });
+    y += 60;
+
+    // ── RIASEC Scores ──
+    doc.setFillColor(255,255,255);
+    doc.setDrawColor(229,231,235);
+    doc.roundedRect(margin, y, W-margin*2, 58, 2, 2, 'FD');
+    doc.setTextColor(17,24,39);
+    doc.setFont('helvetica','bold');
+    doc.setFontSize(11);
+    doc.text('Your RIASEC Profile Scores', margin+5, y+9);
+
+    var maxScore = Math.max.apply(null, Object.values(scores).concat([1]));
+    var barY = y + 16;
+    var barMaxW = W - margin*2 - 60;
+
+    ["R","I","A","S","E","C"].forEach(function(type) {
+      var p    = RIASEC_PROFILES[type];
+      var pts  = Math.round(scores[type]);
+      var pct  = scores[type] / maxScore;
+      var col  = COLOR_MAP[p.color] || [100,100,100];
+
+      doc.setFont('helvetica','bold');
+      doc.setFontSize(8);
+      doc.setTextColor(100,100,100);
+      doc.text(type, margin+5, barY+3.5);
+
+      doc.setFont('helvetica','normal');
+      doc.setFontSize(8);
+      doc.setTextColor(55,65,81);
+      doc.text(p.label, margin+13, barY+3.5);
+
+      // Bar background
+      doc.setFillColor(243,244,246);
+      doc.roundedRect(margin+68, barY, barMaxW, 5, 1, 1, 'F');
+      // Bar fill
+      doc.setFillColor(col[0], col[1], col[2]);
+      if (pct > 0) doc.roundedRect(margin+68, barY, barMaxW * pct, 5, 1, 1, 'F');
+      // Points
+      doc.setTextColor(100,100,100);
+      doc.text(pts + ' pts', W - margin - 12, barY+3.5);
+
+      if (topTypes[0] === type) {
+        doc.setTextColor(primaryColor[0], primaryColor[1], primaryColor[2]);
+        doc.setFont('helvetica','bold');
+        doc.text('TOP', W - margin - 28, barY+3.5);
+      }
+      barY += 8;
+    });
+    y += 64;
+
+    // ── SA Opportunities ──
+    doc.setFillColor(255,255,255);
+    doc.setDrawColor(229,231,235);
+    doc.roundedRect(margin, y, W-margin*2, 42, 2, 2, 'FD');
+    doc.setTextColor(17,24,39);
+    doc.setFont('helvetica','bold');
+    doc.setFontSize(11);
+    doc.text('SA Opportunities for Your Profile', margin+5, y+9);
+    doc.setFont('helvetica','normal');
+    doc.setFontSize(9);
+    doc.setTextColor(80,80,80);
+    primary.saOpportunities.forEach(function(o, i) { doc.text('\u2022 ' + o, margin+5, y+17+(i*6)); });
+    y += 48;
+
+    // ── Next Steps ──
+    doc.setFillColor(255,251,235);
+    doc.setDrawColor(253,230,138);
+    doc.roundedRect(margin, y, W-margin*2, 46, 2, 2, 'FD');
+    doc.setTextColor(17,24,39);
+    doc.setFont('helvetica','bold');
+    doc.setFontSize(11);
+    doc.text('Your Next Steps', margin+5, y+9);
+    doc.setFont('helvetica','normal');
+    doc.setFontSize(9);
+    doc.setTextColor(80,80,80);
+    var steps = [
+      '1. Use the APS Calculator to find specific university courses you qualify for',
+      '2. Visit the Bursary Portal to find funding for your chosen field',
+      '3. Apply for NSFAS at nsfas.org.za before the closing date (November)',
+      '4. Research the top universities offering your preferred courses',
+      '5. Attend the Phunya Tsela Career Expo 2026 to meet employers and universities',
+    ];
+    steps.forEach(function(s, i) { doc.text(s, margin+5, y+17+(i*6)); });
+    y += 52;
+
+    // ── Footer ──
+    doc.setDrawColor(229,231,235);
+    doc.line(margin, y, W-margin, y);
+    y += 6;
+    doc.setFontSize(8);
+    doc.setTextColor(150,150,150);
+    doc.text('Phunya Tsela Career Expo 2026  |  Kasi Career Expo  |  kasiexpo.co.za  |  Kuruman, Northern Cape', margin, y);
+    doc.text('Results are indicative. Consult a registered career counsellor for professional guidance.', margin, y+5);
+
+    doc.save('Phunya_Tsela_Career_Profile_' + (userName.replace(/\s+/g,'_') || 'Student') + '.pdf');
+  } catch(e) {
+    console.error('PDF error:', e);
+    alert('Could not generate PDF. Please try again.');
+  }
+
+  btn.disabled = false;
+  btn.innerHTML = '&#128196; Download PDF Report';
 }
 
 function restart() {

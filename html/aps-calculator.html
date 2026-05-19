@@ -8,6 +8,7 @@
 <link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;600;700;800&family=DM+Sans:wght@400;500;600&display=swap" rel="stylesheet">
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="auth.js?v=3.1"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 <style>
   :root {
     --primary: #d97706; --primary-dark: #b45309; --yellow: #f59e0b;
@@ -92,6 +93,15 @@
   .score-number { font-family: 'Sora', sans-serif; font-size: 88px; font-weight: 900; line-height: 1; }
   .score-sub { font-size: 13px; opacity: .75; margin-top: 4px; }
   .score-msg { margin-top: 16px; font-size: 15px; font-weight: 600; }
+
+  /* Download PDF button in results */
+  .btn-pdf-row { display: flex; gap: 12px; flex-wrap: wrap; margin-bottom: 28px; }
+  .btn-pdf { flex: 1; min-width: 180px; height: 48px; border-radius: var(--radius-lg); background: linear-gradient(135deg, #1e40af, #2563eb); color: white; font-family: 'Sora', sans-serif; font-weight: 800; font-size: 14px; border: none; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px; transition: filter .2s; }
+  .btn-pdf:hover { filter: brightness(1.1); }
+  .btn-pdf:disabled { opacity: .6; cursor: not-allowed; }
+  .btn-dashboard { flex: 1; min-width: 180px; height: 48px; border-radius: var(--radius-lg); background: white; border: 1px solid var(--border); color: var(--text); font-family: 'Sora', sans-serif; font-weight: 700; font-size: 14px; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px; transition: background .2s; text-decoration: none; }
+  .btn-dashboard:hover { background: #f3f4f6; }
+  .btn-spinner { width: 16px; height: 16px; border: 2px solid rgba(255,255,255,.4); border-top-color: white; border-radius: 50%; animation: spin .6s linear infinite; display: inline-block; }
 
   .faculty-tabs { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 24px; }
   .faculty-tab { padding: 6px 14px; border-radius: 99px; font-size: 12px; font-weight: 700; border: none; cursor: pointer; background: #f3f4f6; color: var(--muted); transition: all .2s; }
@@ -214,12 +224,20 @@
 
   <div id="results">
     <div class="saved-banner" id="savedBanner" style="display:none">✅ Your APS result has been saved to your dashboard.</div>
+
     <div class="score-card">
       <div class="score-label">Your APS Score</div>
       <div class="score-number" id="scoreNum">0</div>
       <div class="score-sub">out of 42 (best 6 subjects, excl. Life Orientation)</div>
       <div class="score-msg" id="scoreMsg"></div>
     </div>
+
+    <!-- PDF Download row -->
+    <div class="btn-pdf-row">
+      <button class="btn-pdf" id="btnApsDownload" onclick="downloadAPSPDF(this)">📄 Download PDF Report</button>
+      <a href="dashboard.html" class="btn-dashboard">📊 View My Dashboard</a>
+    </div>
+
     <div class="faculty-tabs" id="facultyTabs"></div>
     <h2 class="results-heading" id="resultsHeading"></h2>
     <div class="course-cards" id="courseCards"></div>
@@ -339,9 +357,9 @@ var COURSE_REQUIREMENTS = [
   { course:"BCom Accounting",              faculty:"Commerce",         minAPS:28, duration:"3 years", nsfasEligible:true, description:"Financial accounting, auditing, taxation, and management accounting.",              subjectRequirements:"Maths 50%+ or Accounting 50%+",                                 universities:["UCT","Wits","SU","UP","UJ","UFS","NWU","UKZN","DUT"] },
   { course:"LLB (Law)",                    faculty:"Law",              minAPS:32, duration:"4 years", nsfasEligible:true, description:"Become a lawyer, advocate, or legal practitioner in South Africa.",                subjectRequirements:"English 60%+",                                                  universities:["UCT","Wits","SU","UP","UJ","UKZN","UFS","NWU","RU","UWC"] },
   { course:"BSc Nursing",                  faculty:"Health Sciences",  minAPS:28, duration:"4 years", nsfasEligible:true, description:"Comprehensive nursing education leading to professional registration with SANC.",  subjectRequirements:"Life Sciences 50%+, Maths or Maths Lit 40%+",                  universities:["UCT","UP","UKZN","UJ","NWU","UFS","UWC","Limpopo","Fort Hare"] },
-  { course:"BEd Foundation Phase",         faculty:"Education",        minAPS:26, duration:"4 years", nsfasEligible:true, description:"Qualify to teach Grades R–3 in South African public schools.",                    subjectRequirements:"English 50%+",                                                  universities:["UCT","Wits","SU","UP","UJ","UKZN","UFS","NWU","RU","UWC","WSU"] },
-  { course:"BEd Intermediate Phase",       faculty:"Education",        minAPS:26, duration:"4 years", nsfasEligible:true, description:"Train to teach Grades 4–6 across curriculum subjects.",                           subjectRequirements:"English 50%+",                                                  universities:["SU","UP","UJ","NWU","UFS","WSU","UniZulu"] },
-  { course:"BEd Senior/FET Phase",         faculty:"Education",        minAPS:28, duration:"4 years", nsfasEligible:true, description:"Teach Grades 7–12 — choose subject specialisations.",                            subjectRequirements:"English 50%+, chosen subject 50%+",                             universities:["UCT","Wits","SU","UP","UJ","UKZN","UFS","NWU","RU","UWC","Limpopo"] },
+  { course:"BEd Foundation Phase",         faculty:"Education",        minAPS:26, duration:"4 years", nsfasEligible:true, description:"Qualify to teach Grades R-3 in South African public schools.",                    subjectRequirements:"English 50%+",                                                  universities:["UCT","Wits","SU","UP","UJ","UKZN","UFS","NWU","RU","UWC","WSU"] },
+  { course:"BEd Intermediate Phase",       faculty:"Education",        minAPS:26, duration:"4 years", nsfasEligible:true, description:"Train to teach Grades 4-6 across curriculum subjects.",                           subjectRequirements:"English 50%+",                                                  universities:["SU","UP","UJ","NWU","UFS","WSU","UniZulu"] },
+  { course:"BEd Senior/FET Phase",         faculty:"Education",        minAPS:28, duration:"4 years", nsfasEligible:true, description:"Teach Grades 7-12 — choose subject specialisations.",                            subjectRequirements:"English 50%+, chosen subject 50%+",                             universities:["UCT","Wits","SU","UP","UJ","UKZN","UFS","NWU","RU","UWC","Limpopo"] },
   { course:"BSc Agriculture",              faculty:"Agriculture",      minAPS:26, duration:"4 years", nsfasEligible:true, description:"Crop production, soil science, animal production, agribusiness.",                 subjectRequirements:"Maths 50%+ or Agri Sciences 50%+",                              universities:["UP","SU","UFS","NWU","Fort Hare","Limpopo","WSU"] },
   { course:"BCom Economics",               faculty:"Commerce",         minAPS:28, duration:"3 years", nsfasEligible:true, description:"Micro and macroeconomics, econometrics, economic policy analysis.",               subjectRequirements:"Maths 50%+",                                                    universities:["UCT","Wits","SU","UP","UJ","UKZN","UFS","NWU","RU"] },
   { course:"BA Social Work",               faculty:"Social Sciences",  minAPS:24, duration:"4 years", nsfasEligible:true, description:"Help vulnerable individuals, families, and communities. SACSSP-registered.",      subjectRequirements:"English 50%+",                                                  universities:["UCT","SU","UP","UJ","UKZN","UFS","NWU","UWC","Limpopo","Fort Hare","UniZulu","WSU"] },
@@ -366,34 +384,24 @@ var COURSE_REQUIREMENTS = [
 var mathChoice = "mathematics";
 var marks = {};
 var apsScore = 0;
+var bestSixSubjects = [];
 var eligibleCourses = [];
 var selectedFaculty = "All";
 var _user = null;
 
-// ── Boot: wait for auth ──────────────────────────────────────────────────
 document.addEventListener('DOMContentLoaded', async function () {
   _user = await Auth.requireAuth();
   if (!_user) return;
-
-  // Hide loader
   var loader = document.getElementById('pageLoader');
   loader.classList.add('hidden');
   setTimeout(function () { loader.style.display = 'none'; }, 350);
-
-  document.getElementById('userGreeting').textContent = 'Hi, ' + _user.firstName + ' 👋';
+  document.getElementById('userGreeting').textContent = 'Hi, ' + _user.firstName + ' \uD83D\uDC4B';
   init();
 });
 
-async function doLogout() {
-  await Auth.logout();
-  window.location.href = 'login.html';
-}
+async function doLogout() { await Auth.logout(); window.location.href = 'login.html'; }
 
-function init() {
-  renderAPSScale();
-  renderBursaries();
-  renderSubjects();
-}
+function init() { renderAPSScale(); renderBursaries(); renderSubjects(); }
 
 function renderAPSScale() {
   var el = document.getElementById("apsScale"), html = "";
@@ -409,7 +417,7 @@ function renderBursaries() {
   var el = document.getElementById("bursaryGrid"), html = "";
   for (var i = 0; i < BURSARY_PORTALS.length; i++) {
     var b = BURSARY_PORTALS[i];
-    html += '<a href="' + b.url + '" target="_blank" rel="noopener" class="bursary-link"><div><div class="bursary-name">' + b.name + '</div><div class="bursary-desc">' + b.desc + '</div></div><span class="ext-icon">↗</span></a>';
+    html += '<a href="' + b.url + '" target="_blank" rel="noopener" class="bursary-link"><div><div class="bursary-name">' + b.name + '</div><div class="bursary-desc">' + b.desc + '</div></div><span class="ext-icon">\u2197</span></a>';
   }
   el.innerHTML = html;
 }
@@ -465,27 +473,26 @@ function calculateAPS() {
     }
   }
   subjectEntries.sort(function(a, b) { return b.points - a.points; });
-  var bestSix = subjectEntries.slice(0, 6);
+  bestSixSubjects = subjectEntries.slice(0, 6);
   apsScore = 0;
-  for (var i = 0; i < bestSix.length; i++) apsScore += bestSix[i].points;
+  for (var i = 0; i < bestSixSubjects.length; i++) apsScore += bestSixSubjects[i].points;
 
-  // Save to dashboard
   if (_user) {
-    var subjectsForSave = bestSix.map(function (s) {
+    var subjectsForSave = bestSixSubjects.map(function (s) {
       return { id: s.id, name: SUBJECT_NAMES[s.id] || s.id, mark: s.mark, points: s.points, aps: s.points };
     });
     try {
-      Auth.saveAPSResult(_user.id, { apsScore, total: apsScore, subjects: subjectsForSave, mathType: mathChoice, summary: 'APS Score: ' + apsScore });
+      Auth.saveAPSResult(_user.id, { apsScore: apsScore, total: apsScore, subjects: subjectsForSave, mathType: mathChoice, summary: 'APS Score: ' + apsScore });
       document.getElementById('savedBanner').style.display = 'flex';
     } catch (e) { console.warn('Could not save APS result:', e); }
   }
 
   document.getElementById("scoreNum").textContent = apsScore;
   document.getElementById("scoreMsg").textContent =
-    apsScore >= 35 ? "🏆 Excellent! You qualify for top competitive programmes." :
-    apsScore >= 28 ? "✅ Good score — access to most professional degrees." :
-    apsScore >= 22 ? "📚 Solid score — many diploma and degree options available." :
-                     "💪 Consider bridging/foundation programmes or TVET pathways.";
+    apsScore >= 35 ? "\uD83C\uDFC6 Excellent! You qualify for top competitive programmes." :
+    apsScore >= 28 ? "\u2705 Good score \u2014 access to most professional degrees." :
+    apsScore >= 22 ? "\uD83D\uDCDA Solid score \u2014 many diploma and degree options available." :
+                     "\uD83D\uDCAA Consider bridging/foundation programmes or TVET pathways.";
 
   eligibleCourses = [];
   for (var k = 0; k < COURSE_REQUIREMENTS.length; k++) {
@@ -520,7 +527,7 @@ function renderCourseCards() {
   document.getElementById("resultsHeading").innerHTML = filtered.length + ' Course' + (filtered.length !== 1 ? 's' : '') + ' You Qualify For <span>— click any course for details</span>';
   var container = document.getElementById("courseCards");
   if (filtered.length === 0) {
-    container.innerHTML = '<div class="empty-state"><div class="emoji">🎓</div><p>No courses in this faculty match your current APS.</p><p style="font-size:13px;margin-top:8px;">Try selecting "All" or consider foundation / bridging programmes.</p></div>';
+    container.innerHTML = '<div class="empty-state"><div class="emoji">\uD83C\uDF93</div><p>No courses in this faculty match your current APS.</p></div>';
     window._filteredCourses = [];
     return;
   }
@@ -530,10 +537,10 @@ function renderCourseCards() {
     var diff = apsScore - course.minAPS;
     var pillCls = diff >= 5 ? "green" : diff >= 2 ? "blue" : "amber";
     html += '<div class="course-card" onclick="openModal(' + i + ')">' +
-      '<div class="course-top"><div><div class="course-name">' + course.course + '</div><div class="course-meta">' + course.faculty + ' • ' + course.duration + '</div></div>' +
+      '<div class="course-top"><div><div class="course-name">' + course.course + '</div><div class="course-meta">' + course.faculty + ' \u2022 ' + course.duration + '</div></div>' +
       '<span class="aps-pill ' + pillCls + '">Min APS: ' + course.minAPS + '</span></div>' +
       '<div class="course-desc">' + course.description + '</div>' +
-      '<div class="course-hint">View details →</div></div>';
+      '<div class="course-hint">View details \u2192</div></div>';
   }
   container.innerHTML = html;
   window._filteredCourses = filtered;
@@ -544,7 +551,7 @@ function openModal(idx) {
   if (!course) return;
   document.getElementById("mFaculty").textContent  = course.faculty;
   document.getElementById("mTitle").textContent    = course.course;
-  document.getElementById("mDuration").textContent = "⏱ " + course.duration;
+  document.getElementById("mDuration").textContent = "\u23F1 " + course.duration;
   document.getElementById("mDesc").textContent     = course.description;
   document.getElementById("mSubReq").textContent   = course.subjectRequirements;
   var diff = apsScore - course.minAPS;
@@ -552,12 +559,12 @@ function openModal(idx) {
   document.getElementById("mAps").innerHTML =
     '<span class="aps-pill ' + pillCls + '">Minimum APS: ' + course.minAPS + '</span>' +
     '<span style="font-size:13px;color:var(--muted)">Your score: <strong>' + apsScore + '</strong></span>' +
-    '<span>' + (apsScore >= course.minAPS ? "✅" : "❌") + '</span>';
-  document.getElementById("mNsfas").innerHTML = course.nsfasEligible ? '<div class="nsfas-badge">✅ NSFAS eligible course</div>' : "";
+    '<span>' + (apsScore >= course.minAPS ? "\u2705" : "\u274C") + '</span>';
+  document.getElementById("mNsfas").innerHTML = course.nsfasEligible ? '<div class="nsfas-badge">\u2705 NSFAS eligible course</div>' : "";
   var unisHtml = "";
   for (var i = 0; i < course.universities.length; i++) {
     var uni = course.universities[i], url = UNIVERSITY_URLS[uni];
-    unisHtml += url ? '<a href="' + url + '" target="_blank" rel="noopener" class="uni-tag">' + uni + ' <span>↗</span></a>' : '<span class="uni-tag" style="text-decoration:none;cursor:default">' + uni + '</span>';
+    unisHtml += url ? '<a href="' + url + '" target="_blank" rel="noopener" class="uni-tag">' + uni + ' <span>\u2197</span></a>' : '<span class="uni-tag" style="text-decoration:none;cursor:default">' + uni + '</span>';
   }
   document.getElementById("mUnis").innerHTML = unisHtml;
   document.getElementById("modal").classList.add("open");
@@ -568,6 +575,226 @@ function closeModal(e) {
   if (e && e.target !== document.getElementById("modal")) return;
   document.getElementById("modal").classList.remove("open");
   document.body.style.overflow = "";
+}
+
+// ── APS PDF Generation ─────────────────────────────────────────────────────
+function downloadAPSPDF(btn) {
+  btn.disabled = true;
+  btn.innerHTML = '<span class="btn-spinner"></span> Generating PDF...';
+
+  try {
+    var jsPDF = window.jspdf.jsPDF;
+    var doc = new jsPDF({ unit:'mm', format:'a4' });
+    var W = 210, margin = 18, y = 0;
+
+    var today    = new Date().toLocaleDateString("en-ZA", { year:"numeric", month:"long", day:"numeric" });
+    var userName = _user ? (_user.firstName + ' ' + _user.lastName).trim() : 'Student';
+
+    // ── Header ──
+    doc.setFillColor(217, 119, 6);
+    doc.rect(0, 0, W, 42, 'F');
+    // Accent stripe
+    doc.setFillColor(245, 158, 11);
+    doc.rect(0, 36, W, 6, 'F');
+
+    doc.setTextColor(255,255,255);
+    doc.setFont('helvetica','bold');
+    doc.setFontSize(9);
+    doc.text('PHUNYA TSELA CAREER EXPO 2026  |  APS CALCULATOR REPORT', margin, 14);
+    doc.setFontSize(20);
+    doc.text('APS Score Report', margin, 27);
+    doc.setFont('helvetica','normal');
+    doc.setFontSize(10);
+    doc.text(userName + '  |  Generated: ' + today, margin, 36);
+
+    y = 52;
+
+    // ── APS Score big card ──
+    doc.setFillColor(255,247,237);
+    doc.setDrawColor(253,186,116);
+    doc.setLineWidth(0.5);
+    doc.roundedRect(margin, y, W - margin*2, 40, 3, 3, 'FD');
+
+    doc.setTextColor(120,53,15);
+    doc.setFont('helvetica','bold');
+    doc.setFontSize(9);
+    doc.text('YOUR APS SCORE', margin + (W-margin*2)/2, y+9, { align:'center' });
+
+    doc.setTextColor(217,119,6);
+    doc.setFontSize(44);
+    doc.text(String(apsScore), margin + (W-margin*2)/2, y+30, { align:'center' });
+
+    doc.setTextColor(120,53,15);
+    doc.setFont('helvetica','normal');
+    doc.setFontSize(9);
+    doc.text('out of 42 (best 6 subjects, excluding Life Orientation)', margin + (W-margin*2)/2, y+37, { align:'center' });
+    y += 48;
+
+    // Score message
+    var scoreMsg =
+      apsScore >= 35 ? "Excellent! You qualify for top competitive programmes." :
+      apsScore >= 28 ? "Good score - access to most professional degrees." :
+      apsScore >= 22 ? "Solid score - many diploma and degree options available." :
+                       "Consider bridging/foundation programmes or TVET pathways.";
+    doc.setFillColor(240,253,244);
+    doc.setDrawColor(167,243,208);
+    doc.roundedRect(margin, y, W-margin*2, 12, 2, 2, 'FD');
+    doc.setTextColor(6,95,70);
+    doc.setFont('helvetica','bold');
+    doc.setFontSize(10);
+    doc.text(scoreMsg, margin + (W-margin*2)/2, y+7.5, { align:'center' });
+    y += 20;
+
+    // ── Subject breakdown ──
+    if (bestSixSubjects.length > 0) {
+      doc.setFillColor(255,255,255);
+      doc.setDrawColor(229,231,235);
+      var tableH = 14 + bestSixSubjects.length * 9 + 10;
+      doc.roundedRect(margin, y, W-margin*2, tableH, 2, 2, 'FD');
+
+      doc.setTextColor(17,24,39);
+      doc.setFont('helvetica','bold');
+      doc.setFontSize(11);
+      doc.text('Your Best 6 Subjects (Used for APS)', margin+5, y+9);
+
+      // Table header
+      var th = y + 16;
+      doc.setFillColor(249,250,251);
+      doc.rect(margin+1, th-4, W-margin*2-2, 7, 'F');
+      doc.setFont('helvetica','bold');
+      doc.setFontSize(8);
+      doc.setTextColor(100,100,100);
+      doc.text('Subject', margin+5, th);
+      doc.text('Mark %', W-margin-40, th, { align:'right' });
+      doc.text('APS Points', W-margin-5, th, { align:'right' });
+
+      bestSixSubjects.forEach(function(s, i) {
+        var ry = th + 6 + i*9;
+        if (i % 2 === 0) { doc.setFillColor(250,250,250); doc.rect(margin+1, ry-4, W-margin*2-2, 8, 'F'); }
+        doc.setFont('helvetica','normal');
+        doc.setFontSize(9);
+        doc.setTextColor(55,65,81);
+        doc.text(SUBJECT_NAMES[s.id] || s.id, margin+5, ry);
+        doc.text(String(s.mark) + '%', W-margin-40, ry, { align:'right' });
+
+        // Points badge colour
+        var bCol = s.points >= 6 ? [16,185,129] : s.points >= 4 ? [59,130,246] : [156,163,175];
+        doc.setFillColor(bCol[0], bCol[1], bCol[2]);
+        doc.roundedRect(W-margin-14, ry-5, 10, 7, 1, 1, 'F');
+        doc.setTextColor(255,255,255);
+        doc.setFont('helvetica','bold');
+        doc.setFontSize(8);
+        doc.text(String(s.points), W-margin-9, ry, { align:'center' });
+      });
+
+      // Total row
+      var totalY = th + 6 + bestSixSubjects.length*9 + 2;
+      doc.setDrawColor(229,231,235);
+      doc.line(margin+2, totalY-2, W-margin-2, totalY-2);
+      doc.setFont('helvetica','bold');
+      doc.setFontSize(9);
+      doc.setTextColor(17,24,39);
+      doc.text('TOTAL APS', margin+5, totalY+4);
+      doc.setTextColor(217,119,6);
+      doc.text(String(apsScore) + ' / 42', W-margin-5, totalY+4, { align:'right' });
+
+      y += tableH + 8;
+    }
+
+    // ── Maths type note ──
+    doc.setFillColor(239,246,255);
+    doc.setDrawColor(147,197,253);
+    doc.roundedRect(margin, y, W-margin*2, 12, 2, 2, 'FD');
+    doc.setTextColor(30,64,175);
+    doc.setFont('helvetica','normal');
+    doc.setFontSize(9);
+    doc.text('Mathematics Type: ' + (mathChoice === 'mathematics' ? 'Mathematics (Pure)' : 'Mathematical Literacy'), margin+5, y+7.5);
+    y += 20;
+
+    // ── Eligible courses summary ──
+    doc.setFillColor(255,255,255);
+    doc.setDrawColor(229,231,235);
+    var topCourses = eligibleCourses.slice(0, 10);
+    var courseTableH = 14 + topCourses.length * 8 + 6;
+    doc.roundedRect(margin, y, W-margin*2, courseTableH, 2, 2, 'FD');
+
+    doc.setTextColor(17,24,39);
+    doc.setFont('helvetica','bold');
+    doc.setFontSize(11);
+    doc.text('Top Eligible Courses (' + eligibleCourses.length + ' total)', margin+5, y+9);
+
+    doc.setFont('helvetica','bold');
+    doc.setFontSize(8);
+    doc.setTextColor(100,100,100);
+    var ch = y+17;
+    doc.setFillColor(249,250,251);
+    doc.rect(margin+1, ch-4, W-margin*2-2, 7, 'F');
+    doc.text('Course', margin+5, ch);
+    doc.text('Faculty', margin+90, ch);
+    doc.text('Min APS', W-margin-5, ch, { align:'right' });
+
+    topCourses.forEach(function(c, i) {
+      var ry = ch + 6 + i*8;
+      if (i % 2 === 0) { doc.setFillColor(250,250,250); doc.rect(margin+1, ry-4, W-margin*2-2, 7, 'F'); }
+      doc.setFont('helvetica','normal');
+      doc.setFontSize(8);
+      doc.setTextColor(55,65,81);
+      var cName = c.course.length > 38 ? c.course.substring(0,36)+'..' : c.course;
+      doc.text(cName, margin+5, ry);
+      var fName = c.faculty.length > 22 ? c.faculty.substring(0,20)+'..' : c.faculty;
+      doc.text(fName, margin+90, ry);
+
+      var diff = apsScore - c.minAPS;
+      var pCol = diff >= 5 ? [16,185,129] : diff >= 2 ? [59,130,246] : [245,158,11];
+      doc.setFillColor(pCol[0], pCol[1], pCol[2]);
+      doc.roundedRect(W-margin-14, ry-4.5, 10, 6.5, 1, 1, 'F');
+      doc.setTextColor(255,255,255);
+      doc.setFont('helvetica','bold');
+      doc.text(String(c.minAPS), W-margin-9, ry, { align:'center' });
+    });
+
+    if (eligibleCourses.length > 10) {
+      var moreY = ch + 6 + topCourses.length*8 + 2;
+      doc.setFont('helvetica','italic');
+      doc.setFontSize(8);
+      doc.setTextColor(150,150,150);
+      doc.text('...and ' + (eligibleCourses.length-10) + ' more courses. Use the APS Calculator for the full list.', margin+5, moreY);
+    }
+    y += courseTableH + 8;
+
+    // ── Bursary note ──
+    doc.setFillColor(236,253,245);
+    doc.setDrawColor(167,243,208);
+    doc.roundedRect(margin, y, W-margin*2, 24, 2, 2, 'FD');
+    doc.setTextColor(6,95,70);
+    doc.setFont('helvetica','bold');
+    doc.setFontSize(10);
+    doc.text('Funding Opportunities', margin+5, y+8);
+    doc.setFont('helvetica','normal');
+    doc.setFontSize(8);
+    doc.setTextColor(5,150,105);
+    doc.text('Apply for NSFAS at nsfas.org.za  |  Funza Lushaka: funzalushaka.doe.gov.za', margin+5, y+15);
+    doc.text('ISFAP: isfap.co.za  |  Ikusasa: ikusasasfap.org  |  NRF Bursaries: nrf.ac.za', margin+5, y+21);
+    y += 30;
+
+    // ── Footer ──
+    doc.setDrawColor(229,231,235);
+    doc.line(margin, y, W-margin, y);
+    y += 5;
+    doc.setFontSize(8);
+    doc.setTextColor(150,150,150);
+    doc.setFont('helvetica','normal');
+    doc.text('Phunya Tsela Career Expo 2026  |  Kasi Career Expo  |  kasiexpo.co.za  |  Kuruman, Northern Cape', margin, y);
+    doc.text('APS requirements are indicative. Verify with institutions directly.', margin, y+5);
+
+    doc.save('Phunya_Tsela_APS_Report_' + (userName.replace(/\s+/g,'_') || 'Student') + '.pdf');
+  } catch(e) {
+    console.error('PDF error:', e);
+    alert('Could not generate PDF. Please try again.');
+  }
+
+  btn.disabled = false;
+  btn.innerHTML = '\uD83D\uDCC4 Download PDF Report';
 }
 </script>
 </body>
