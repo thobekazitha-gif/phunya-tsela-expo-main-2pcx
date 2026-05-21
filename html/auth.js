@@ -1,338 +1,284 @@
 /**
- * auth.js — Phunya Tsela v5.0
- *
- * HOW PHONE AUTH WORKS (no OTP, no verification, no custom table needed):
- * ─────────────────────────────────────────────────────────────────────────
- * Supabase Auth requires an email OR phone for every account.
- * Their phone provider needs Twilio (disabled on free plans).
- * Their email provider works fine but sends confirmation emails.
- *
- * SOLUTION:
- *   1. In Supabase Dashboard → Authentication → Settings:
- *        ✅ Disable "Enable email confirmations"  ← REQUIRED
- *        (Users sign up instantly with no email sent)
- *
- *   2. We convert a phone number into a private internal email that
- *      Supabase uses only as a unique key — it is NEVER shown to
- *      students, never emailed, never validated externally.
- *      Format: pt{digits}@pt.local
- *      e.g.  0821234567  →  pt27821234567@pt.local
- *
- *   3. The student's real phone number is saved in user_metadata.phone
- *      so you can display it on the dashboard.
- *
- *   4. Login with phone works by re-deriving the same internal email.
- *
- * Net result: students sign up / sign in with just their phone number
- * and password. No OTP. No email. No verification. Instant access.
+ * auth.js — Phunya Tsela  (v7 — Fixed Supabase sync)
+ * ─────────────────────────────────────────────────────────────────────────────
+ * Handles auth, profile, history (localStorage), and result syncing to Supabase.
+ * ─────────────────────────────────────────────────────────────────────────────
  */
 
-(function (global) {
-  'use strict';
+// ── CONFIG ────────────────────────────────────────────────────────────────────
+var SUPABASE_URL = 'https://lfnnglzjqszdjomjmpkw.supabase.co';
+var SUPABASE_KEY = 'sb_publishable_zfTqPTfONlZ04Of9ERrKww_2ICi7FCU';
+// ─────────────────────────────────────────────────────────────────────────────
 
-  /* ── SUPABASE CONFIG ───────────────────────────────── */
-  var SUPABASE_URL = 'https://lfnnglzjqszdjomjmpkw.supabase.co';
-  var SUPABASE_KEY = 'sb_publishable_zfTqPTfONlZ04Of9ERrKww_2ICi7FCU';
-  var supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
-
-  /* ── LOCAL STORAGE KEYS ───────────────────────────── */
-  var APS_KEY     = 'pt_aps_';
-  var PSYCH_KEY   = 'pt_psych_';
-  var HISTORY_KEY = 'pt_history_';
-
-  /* ── HELPERS ──────────────────────────────────────── */
-
-  function generateId() {
-    return Date.now().toString(36) + Math.random().toString(36).slice(2);
+var _sbClient = null;
+function _sb() {
+  if (!_sbClient) {
+    _sbClient = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
   }
+  return _sbClient;
+}
 
-  function shallowCopy(obj) {
-    var out = {}, k;
-    for (k in obj) {
-      if (Object.prototype.hasOwnProperty.call(obj, k)) out[k] = obj[k];
-    }
-    return out;
+// ─────────────────────────────────────────────────────────────────────────────
+// Phone → email helper
+// ─────────────────────────────────────────────────────────────────────────────
+function _phoneToEmail(raw) {
+  var digits = raw.replace(/[\s\-()]/g, '');
+  if (digits.startsWith('+27')) {
+    digits = '0' + digits.slice(3);
   }
+  return digits + '@phunya.local';
+}
 
-  function normaliseUser(rawUser) {
-    if (!rawUser) return null;
-    var meta = rawUser.user_metadata || {};
-    return {
-      id:        rawUser.id,
-      phone:     meta.phone     || '',
-      email:     meta.realEmail || '',          // only set for email sign-ups
-      firstName: meta.firstName || meta.first_name || '',
-      lastName:  meta.lastName  || meta.last_name  || '',
-      grade:     meta.grade     || '',
-      school:    meta.school    || '',
-    };
-  }
+function _isPhone(identifier) {
+  return /^(\+27|0)\d[\d\s\-]{6,}$/.test(identifier.trim());
+}
 
-  /**
-   * Normalise SA phone → E.164 digits (no +).
-   * Accepts: 0821234567 / 082 123 4567 / +27821234567 / 27821234567
-   */
-  function normalisePhone(raw) {
-    var digits = String(raw).replace(/\D/g, '');
-    if (digits.length === 11 && digits.startsWith('27')) return digits;        // 27821234567
-    if (digits.length === 10 && digits.startsWith('0'))  return '27' + digits.slice(1); // 0821234567
-    return null; // invalid
-  }
+function _buildEmail(identifier) {
+  var clean = identifier.trim();
+  return _isPhone(clean) ? _phoneToEmail(clean) : clean;
+}
 
-  /**
-   * Build a deterministic internal email from a phone number.
-   * Supabase uses this only as a unique key — it is never shown or emailed.
-   */
-  function phoneToInternalEmail(digits) {
-    return 'pt' + digits + '@pt.local';
-  }
+// ─────────────────────────────────────────────────────────────────────────────
+// localStorage history helpers
+// ─────────────────────────────────────────────────────────────────────────────
+var HISTORY_PREFIX = 'phunya_history_';
+function _historyKey(uid) { return HISTORY_PREFIX + uid; }
 
-  function isEmail(val) {
-    return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(val);
-  }
+var Auth = {
 
-  function isPhone(val) {
-    return /^[0-9\s\+\-()]+$/.test(val) && val.replace(/\D/g, '').length >= 9;
-  }
+  // ── Auth ──────────────────────────────────────────────────────────────────
 
-  /* ── REGISTER ─────────────────────────────────────── */
+  async register({ identifier, firstName, lastName, password, grade, school }) {
+    try {
+      var email = _buildEmail(identifier);
+      var phone = _isPhone(identifier.trim()) ? identifier.trim() : null;
 
-  async function register(opts) {
-    if (!opts || !opts.identifier || !opts.password || !opts.firstName || !opts.lastName) {
-      return { ok: false, error: 'All required fields must be filled in.' };
-    }
+      var { data, error } = await _sb().auth.signUp({
+        email,
+        password,
+        options: {
+          data: {
+            first_name: firstName,
+            last_name:  lastName,
+            grade:      grade  || '',
+            school:     school || '',
+            phone:      phone  || '',
+          }
+        }
+      });
 
-    var identifier = String(opts.identifier).trim();
-    var emailToUse, metaPhone = '', metaRealEmail = '';
+      if (error) return { ok: false, error: error.message };
+      if (!data.user) return { ok: false, error: 'Registration failed. Please try again.' };
 
-    if (isEmail(identifier)) {
-      emailToUse    = identifier.toLowerCase();
-      metaRealEmail = emailToUse;
-    } else if (isPhone(identifier)) {
-      var digits = normalisePhone(identifier);
-      if (!digits) return { ok: false, error: 'Invalid phone number. Try: 0821234567' };
-      emailToUse = phoneToInternalEmail(digits);
-      metaPhone  = '+' + digits;
-    } else {
-      return { ok: false, error: 'Enter a valid email address or SA cell number.' };
-    }
+      // Save profile to database
+      var { error: profileError } = await _sb().from('profiles').upsert({
+        id:         data.user.id,
+        email:      email,
+        first_name: firstName,
+        last_name:  lastName,
+        grade:      grade  || '',
+        school:     school || '',
+        phone:      phone  || '',
+        role:       'learner',
+      }, { onConflict: 'id' });
 
-    var result = await supabaseClient.auth.signUp({
-      email:    emailToUse,
-      password: String(opts.password),
-      options: {
-        emailRedirectTo: null,
-        data: {
-          firstName: String(opts.firstName).trim(),
-          lastName:  String(opts.lastName).trim(),
-          grade:     opts.grade  ? String(opts.grade)  : '',
-          school:    opts.school ? String(opts.school) : '',
-          phone:     metaPhone,
-          realEmail: metaRealEmail,
-        },
-      },
-    });
-
-    if (result.error) {
-      // Friendly message for duplicate accounts
-      if (result.error.message.toLowerCase().includes('already registered')) {
-        return { ok: false, error: 'An account with this ' + (metaPhone ? 'number' : 'email') + ' already exists. Please sign in.' };
+      if (profileError) {
+        console.warn('Profile save error:', profileError.message);
       }
-      return { ok: false, error: result.error.message };
+
+      return { ok: true };
+    } catch (e) {
+      return { ok: false, error: e.message };
     }
+  },
 
-    if (result.data && result.data.session) {
-      return { ok: true, user: normaliseUser(result.data.user) };
+  async login({ identifier, password }) {
+    try {
+      var email = _buildEmail(identifier);
+      var { data, error } = await _sb().auth.signInWithPassword({ email, password });
+      if (error) return { ok: false, error: 'Incorrect details. Please check and try again.' };
+      if (!data.user) return { ok: false, error: 'Login failed.' };
+      return { ok: true };
+    } catch (e) {
+      return { ok: false, error: e.message };
     }
+  },
 
-    // Email confirmations disabled → auto-login
-    return await login({ identifier: identifier, password: opts.password });
-  }
-
-  /* ── LOGIN ────────────────────────────────────────── */
-
-  async function login(opts) {
-    if (!opts || !opts.identifier || !opts.password) {
-      return { ok: false, error: 'Please enter your cell number / email and password.' };
-    }
-
-    var identifier = String(opts.identifier).trim();
-    var emailToUse;
-
-    if (isEmail(identifier)) {
-      emailToUse = identifier.toLowerCase();
-    } else if (isPhone(identifier)) {
-      var digits = normalisePhone(identifier);
-      if (!digits) return { ok: false, error: 'Invalid phone number. Try: 0821234567' };
-      emailToUse = phoneToInternalEmail(digits);
-    } else {
-      return { ok: false, error: 'Enter a valid email address or SA cell number.' };
-    }
-
-    var result = await supabaseClient.auth.signInWithPassword({
-      email:    emailToUse,
-      password: String(opts.password),
-    });
-
-    if (result.error) {
-      var msg = result.error.message;
-      // Friendlier errors
-      if (msg.toLowerCase().includes('invalid login')) {
-        return { ok: false, error: 'Incorrect number/email or password. Please try again.' };
-      }
-      return { ok: false, error: msg };
-    }
-
-    return { ok: true, user: normaliseUser(result.data.user) };
-  }
-
-  /* ── LOGOUT ───────────────────────────────────────── */
-
-  async function logout() {
-    await supabaseClient.auth.signOut();
-  }
-
-  /* ── GET SESSION ──────────────────────────────────── */
-
-  async function getSession() {
-    var result = await supabaseClient.auth.getSession();
-    if (result && result.data && result.data.session) {
-      return normaliseUser(result.data.session.user);
-    }
-    return null;
-  }
-
-  /* ── REQUIRE AUTH ─────────────────────────────────── */
-
-  async function requireAuth() {
-    var user = await getSession();
-    if (!user) {
-      var page = (window.location.pathname.split('/').pop()) || 'index.html';
-      window.location.href = 'login.html?redirect=' + encodeURIComponent(page);
+  async getSession() {
+    try {
+      var { data } = await _sb().auth.getSession();
+      return data.session || null;
+    } catch (e) {
       return null;
     }
-    return user;
-  }
+  },
 
-  /* ── FORGOT PASSWORD ──────────────────────────────── */
-
-  async function forgotPassword(identifier) {
-    identifier = String(identifier).trim();
-    var emailToUse;
-
-    if (isEmail(identifier)) {
-      emailToUse = identifier.toLowerCase();
-    } else if (isPhone(identifier)) {
-      var digits = normalisePhone(identifier);
-      if (!digits) return { ok: false, error: 'Invalid phone number.' };
-      emailToUse = phoneToInternalEmail(digits);
-    } else {
-      return { ok: false, error: 'Enter a valid email address or SA cell number.' };
+  async requireAuth() {
+    var session = await this.getSession();
+    if (!session || !session.user) {
+      window.location.href = 'login.html';
+      return null;
     }
 
-    var result = await supabaseClient.auth.resetPasswordForEmail(
-      emailToUse,
-      { redirectTo: window.location.origin + '/reset-password.html' }
-    );
-    if (result.error) return { ok: false, error: result.error.message };
-    return { ok: true };
-  }
+    var uid  = session.user.id;
+    var meta = session.user.user_metadata || {};
 
-  /* ── UPDATE PASSWORD ──────────────────────────────── */
-
-  async function updatePassword(password) {
-    var result = await supabaseClient.auth.updateUser({ password: String(password) });
-    if (result.error) return { ok: false, error: result.error.message };
-    return { ok: true };
-  }
-
-  /* ── APS STORAGE ──────────────────────────────────── */
-
-  function saveAPSResult(userId, data) {
+    var profile = null;
     try {
-      var entry = shallowCopy(data);
-      entry.savedAt = new Date().toISOString();
-      localStorage.setItem(APS_KEY + userId, JSON.stringify(entry));
-      pushHistory(userId, {
-        type:    'aps',
-        label:   'APS Calculator',
-        summary: data.summary || ('APS Score: ' + (data.apsScore || '')),
-        savedAt: entry.savedAt,
-        data:    entry,
+      var { data } = await _sb().from('profiles').select('*').eq('id', uid).single();
+      profile = data;
+    } catch (e) { /* fallback to meta */ }
+
+    return {
+      id:        uid,
+      email:     session.user.email,
+      firstName: (profile && profile.first_name) || meta.first_name || '',
+      lastName:  (profile && profile.last_name)  || meta.last_name  || '',
+      grade:     (profile && profile.grade)       || meta.grade      || '',
+      school:    (profile && profile.school)      || meta.school     || '',
+      phone:     (profile && profile.phone)       || meta.phone      || '',
+      role:      (profile && profile.role)        || 'learner',
+    };
+  },
+
+  async logout() {
+    try { await _sb().auth.signOut(); } catch (e) { /* ignore */ }
+  },
+
+  // ── History (localStorage) ────────────────────────────────────────────────
+
+  loadHistory(uid) {
+    try {
+      var raw = localStorage.getItem(_historyKey(uid));
+      var arr = raw ? JSON.parse(raw) : [];
+      return Array.isArray(arr) ? arr : [];
+    } catch (e) {
+      return [];
+    }
+  },
+
+  _saveHistory(uid, history) {
+    try {
+      localStorage.setItem(_historyKey(uid), JSON.stringify(history));
+    } catch (e) { /* storage full */ }
+  },
+
+  clearHistory(uid) {
+    localStorage.removeItem(_historyKey(uid));
+  },
+
+  // ── Save APS Result ───────────────────────────────────────────────────────
+
+  async saveAPSResult(uid, { apsScore, subjects, mathType, summary }) {
+    // 1. Always save to localStorage first (instant, offline-safe)
+    var history = this.loadHistory(uid);
+    history.unshift({
+      type:    'aps',
+      savedAt: new Date().toISOString(),
+      summary: summary || ('APS Score: ' + apsScore),
+      data: {
+        apsScore,
+        total:    apsScore,
+        subjects: subjects || [],
+        mathType: mathType || 'mathematics',
+      },
+    });
+    this._saveHistory(uid, history);
+
+    // 2. Save to Supabase using the active authenticated session
+    try {
+      var sb = _sb();
+
+      // Verify we have an active session before attempting DB write
+      var { data: sessionData } = await sb.auth.getSession();
+      if (!sessionData || !sessionData.session) {
+        console.warn('⚠️  No active Supabase session — APS result saved to localStorage only');
+        return;
+      }
+
+      // Delete existing record for this user, then insert fresh
+      // (avoids upsert conflict issues with JSONB columns)
+      var { error: delError } = await sb
+        .from('aps_results')
+        .delete()
+        .eq('user_id', uid);
+
+      if (delError) {
+        console.warn('APS delete before insert failed:', delError.message);
+      }
+
+      var { error: insError } = await sb.from('aps_results').insert({
+        user_id:   uid,
+        aps_score: apsScore,
+        subjects:  subjects || [],
+        math_type: mathType || 'mathematics',
       });
-    } catch (e) { console.warn('saveAPSResult:', e); }
-  }
 
-  function loadAPSResult(userId) {
-    try { return JSON.parse(localStorage.getItem(APS_KEY + userId)); }
-    catch (e) { return null; }
-  }
+      if (insError) {
+        console.error('❌ Supabase APS save error:', insError.message, insError.details, insError.hint);
+      } else {
+        console.log('✅ APS result saved to Supabase — score:', apsScore);
+      }
+    } catch (e) {
+      console.error('❌ Supabase APS save exception:', e.message);
+    }
+  },
 
-  /* ── PSYCH STORAGE ────────────────────────────────── */
+  // ── Save Psychometric Result ──────────────────────────────────────────────
 
-  function savePsychResult(userId, data) {
+  async savePsychResult(uid, { scores, topTypes, primaryType, summary }) {
+    // 1. Always save to localStorage first
+    var history = this.loadHistory(uid);
+    history.unshift({
+      type:    'psych',
+      savedAt: new Date().toISOString(),
+      summary: summary || ('Primary type: ' + (topTypes && topTypes[0])),
+      data: {
+        scores:      scores   || {},
+        topTypes:    topTypes || [],
+        primaryType: primaryType || (topTypes && topTypes[0]) || '',
+      },
+    });
+    this._saveHistory(uid, history);
+
+    // 2. Save to Supabase using the active authenticated session
     try {
-      var entry = shallowCopy(data);
-      entry.savedAt = new Date().toISOString();
-      localStorage.setItem(PSYCH_KEY + userId, JSON.stringify(entry));
-      pushHistory(userId, {
-        type:    'psych',
-        label:   'Career Psychometric Test',
-        summary: data.summary || ('Primary type: ' + (data.primaryType || '')),
-        savedAt: entry.savedAt,
-        data:    entry,
+      var sb = _sb();
+
+      // Verify we have an active session before attempting DB write
+      var { data: sessionData } = await sb.auth.getSession();
+      if (!sessionData || !sessionData.session) {
+        console.warn('⚠️  No active Supabase session — psych result saved to localStorage only');
+        return;
+      }
+
+      // Delete existing record for this user, then insert fresh
+      var { error: delError } = await sb
+        .from('psych_results')
+        .delete()
+        .eq('user_id', uid);
+
+      if (delError) {
+        console.warn('Psych delete before insert failed:', delError.message);
+      }
+
+      // Cast topTypes to proper postgres array format
+      var topTypesArray = Array.isArray(topTypes) ? topTypes : [];
+
+      var { error: insError } = await sb.from('psych_results').insert({
+        user_id:      uid,
+        primary_type: primaryType || (topTypesArray[0]) || '',
+        top_types:    topTypesArray,
+        scores:       scores || {},
       });
-    } catch (e) { console.warn('savePsychResult:', e); }
-  }
 
-  function loadPsychResult(userId) {
-    try { return JSON.parse(localStorage.getItem(PSYCH_KEY + userId)); }
-    catch (e) { return null; }
-  }
-
-  /* ── HISTORY ──────────────────────────────────────── */
-
-  function pushHistory(userId, entry) {
-    entry.id = generateId();
-    var history = loadHistory(userId);
-    history.unshift(entry);
-    try { localStorage.setItem(HISTORY_KEY + userId, JSON.stringify(history.slice(0, 50))); }
-    catch (e) {}
-  }
-
-  function loadHistory(userId) {
-    var raw;
-    try { raw = localStorage.getItem(HISTORY_KEY + userId); } catch (e) { return []; }
-    if (!raw) return [];
-    try {
-      var parsed = JSON.parse(raw);
-      return Array.isArray(parsed) ? parsed : [];
-    } catch (e) { return []; }
-  }
-
-  function clearHistory(userId) {
-    try { localStorage.removeItem(HISTORY_KEY + userId); } catch (e) {}
-  }
-
-  /* ── PUBLIC API ───────────────────────────────────── */
-
-  global.Auth = {
-    register,
-    login,
-    logout,
-    getSession,
-    requireAuth,
-    forgotPassword,
-    updatePassword,
-    saveAPSResult,
-    loadAPSResult,
-    savePsychResult,
-    loadPsychResult,
-    loadHistory,
-    clearHistory,
-    normalisePhone,
-    isEmail,
-    isPhone,
-  };
-
-}(window));
+      if (insError) {
+        console.error('❌ Supabase psych save error:', insError.message, insError.details, insError.hint);
+      } else {
+        console.log('✅ Psych result saved to Supabase — type:', primaryType || topTypesArray[0]);
+      }
+    } catch (e) {
+      console.error('❌ Supabase psych save exception:', e.message);
+    }
+  },
+};
