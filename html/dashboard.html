@@ -41,14 +41,15 @@
   .main { max-width: 860px; margin: 0 auto; padding: 36px 16px 60px; }
   .section-title { font-size: 18px; font-weight: 800; margin-bottom: 16px; display: flex; align-items: center; gap: 8px; }
 
-  .tool-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 14px; margin-bottom: 40px; }
-  .tool-card { background: white; border: 1px solid var(--border); border-radius: var(--radius-lg); padding: 20px; cursor: pointer; transition: all .2s; text-decoration: none; color: var(--text); display: flex; flex-direction: column; gap: 10px; }
+  /* 4 columns horizontal */
+  .tool-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; margin-bottom: 40px; }
+  @media (max-width: 600px) { .tool-grid { grid-template-columns: repeat(2, 1fr); } }
+  .tool-card { background: white; border: 1px solid var(--border); border-radius: var(--radius-lg); padding: 14px 12px; cursor: pointer; transition: all .2s; text-decoration: none; color: var(--text); display: flex; flex-direction: column; gap: 8px; }
   .tool-card:hover { border-color: var(--primary); box-shadow: 0 4px 20px rgba(0,0,0,.08); transform: translateY(-2px); }
-  .tool-card.tool-blue:hover  { border-color: #2563eb; }
-  .tool-card.tool-green:hover { border-color: #059669; }
-  .tool-icon { font-size: 28px; }
-  .tool-name { font-family: 'Sora', sans-serif; font-size: 15px; font-weight: 800; }
-  .tool-desc { font-size: 12px; color: var(--muted); line-height: 1.5; }
+  .tool-card.tool-blue:hover { border-color: #2563eb; }
+  .tool-icon { font-size: 22px; }
+  .tool-name { font-family: 'Sora', sans-serif; font-size: 13px; font-weight: 800; line-height: 1.3; }
+  .tool-desc { font-size: 11px; color: var(--muted); line-height: 1.5; }
   .tool-badge { display: inline-flex; align-items: center; gap: 4px; font-size: 10px; font-weight: 800; padding: 3px 10px; border-radius: 99px; }
   .badge-done  { background: #d1fae5; color: #065f46; }
   .badge-new   { background: #fff7ed; color: #92400e; }
@@ -150,12 +151,144 @@
 
 <script>
 var RIASEC_META = {
-  R: { label:'Realistic (Doer)',         color:'orange', description:'You enjoy hands-on work, physical tasks, tools, and working with real-world objects and machines.', traits:['Practical & hands-on','Mechanically inclined','Enjoys outdoor work','Good with tools & technology','Athletic & physical'], careers:['Civil/Mechanical Engineer','Electrician','Artisan','Farmer/Agriculturalist','Environmental Technologist','Mining Engineer','Vehicle Mechanic','Carpenter'], saOpps:['Scarce skills in engineering trades','TVET apprenticeships (electrical, plumbing, welding)','Eskom, Transnet technical learnerships','Mining sector (Northern Cape has major mines)','Agricultural sector (John Taolo Gaetsewe)'] },
-  I: { label:'Investigative (Thinker)',  color:'blue',   description:'You love analysing, researching, and solving complex intellectual problems.', traits:['Analytical & curious','Loves research','Strong in maths & science','Independent thinker','Detail-oriented'], careers:['Medical Doctor','Data Scientist','Pharmacist','Chemist','Software Developer','Researcher','Geologist','Actuary'], saOpps:['STEM bursaries (NRF, Eskom, Sasol)','Research careers at CSIR, MRC, universities','Growing demand for data scientists in SA','Medical & health sciences - NSFAS eligible','Biotech & pharmaceutical sector growth'] },
-  A: { label:'Artistic (Creator)',       color:'purple', description:'You express yourself through creativity, art, design, and original thinking.', traits:['Creative & imaginative','Original thinker','Expressive & intuitive','Values aesthetics','Dislikes rigid structure'], careers:['Graphic Designer','Architect','Musician','Journalist','Fashion Designer','Film Director','Copywriter','UX Designer'], saOpps:['Growing creative economy in SA','Digital media & content creation demand','Architecture & urban design for growing cities','SABC, independent media opportunities','Tourism sector needs creative talent'] },
-  S: { label:'Social (Helper)',          color:'green',  description:'You thrive on helping, teaching, and supporting others in a community context.', traits:['Empathetic & caring','Natural communicator','Patient & understanding','Enjoys teamwork','Community-focused'], careers:['Teacher','Social Worker','Nurse','Psychologist','HR Manager','Community Developer','Doctor','Counsellor'], saOpps:['Massive teacher shortage - Funza Lushaka bursaries','Social work - DSD bursaries available','Nursing - critical national need, NSFAS eligible','Psychology growing demand','NGO and community development sector'] },
-  E: { label:'Enterprising (Leader)',    color:'red',    description:"You're a natural leader who loves persuasion, business, and making things happen.", traits:['Persuasive & influential','Natural leader','Goal-oriented','Risk-taker','Strong communicator'], careers:['Entrepreneur','Business Manager','Lawyer','Politician','Sales Executive','Marketing Director','Investment Banker','HR Director'], saOpps:['SA needs more black entrepreneurs and business leaders','Legal sector with high earning potential','Banking & financial services - many bursaries','Government and public service leadership','Mining, energy sector management roles'] },
-  C: { label:'Conventional (Organiser)', color:'teal',   description:'You excel with structured tasks, data, organisation, and systematic processes.', traits:['Organised & systematic','Detail-oriented','Reliable & accurate','Follows procedures','Works well with data'], careers:['Accountant/CA(SA)','Auditor','Financial Analyst','Database Administrator','Compliance Officer','Tax Consultant','Secretary','Supply Chain Manager'], saOpps:['CA(SA) - highest starting salaries in SA','SAICA Thuthuka Bursary for accounting','Financial sector growth: banking, insurance, FinTech','Shortage of certified auditors in SA','Government needs more financial compliance experts'] },
+  R: {
+    label:'Realistic (Doer)', color:'orange',
+    description:'You enjoy hands-on work, physical tasks, tools, and working with real-world objects and machines.',
+    traits:['Practical & hands-on','Mechanically inclined','Enjoys outdoor work','Good with tools & technology','Athletic & physical'],
+    careers:['Civil/Mechanical Engineer','Electrician','Artisan','Farmer/Agriculturalist','Environmental Technologist','Mining Engineer','Vehicle Mechanic','Carpenter'],
+    saOpps:['Scarce skills in engineering trades','TVET apprenticeships (electrical, plumbing, welding)','Eskom, Transnet technical learnerships','Mining sector (Northern Cape has major mines)','Agricultural sector (John Taolo Gaetsewe)'],
+    courses: [
+      { name:'BSc Civil Engineering', inst:'UCT / UP / Wits / UKZN', aps:'34+', notes:'Pure Maths required' },
+      { name:'BSc Mechanical Engineering', inst:'Stellenbosch / UP / UJ', aps:'34+', notes:'Pure Maths & Physical Sciences' },
+      { name:'BSc Electrical Engineering', inst:'Wits / UCT / TUT', aps:'33+', notes:'Pure Maths required' },
+      { name:'BSc Agricultural Science', inst:'UP / UFS / SU', aps:'28+', notes:'Life Sciences recommended' },
+      { name:'National Diploma: Electrical Engineering', inst:'TVET Colleges / TUT / DUT', aps:'20+', notes:'N4–N6 pathway available' },
+      { name:'BSc Mining Engineering', inst:'Wits / UP / UFS', aps:'32+', notes:'Pure Maths & Physical Sciences' },
+      { name:'Diploma: Construction Management', inst:'CPUT / TUT / MUT', aps:'22+', notes:'Maths or Math Lit accepted at some' },
+      { name:'BSc Environmental Science', inst:'UNISA / NWU / Rhodes', aps:'26+', notes:'Life/Physical Sciences helpful' },
+    ],
+  },
+  I: {
+    label:'Investigative (Thinker)', color:'blue',
+    description:'You love analysing, researching, and solving complex intellectual problems.',
+    traits:['Analytical & curious','Loves research','Strong in maths & science','Independent thinker','Detail-oriented'],
+    careers:['Medical Doctor','Data Scientist','Pharmacist','Chemist','Software Developer','Researcher','Geologist','Actuary'],
+    saOpps:['STEM bursaries (NRF, Eskom, Sasol)','Research careers at CSIR, MRC, universities','Growing demand for data scientists in SA','Medical & health sciences - NSFAS eligible','Biotech & pharmaceutical sector growth'],
+    courses: [
+      { name:'MBChB (Medicine)', inst:'UCT / Wits / UP / SMU / UKZN', aps:'38+', notes:'Pure Maths & Physical Sciences; NBT required' },
+      { name:'BSc Computer Science', inst:'UCT / Wits / UP / UNISA', aps:'32+', notes:'Pure Maths strongly recommended' },
+      { name:'BPharm (Pharmacy)', inst:'UP / Rhodes / NWU / UWC', aps:'34+', notes:'Physical Sciences & Maths required' },
+      { name:'BSc Actuarial Science', inst:'UCT / Wits / UP / SU', aps:'36+', notes:'Pure Maths; very competitive' },
+      { name:'BSc Data Science', inst:'UCT / UP / NWU / UJ', aps:'30+', notes:'Pure Maths required' },
+      { name:'BSc Chemistry / Biochemistry', inst:'UCT / Wits / Rhodes / UKZN', aps:'28+', notes:'Physical Sciences & Maths' },
+      { name:'BSc Geology / Earth Sciences', inst:'UCT / Wits / UFS', aps:'28+', notes:'Physical Sciences helpful' },
+      { name:'BSc Biomedical Science', inst:'UP / UFS / DUT / MUT', aps:'26+', notes:'Life & Physical Sciences' },
+    ],
+  },
+  A: {
+    label:'Artistic (Creator)', color:'purple',
+    description:'You express yourself through creativity, art, design, and original thinking.',
+    traits:['Creative & imaginative','Original thinker','Expressive & intuitive','Values aesthetics','Dislikes rigid structure'],
+    careers:['Graphic Designer','Architect','Musician','Journalist','Fashion Designer','Film Director','Copywriter','UX Designer'],
+    saOpps:['Growing creative economy in SA','Digital media & content creation demand','Architecture & urban design for growing cities','SABC, independent media opportunities','Tourism sector needs creative talent'],
+    courses: [
+      { name:'BArch (Architecture)', inst:'UCT / Wits / UP / UKZN', aps:'34+', notes:'Portfolio may be required' },
+      { name:'BA Journalism & Media Studies', inst:'Rhodes / Wits / UJ / UKZN', aps:'28+', notes:'Strong English recommended' },
+      { name:'BA Fine Arts / Visual Arts', inst:'UCT / Wits / Unisa / NMU', aps:'24+', notes:'Portfolio submission often required' },
+      { name:'BA Fashion Design', inst:'CPUT / TUT / Lisof / Stadio', aps:'22+', notes:'Portfolio required at most institutions' },
+      { name:'BA Graphic Design', inst:'CPUT / TUT / AAA School / Vega', aps:'22+', notes:'Portfolio submission required' },
+      { name:'BA Film & Television Production', inst:'AFDA / CPUT / UKZN / DUT', aps:'24+', notes:'Portfolio/audition may apply' },
+      { name:'BA Music', inst:'UCT / Wits / UP / NMU / UKZN', aps:'24+', notes:'Audition required' },
+      { name:'BCom Marketing / Brand Management', inst:'Vega / AAA / IMM / Stadio', aps:'24+', notes:'Good communications skills' },
+    ],
+  },
+  S: {
+    label:'Social (Helper)', color:'green',
+    description:'You thrive on helping, teaching, and supporting others in a community context.',
+    traits:['Empathetic & caring','Natural communicator','Patient & understanding','Enjoys teamwork','Community-focused'],
+    careers:['Teacher','Social Worker','Nurse','Psychologist','HR Manager','Community Developer','Doctor','Counsellor'],
+    saOpps:['Massive teacher shortage - Funza Lushaka bursaries','Social work - DSD bursaries available','Nursing - critical national need, NSFAS eligible','Psychology growing demand','NGO and community development sector'],
+    courses: [
+      { name:'BEd (Foundation / Intermediate Phase)', inst:'UP / UNISA / NWU / UFS / UKZN', aps:'26+', notes:'Funza Lushaka bursary available' },
+      { name:'BSocWork (Social Work)', inst:'UP / Wits / UJ / UKZN / UNISA', aps:'24+', notes:'DSD bursaries available' },
+      { name:'BNurs (Nursing)', inst:'UP / UKZN / UWC / NMU / UFS', aps:'24+', notes:'NSFAS eligible; critical scarce skill' },
+      { name:'BA Psychology', inst:'UP / Wits / UJ / UKZN / Rhodes', aps:'28+', notes:'Honours required for registration' },
+      { name:'BCom Human Resource Management', inst:'UP / UJ / UNISA / NWU', aps:'26+', notes:'Good communication skills needed' },
+      { name:'BA Community Development', inst:'UWC / DUT / NMU / UNISA', aps:'22+', notes:'NGO sector and government pathways' },
+      { name:'BHealthSci Occupational Therapy', inst:'UCT / UP / UKZN / UFS', aps:'30+', notes:'Maths and Life Sciences helpful' },
+      { name:'BA Early Childhood Development', inst:'UJ / UNISA / CUT / Stadio', aps:'20+', notes:'NSFAS eligible' },
+    ],
+  },
+  E: {
+    label:'Enterprising (Leader)', color:'red',
+    description:"You're a natural leader who loves persuasion, business, and making things happen.",
+    traits:['Persuasive & influential','Natural leader','Goal-oriented','Risk-taker','Strong communicator'],
+    careers:['Entrepreneur','Business Manager','Lawyer','Politician','Sales Executive','Marketing Director','Investment Banker','HR Director'],
+    saOpps:['SA needs more black entrepreneurs and business leaders','Legal sector with high earning potential','Banking & financial services - many bursaries','Government and public service leadership','Mining, energy sector management roles'],
+    courses: [
+      { name:'LLB (Law)', inst:'UCT / Wits / UP / UFS / UKZN', aps:'33+', notes:'Competitive; strong English required' },
+      { name:'BCom Business Management', inst:'UP / UJ / NWU / UNISA / UFS', aps:'26+', notes:'Wide career options' },
+      { name:'BCom Marketing Management', inst:'UP / UJ / CPUT / DUT / TUT', aps:'26+', notes:'Good communication skills needed' },
+      { name:'BBusSci (Business Science)', inst:'UCT / Wits / SU', aps:'35+', notes:'Very competitive; Pure Maths required' },
+      { name:'BCom Investment Management', inst:'SU / UP / Wits / NWU', aps:'30+', notes:'Pure Maths advantageous' },
+      { name:'BCom International Business', inst:'UJ / UP / Wits / UNISA', aps:'28+', notes:'Strong Maths & English' },
+      { name:'BPA (Public Administration)', inst:'UP / UFS / UNISA / NWU', aps:'24+', notes:'Government / public service pathway' },
+      { name:'Diploma: Entrepreneurship', inst:'CPUT / TUT / DUT / UJ', aps:'20+', notes:'Practical business-start focus' },
+    ],
+  },
+  C: {
+    label:'Conventional (Organiser)', color:'teal',
+    description:'You excel with structured tasks, data, organisation, and systematic processes.',
+    traits:['Organised & systematic','Detail-oriented','Reliable & accurate','Follows procedures','Works well with data'],
+    careers:['Accountant/CA(SA)','Auditor','Financial Analyst','Database Administrator','Compliance Officer','Tax Consultant','Secretary','Supply Chain Manager'],
+    saOpps:['CA(SA) - highest starting salaries in SA','SAICA Thuthuka Bursary for accounting','Financial sector growth: banking, insurance, FinTech','Shortage of certified auditors in SA','Government needs more financial compliance experts'],
+    courses: [
+      { name:'BCom Accounting / CA(SA) stream', inst:'UCT / Wits / UP / SU / NWU', aps:'30+', notes:'SAICA Thuthuka bursary; Pure Maths preferred' },
+      { name:'BCom Financial Management', inst:'UP / UJ / NWU / UNISA / TUT', aps:'26+', notes:'Wide finance career pathways' },
+      { name:'BCom Taxation', inst:'UP / Wits / UJ / UNISA / NWU', aps:'26+', notes:'SARS career pathway' },
+      { name:'BCom Auditing', inst:'UCT / Wits / UP / SU', aps:'28+', notes:'Links to CA(SA) qualification' },
+      { name:'BCom Supply Chain Management', inst:'UP / UJ / TUT / DUT / CPUT', aps:'24+', notes:'Logistics, procurement, operations' },
+      { name:'Diploma: Financial Accounting', inst:'TVET / TUT / DUT / CPUT / VUT', aps:'20+', notes:'N6 TVET pathway available' },
+      { name:'BCom Information Systems', inst:'UCT / UP / Wits / UJ / UNISA', aps:'28+', notes:'Pure Maths strongly recommended' },
+      { name:'BCom Business Statistics / Econometrics', inst:'UCT / SU / Wits / UP', aps:'30+', notes:'Pure Maths required' },
+    ],
+  },
+};
+
+/* ── APS-based eligible course data ── */
+var APS_COURSES = {
+  high: [ /* APS 30+ */
+    { name:'MBChB (Medicine)', inst:'UCT / Wits / UP / SMU / UKZN', aps:'38+', req:'Pure Maths, Phys Sciences, Life Sciences' },
+    { name:'BEng Civil Engineering', inst:'UCT / UP / Wits / SU / UKZN', aps:'34+', req:'Pure Maths & Physical Sciences' },
+    { name:'BCom Accounting / CA(SA)', inst:'UCT / Wits / UP / SU / NWU', aps:'30+', req:'Pure Maths preferred, strong English' },
+    { name:'LLB (Law)', inst:'UCT / Wits / UP / UFS / UKZN', aps:'33+', req:'Strong English & Maths' },
+    { name:'BSc Actuarial Science', inst:'UCT / Wits / UP / SU', aps:'36+', req:'Pure Maths; very competitive' },
+    { name:'BArch (Architecture)', inst:'UCT / Wits / UP / UKZN', aps:'34+', req:'Portfolio may be required' },
+    { name:'BPharm (Pharmacy)', inst:'UP / NWU / Rhodes / UWC', aps:'34+', req:'Physical Sciences & Maths' },
+    { name:'BSc Computer Science', inst:'UCT / Wits / UP / UNISA', aps:'32+', req:'Pure Maths strongly recommended' },
+    { name:'BBusSci (Business Science)', inst:'UCT / Wits / SU', aps:'35+', req:'Pure Maths required' },
+    { name:'BSc Data Science', inst:'UCT / UP / NWU / UJ', aps:'30+', req:'Pure Maths required' },
+  ],
+  mid: [ /* APS 22–29 */
+    { name:'BEd (Bachelor of Education)', inst:'UP / UNISA / NWU / UFS / UKZN', aps:'26+', req:'Funza Lushaka bursary available' },
+    { name:'BSocWork (Social Work)', inst:'UP / Wits / UJ / UKZN / UNISA', aps:'24+', req:'DSD bursaries available' },
+    { name:'BNurs (Nursing)', inst:'UP / UKZN / UWC / NMU / UFS', aps:'24+', req:'NSFAS eligible; critical scarce skill' },
+    { name:'BCom Business Management', inst:'UP / UJ / NWU / UNISA / UFS', aps:'26+', req:'No specific subject restrictions' },
+    { name:'BA Psychology', inst:'UP / Wits / UJ / UKZN / Rhodes', aps:'28+', req:'Honours required for registration' },
+    { name:'BCom Financial Management', inst:'UP / UJ / NWU / UNISA', aps:'26+', req:'Maths or Math Literacy accepted' },
+    { name:'BA Journalism & Media Studies', inst:'Rhodes / Wits / UJ / UKZN', aps:'28+', req:'Strong English recommended' },
+    { name:'Diploma: Electrical Engineering', inst:'TUT / DUT / CPUT / VUT / MUT', aps:'22+', req:'Maths & Physical Sciences' },
+    { name:'Diploma: Information Technology', inst:'TUT / DUT / CPUT / VUT', aps:'22+', req:'Maths recommended' },
+    { name:'BCom Supply Chain Management', inst:'UP / UJ / TUT / DUT / CPUT', aps:'24+', req:'No strict subject requirements' },
+  ],
+  low: [ /* APS below 22 */
+    { name:'Diploma: Financial Accounting', inst:'TVET Colleges / TUT / DUT', aps:'N4–N6', req:'Maths or Math Literacy' },
+    { name:'Diploma: Early Childhood Development', inst:'UJ / UNISA / CUT / Stadio', aps:'20+', req:'NSFAS eligible' },
+    { name:'Certificate: Business Administration', inst:'TVET Colleges nationwide', aps:'N4+', req:'Basic Maths & English' },
+    { name:'Diploma: Hospitality & Tourism', inst:'TUT / DUT / CPUT / TVET', aps:'20+', req:'No strict requirements' },
+    { name:'Certificate: IT Support / Networking', inst:'TVET / CompTIA providers', aps:'N/A', req:'Practical / short-course route' },
+    { name:'Foundation / Bridging Programme', inst:'Most universities offer these', aps:'Any', req:'Gateway to degree programmes' },
+  ],
 };
 
 var COLOR_MAP = {
@@ -202,7 +335,6 @@ document.addEventListener('DOMContentLoaded', async function () {
     '\uD83C\uDF93 Learnership Portal \u2014 available',
   ].map(function (p) { return '<div class="stat-pill">' + p + '</div>'; }).join('');
 
-  // ── Student Tools — 4 cards including Learnership Portal ──
   var tools = [
     {
       icon: '\uD83E\uDDE0',
@@ -269,7 +401,6 @@ document.addEventListener('DOMContentLoaded', async function () {
 function renderHistory() {
   var history   = Auth.loadHistory(_user.id);
   var container = document.getElementById('historyContainer');
-
   if (history.length === 0) {
     container.innerHTML = '<div class="history-empty"><div class="emoji">\uD83D\uDDC2\uFE0F</div><p>No activity yet. Complete a psychometric test or APS calculation to see your history here.</p></div>';
     return;
@@ -291,7 +422,7 @@ function renderHistoryCard(entry, idx) {
   var iconEmoji = entry.type === 'psych' ? '\uD83E\uDDE0' : '\uD83D\uDCD0';
   var label     = entry.type === 'psych' ? 'Career Psychometric Test' : 'APS Calculator';
 
-  return '<div class="history-card">' +
+  return '<div class="history-card" id="history-entry-' + idx + '">' +
     '<div class="hc-top">' +
       '<div class="hc-icon-wrap">' +
         '<div class="hc-icon ' + iconClass + '">' + iconEmoji + '</div>' +
@@ -333,7 +464,7 @@ function renderPsychBody(data, idx) {
     '<div class="riasec-mini">' + riasecBars + '</div>' +
     '<div class="action-row-card">' +
       '<a href="psychometric-test.html" class="retake-btn">Retake Test \u2192</a>' +
-      '<a href="learnership-portal.html" class="retake-btn">\uD83C\uDF93 Browse Learnerships \u2192</a>' +
+      '<a href="aps-calculator.html" class="retake-btn">\uD83D\uDCD0 Go to APS Calculator \u2192</a>' +
     '</div>';
 }
 
@@ -348,31 +479,89 @@ function renderAPSBody(data, idx) {
   return '<div class="aps-result-grid"><div class="aps-score-box"><div class="score-num">' + apsScore + '</div><div class="score-label">APS Score</div></div></div>' +
     (subjectTags ? '<div class="aps-subject-list">' + subjectTags + '</div>' : '') +
     '<div class="action-row-card">' +
-      '<a href="aps-calculator.html" class="retake-btn">Recalculate \u2192</a>' +
-      '<a href="learnership-portal.html" class="retake-btn">\uD83C\uDF93 Browse Learnerships \u2192</a>' +
+      '<a href="aps-calculator.html" class="retake-btn">\uD83D\uDCD0 Recalculate APS \u2192</a>' +
     '</div>';
 }
 
-// ── PDF from dashboard history ─────────────────────────────────────────────
+/* ─────────────────────── PDF Helpers ─────────────────────── */
+function checkPageBreak(doc, y, needed, pageH, margin, headerColor, W) {
+  if (y + needed > pageH - 20) {
+    doc.addPage();
+    doc.setFillColor(headerColor[0], headerColor[1], headerColor[2]);
+    doc.rect(0, 0, W, 8, 'F');
+    return 18;
+  }
+  return y;
+}
+
+function addFooter(doc, W, margin) {
+  var pageCount = doc.internal.getNumberOfPages();
+  for (var p = 1; p <= pageCount; p++) {
+    doc.setPage(p);
+    var pageH = doc.internal.pageSize.getHeight();
+    doc.setDrawColor(229,231,235);
+    doc.line(margin, pageH - 14, W - margin, pageH - 14);
+    doc.setFontSize(7); doc.setTextColor(150,150,150); doc.setFont('helvetica','normal');
+    doc.text('Phunya Tsela Career Expo 2026  |  kasiexpo.co.za  |  Kuruman, Northern Cape', margin, pageH - 9);
+    doc.text('Page ' + p + ' of ' + pageCount, W - margin, pageH - 9, { align: 'right' });
+  }
+}
+
+/* Draw a full courses table. Returns new y. */
+function drawCoursesTable(doc, y, courses, primaryColor, W, margin, pageH) {
+  var rowH = 10;
+  var titleH = 14;
+  var tableInnerH = titleH + 7 + courses.length * rowH + 6;
+
+  y = checkPageBreak(doc, y, tableInnerH, pageH, margin, primaryColor, W);
+
+  doc.setFillColor(255,255,255); doc.setDrawColor(229,231,235); doc.setLineWidth(0.3);
+  doc.roundedRect(margin, y, W - margin * 2, tableInnerH, 2, 2, 'FD');
+
+  doc.setFont('helvetica','bold'); doc.setFontSize(11); doc.setTextColor(17,24,39);
+  doc.text('Eligible Courses & Programmes', margin + 5, y + 9);
+
+  var th = y + titleH;
+  doc.setFillColor(primaryColor[0], primaryColor[1], primaryColor[2]);
+  doc.rect(margin + 1, th - 1, W - margin * 2 - 2, 7, 'F');
+  doc.setFont('helvetica','bold'); doc.setFontSize(7); doc.setTextColor(255,255,255);
+  doc.text('COURSE / QUALIFICATION', margin + 5, th + 4);
+  doc.text('INSTITUTIONS', margin + 78, th + 4);
+  doc.text('MIN APS', W - margin - 40, th + 4);
+  doc.text('REQUIREMENTS', W - margin - 26, th + 4);
+
+  courses.forEach(function (c, i) {
+    var ry = th + 7 + i * rowH;
+    if (i % 2 === 0) { doc.setFillColor(249,250,251); doc.rect(margin + 1, ry - 1, W - margin * 2 - 2, rowH, 'F'); }
+    doc.setFont('helvetica','bold'); doc.setFontSize(8); doc.setTextColor(17,24,39);
+    doc.text(c.name, margin + 5, ry + 5);
+    doc.setFont('helvetica','normal'); doc.setTextColor(80,80,80); doc.setFontSize(7);
+    doc.text(c.inst || '', margin + 78, ry + 5);
+    doc.setFont('helvetica','bold'); doc.setTextColor(primaryColor[0], primaryColor[1], primaryColor[2]);
+    doc.text(String(c.aps || c.minAps || ''), W - margin - 40, ry + 5);
+    doc.setFont('helvetica','normal'); doc.setTextColor(100,100,100);
+    var reqText = c.notes || c.req || '';
+    if (reqText.length > 32) reqText = reqText.substring(0, 30) + '…';
+    doc.text(reqText, W - margin - 26, ry + 5);
+  });
+
+  return y + tableInnerH + 8;
+}
+
+/* ─────────────────────── Psychometric PDF ─────────────────────── */
 function downloadHistoryPDF(idx, btn) {
   var history = Auth.loadHistory(_user.id);
   var entry   = history[idx];
   if (!entry) return;
-
   btn.disabled = true;
   btn.innerHTML = '<span class="btn-spinner-sm"></span> Generating...';
-
   try {
-    if (entry.type === 'psych') {
-      generatePsychPDF(entry.data);
-    } else if (entry.type === 'aps') {
-      generateAPSPDF(entry.data);
-    }
+    if (entry.type === 'psych') generatePsychPDF(entry.data);
+    else if (entry.type === 'aps') generateAPSPDF(entry.data);
   } catch(e) {
     console.error('PDF error:', e);
     alert('Could not generate PDF. Please try again.');
   }
-
   btn.disabled = false;
   btn.innerHTML = '\uD83D\uDCC4 Download PDF';
 }
@@ -382,135 +571,148 @@ function generatePsychPDF(data) {
   var topTypes = data.topTypes || [];
   if (!topTypes.length) { alert('No result data to export.'); return; }
 
-  var primary  = RIASEC_META[topTypes[0]];
+  var primary = RIASEC_META[topTypes[0]];
   if (!primary) { alert('Could not load profile data.'); return; }
 
-  var today    = new Date().toLocaleDateString("en-ZA", { year:"numeric", month:"long", day:"numeric" });
+  var today    = new Date().toLocaleDateString('en-ZA', { year:'numeric', month:'long', day:'numeric' });
   var userName = (_user.firstName + ' ' + _user.lastName).trim() || 'Student';
 
   var jsPDF = window.jspdf.jsPDF;
   var doc = new jsPDF({ unit:'mm', format:'a4' });
-  var W = 210, margin = 18, y = 0;
-
+  var W = 210, margin = 18, pageH = 297;
   var primaryColor = COLOR_MAP[primary.color] || [217,119,6];
+  var y = 0;
 
-  // Header
+  /* Header */
   doc.setFillColor(primaryColor[0], primaryColor[1], primaryColor[2]);
   doc.rect(0, 0, W, 42, 'F');
   doc.setTextColor(255,255,255);
-  doc.setFont('helvetica','bold');
-  doc.setFontSize(9);
+  doc.setFont('helvetica','bold'); doc.setFontSize(9);
   doc.text('PHUNYA TSELA CAREER EXPO 2026  |  STUDENT CAREER REPORT', margin, 14);
   doc.setFontSize(20);
   doc.text('Career Psychometric Report', margin, 27);
-  doc.setFont('helvetica','normal');
-  doc.setFontSize(10);
+  doc.setFont('helvetica','normal'); doc.setFontSize(10);
   doc.text(userName + '  |  Generated: ' + today, margin, 36);
   y = 52;
 
-  // Primary card
-  doc.setFillColor(255,247,237);
-  doc.setDrawColor(primaryColor[0], primaryColor[1], primaryColor[2]);
-  doc.setLineWidth(0.5);
-  doc.roundedRect(margin, y, W-margin*2, 52, 3, 3, 'FD');
-  doc.setTextColor(120,53,15);
-  doc.setFont('helvetica','bold');
-  doc.setFontSize(8);
-  doc.text('PRIMARY CAREER TYPE', margin+6, y+8);
-  doc.setTextColor(primaryColor[0], primaryColor[1], primaryColor[2]);
-  doc.setFontSize(16);
-  doc.text(primary.label, margin+6, y+18);
-  doc.setTextColor(80,80,80);
-  doc.setFont('helvetica','normal');
-  doc.setFontSize(9);
-  var descLines = doc.splitTextToSize(primary.description, W-margin*2-12);
-  doc.text(descLines, margin+6, y+27);
+  /* Primary type card */
+  y = checkPageBreak(doc, y, 56, pageH, margin, primaryColor, W);
+  doc.setFillColor(255,247,237); doc.setDrawColor(primaryColor[0], primaryColor[1], primaryColor[2]); doc.setLineWidth(0.5);
+  doc.roundedRect(margin, y, W - margin * 2, 52, 3, 3, 'FD');
+  doc.setTextColor(120,53,15); doc.setFont('helvetica','bold'); doc.setFontSize(8);
+  doc.text('PRIMARY CAREER TYPE', margin + 6, y + 8);
+  doc.setTextColor(primaryColor[0], primaryColor[1], primaryColor[2]); doc.setFontSize(16);
+  doc.text(primary.label, margin + 6, y + 18);
+  doc.setTextColor(80,80,80); doc.setFont('helvetica','normal'); doc.setFontSize(9);
+  var descLines = doc.splitTextToSize(primary.description, W - margin * 2 - 12);
+  doc.text(descLines, margin + 6, y + 27);
   y += 60;
 
-  // Traits & Careers
-  var colW = (W-margin*2-8)/2;
-  doc.setFillColor(249,250,251);
-  doc.setDrawColor(229,231,235);
+  /* Traits & Careers */
+  var colW = (W - margin * 2 - 8) / 2;
+  y = checkPageBreak(doc, y, 56, pageH, margin, primaryColor, W);
+  doc.setFillColor(249,250,251); doc.setDrawColor(229,231,235);
   doc.roundedRect(margin, y, colW, 52, 2, 2, 'FD');
-  doc.setTextColor(primaryColor[0], primaryColor[1], primaryColor[2]);
-  doc.setFont('helvetica','bold');
-  doc.setFontSize(8);
-  doc.text('KEY TRAITS', margin+5, y+8);
-  doc.setFont('helvetica','normal');
-  doc.setTextColor(55,65,81);
-  doc.setFontSize(9);
-  (primary.traits || []).forEach(function(t,i){ doc.text('\u2022 '+t, margin+5, y+16+(i*7)); });
+  doc.setTextColor(primaryColor[0], primaryColor[1], primaryColor[2]); doc.setFont('helvetica','bold'); doc.setFontSize(8);
+  doc.text('KEY TRAITS', margin + 5, y + 8);
+  doc.setFont('helvetica','normal'); doc.setTextColor(55,65,81); doc.setFontSize(9);
+  (primary.traits || []).forEach(function(t, i) { doc.text('\u2022 ' + t, margin + 5, y + 16 + i * 7); });
 
-  doc.setFillColor(249,250,251);
-  doc.setDrawColor(229,231,235);
-  doc.roundedRect(margin+colW+8, y, colW, 52, 2, 2, 'FD');
-  doc.setTextColor(primaryColor[0], primaryColor[1], primaryColor[2]);
-  doc.setFont('helvetica','bold');
-  doc.setFontSize(8);
-  doc.text('MATCHING CAREER PATHS', margin+colW+13, y+8);
-  doc.setFont('helvetica','normal');
-  doc.setTextColor(55,65,81);
-  doc.setFontSize(9);
-  (primary.careers || []).slice(0,6).forEach(function(c,i){ doc.text('\u2022 '+c, margin+colW+13, y+16+(i*7)); });
+  doc.setFillColor(249,250,251); doc.setDrawColor(229,231,235);
+  doc.roundedRect(margin + colW + 8, y, colW, 52, 2, 2, 'FD');
+  doc.setTextColor(primaryColor[0], primaryColor[1], primaryColor[2]); doc.setFont('helvetica','bold'); doc.setFontSize(8);
+  doc.text('MATCHING CAREER PATHS', margin + colW + 13, y + 8);
+  doc.setFont('helvetica','normal'); doc.setTextColor(55,65,81); doc.setFontSize(9);
+  (primary.careers || []).slice(0, 6).forEach(function(c, i) { doc.text('\u2022 ' + c, margin + colW + 13, y + 16 + i * 7); });
   y += 60;
 
-  // RIASEC bars
+  /* RIASEC bars */
+  y = checkPageBreak(doc, y, 68, pageH, margin, primaryColor, W);
   var maxScore = Math.max.apply(null, Object.values(scores).concat([1]));
-  doc.setFillColor(255,255,255);
-  doc.setDrawColor(229,231,235);
-  doc.roundedRect(margin, y, W-margin*2, 58, 2, 2, 'FD');
-  doc.setTextColor(17,24,39);
-  doc.setFont('helvetica','bold');
-  doc.setFontSize(11);
-  doc.text('Your RIASEC Profile Scores', margin+5, y+9);
-  var barY = y+16, barMaxW = W-margin*2-60;
-  ['R','I','A','S','E','C'].forEach(function(type){
-    var p = RIASEC_META[type]; if(!p) return;
-    var pts = Math.round(scores[type]||0);
-    var pct = (scores[type]||0)/maxScore;
+  doc.setFillColor(255,255,255); doc.setDrawColor(229,231,235);
+  doc.roundedRect(margin, y, W - margin * 2, 62, 2, 2, 'FD');
+  doc.setTextColor(17,24,39); doc.setFont('helvetica','bold'); doc.setFontSize(11);
+  doc.text('Your RIASEC Profile Scores', margin + 5, y + 9);
+  var barY = y + 16, barMaxW = W - margin * 2 - 60;
+  ['R','I','A','S','E','C'].forEach(function(type) {
+    var p = RIASEC_META[type]; if (!p) return;
+    var pts = Math.round(scores[type] || 0);
+    var pct = (scores[type] || 0) / maxScore;
     var col = COLOR_MAP[p.color] || [100,100,100];
     doc.setFont('helvetica','bold'); doc.setFontSize(8); doc.setTextColor(100,100,100);
-    doc.text(type, margin+5, barY+3.5);
+    doc.text(type, margin + 5, barY + 3.5);
     doc.setFont('helvetica','normal'); doc.setFontSize(8); doc.setTextColor(55,65,81);
-    doc.text(p.label, margin+13, barY+3.5);
-    doc.setFillColor(243,244,246);
-    doc.roundedRect(margin+68, barY, barMaxW, 5, 1, 1, 'F');
-    doc.setFillColor(col[0],col[1],col[2]);
-    if(pct>0) doc.roundedRect(margin+68, barY, barMaxW*pct, 5, 1, 1, 'F');
-    doc.setTextColor(100,100,100);
-    doc.text(pts+' pts', W-margin-12, barY+3.5);
-    if(topTypes[0]===type){ doc.setTextColor(primaryColor[0],primaryColor[1],primaryColor[2]); doc.setFont('helvetica','bold'); doc.text('TOP', W-margin-28, barY+3.5); }
-    barY += 8;
+    doc.text(p.label, margin + 13, barY + 3.5);
+    doc.setFillColor(243,244,246); doc.roundedRect(margin + 68, barY, barMaxW, 5, 1, 1, 'F');
+    doc.setFillColor(col[0], col[1], col[2]);
+    if (pct > 0) doc.roundedRect(margin + 68, barY, barMaxW * pct, 5, 1, 1, 'F');
+    doc.setTextColor(100,100,100); doc.text(pts + ' pts', W - margin - 12, barY + 3.5);
+    if (topTypes[0] === type) { doc.setTextColor(primaryColor[0], primaryColor[1], primaryColor[2]); doc.setFont('helvetica','bold'); doc.text('TOP', W - margin - 28, barY + 3.5); }
+    barY += 9;
   });
-  y += 64;
+  y += 68;
 
-  // SA Opportunities
-  doc.setFillColor(255,255,255);
-  doc.setDrawColor(229,231,235);
-  doc.roundedRect(margin, y, W-margin*2, 42, 2, 2, 'FD');
+  /* SA Opportunities */
+  var oppsNeeded = 14 + (primary.saOpps || []).length * 7 + 6;
+  y = checkPageBreak(doc, y, oppsNeeded, pageH, margin, primaryColor, W);
+  doc.setFillColor(255,255,255); doc.setDrawColor(229,231,235);
+  doc.roundedRect(margin, y, W - margin * 2, oppsNeeded, 2, 2, 'FD');
   doc.setTextColor(17,24,39); doc.setFont('helvetica','bold'); doc.setFontSize(11);
-  doc.text('SA Opportunities for Your Profile', margin+5, y+9);
+  doc.text('SA Opportunities for Your Profile', margin + 5, y + 9);
   doc.setFont('helvetica','normal'); doc.setFontSize(9); doc.setTextColor(80,80,80);
-  (primary.saOpps||[]).forEach(function(o,i){ doc.text('\u2022 '+o, margin+5, y+17+(i*6)); });
-  y += 48;
+  (primary.saOpps || []).forEach(function(o, i) { doc.text('\u2022 ' + o, margin + 5, y + 17 + i * 7); });
+  y += oppsNeeded + 6;
 
-  // SETA note
-  doc.setFillColor(239,246,255); doc.setDrawColor(191,219,254);
-  doc.roundedRect(margin, y, W-margin*2, 12, 2, 2, 'FD');
-  doc.setFont('helvetica','bold'); doc.setFontSize(9); doc.setTextColor(37,99,235);
-  doc.text('SETA Learnerships: Visit learnership-portal.html to browse paid learning programmes.', margin+5, y+8);
-  y += 18;
+  /* Eligible Courses for primary type */
+  if (primary.courses && primary.courses.length) {
+    y = drawCoursesTable(doc, y, primary.courses, primaryColor, W, margin, pageH);
+  }
 
-  // Footer
-  doc.setDrawColor(229,231,235);
-  doc.line(margin, y, W-margin, y); y += 6;
-  doc.setFontSize(8); doc.setTextColor(150,150,150);
-  doc.text('Phunya Tsela Career Expo 2026  |  kasiexpo.co.za  |  Kuruman, Northern Cape', margin, y);
-  doc.text('Results are indicative. Consult a registered career counsellor for professional guidance.', margin, y+5);
+  /* Secondary types */
+  topTypes.slice(1).forEach(function(type) {
+    var meta = RIASEC_META[type]; if (!meta) return;
+    var secColor = COLOR_MAP[meta.color] || [100,100,100];
+    y = checkPageBreak(doc, y, 64, pageH, margin, primaryColor, W);
 
-  doc.save('Phunya_Tsela_Career_Profile_' + userName.replace(/\s+/g,'_') + '.pdf');
+    doc.setFillColor(249,250,251); doc.setDrawColor(secColor[0], secColor[1], secColor[2]); doc.setLineWidth(0.3);
+    doc.roundedRect(margin, y, W - margin * 2, 56, 2, 2, 'FD');
+    doc.setTextColor(secColor[0], secColor[1], secColor[2]); doc.setFont('helvetica','bold'); doc.setFontSize(8);
+    doc.text('SECONDARY TYPE', margin + 5, y + 8);
+    doc.setFontSize(13); doc.text(meta.label, margin + 5, y + 16);
+    doc.setFont('helvetica','normal'); doc.setTextColor(80,80,80); doc.setFontSize(8);
+    var sLines = doc.splitTextToSize(meta.description, W - margin * 2 - 10);
+    doc.text(sLines, margin + 5, y + 23);
+    var halfW = (W - margin * 2 - 8) / 2;
+    doc.setFont('helvetica','bold'); doc.setTextColor(secColor[0], secColor[1], secColor[2]); doc.setFontSize(7);
+    doc.text('TRAITS', margin + 5, y + 35);
+    doc.text('CAREERS', margin + halfW + 13, y + 35);
+    doc.setFont('helvetica','normal'); doc.setTextColor(55,65,81); doc.setFontSize(8);
+    (meta.traits || []).slice(0, 3).forEach(function(t, i) { doc.text('\u2022 ' + t, margin + 5, y + 41 + i * 5); });
+    (meta.careers || []).slice(0, 3).forEach(function(c, i) { doc.text('\u2022 ' + c, margin + halfW + 13, y + 41 + i * 5); });
+    y += 62;
+
+    /* Eligible courses for secondary type (first 4 only to keep it concise) */
+    if (meta.courses && meta.courses.length) {
+      y = drawCoursesTable(doc, y, meta.courses.slice(0, 4), secColor, W, margin, pageH);
+    }
+  });
+
+  /* Bursary reminder */
+  y = checkPageBreak(doc, y, 28, pageH, margin, primaryColor, W);
+  doc.setFillColor(236,253,245); doc.setDrawColor(167,243,208);
+  doc.roundedRect(margin, y, W - margin * 2, 24, 2, 2, 'FD');
+  doc.setTextColor(6,95,70); doc.setFont('helvetica','bold'); doc.setFontSize(10);
+  doc.text('Funding Opportunities', margin + 5, y + 8);
+  doc.setFont('helvetica','normal'); doc.setFontSize(8); doc.setTextColor(5,150,105);
+  doc.text('NSFAS: nsfas.org.za  |  Funza Lushaka: funzalushaka.doe.gov.za  |  NRF: nrf.ac.za', margin + 5, y + 15);
+  doc.text('ISFAP: isfap.co.za  |  Ikusasa: ikusasasfap.org  |  SAICA Thuthuka (Accounting)', margin + 5, y + 21);
+  y += 30;
+
+  addFooter(doc, W, margin);
+  doc.save('Phunya_Tsela_Career_Profile_' + userName.replace(/\s+/g, '_') + '.pdf');
 }
 
+/* ─────────────────────── APS PDF ─────────────────────── */
 function generateAPSPDF(data) {
   var subjects = data.subjects || [];
   var apsScore = data.apsScore || data.total || 0;
@@ -518,120 +720,151 @@ function generateAPSPDF(data) {
 
   var jsPDF = window.jspdf.jsPDF;
   var doc = new jsPDF({ unit:'mm', format:'a4' });
-  var W = 210, margin = 18, y = 0;
-  var today    = new Date().toLocaleDateString("en-ZA", { year:"numeric", month:"long", day:"numeric" });
+  var W = 210, margin = 18, pageH = 297;
+  var today    = new Date().toLocaleDateString('en-ZA', { year:'numeric', month:'long', day:'numeric' });
   var userName = (_user.firstName + ' ' + _user.lastName).trim() || 'Student';
+  var headerColor = [217,119,6];
+  var y = 0;
 
-  // Header
-  doc.setFillColor(217,119,6);
-  doc.rect(0, 0, W, 42, 'F');
-  doc.setFillColor(245,158,11);
-  doc.rect(0, 36, W, 6, 'F');
-  doc.setTextColor(255,255,255);
-  doc.setFont('helvetica','bold'); doc.setFontSize(9);
+  /* Header */
+  doc.setFillColor(217,119,6); doc.rect(0, 0, W, 42, 'F');
+  doc.setFillColor(245,158,11); doc.rect(0, 36, W, 6, 'F');
+  doc.setTextColor(255,255,255); doc.setFont('helvetica','bold'); doc.setFontSize(9);
   doc.text('PHUNYA TSELA CAREER EXPO 2026  |  APS CALCULATOR REPORT', margin, 14);
-  doc.setFontSize(20);
-  doc.text('APS Score Report', margin, 27);
+  doc.setFontSize(20); doc.text('APS Score Report', margin, 27);
   doc.setFont('helvetica','normal'); doc.setFontSize(10);
   doc.text(userName + '  |  Generated: ' + today, margin, 36);
   y = 52;
 
-  // Score card
-  doc.setFillColor(255,247,237);
-  doc.setDrawColor(253,186,116); doc.setLineWidth(0.5);
-  doc.roundedRect(margin, y, W-margin*2, 40, 3, 3, 'FD');
+  /* Score card */
+  y = checkPageBreak(doc, y, 48, pageH, margin, headerColor, W);
+  doc.setFillColor(255,247,237); doc.setDrawColor(253,186,116); doc.setLineWidth(0.5);
+  doc.roundedRect(margin, y, W - margin * 2, 40, 3, 3, 'FD');
   doc.setTextColor(120,53,15); doc.setFont('helvetica','bold'); doc.setFontSize(9);
-  doc.text('YOUR APS SCORE', margin+(W-margin*2)/2, y+9, {align:'center'});
+  doc.text('YOUR APS SCORE', margin + (W - margin * 2) / 2, y + 9, { align:'center' });
   doc.setTextColor(217,119,6); doc.setFontSize(44);
-  doc.text(String(apsScore), margin+(W-margin*2)/2, y+30, {align:'center'});
+  doc.text(String(apsScore), margin + (W - margin * 2) / 2, y + 30, { align:'center' });
   doc.setTextColor(120,53,15); doc.setFont('helvetica','normal'); doc.setFontSize(9);
-  doc.text('out of 42 (best 6 subjects, excluding Life Orientation)', margin+(W-margin*2)/2, y+37, {align:'center'});
+  doc.text('out of 42 (best 6 subjects, excluding Life Orientation)', margin + (W - margin * 2) / 2, y + 37, { align:'center' });
   y += 48;
 
-  // Score message
-  var scoreMsg = apsScore>=35 ? 'Excellent! You qualify for top competitive programmes.' :
-                 apsScore>=28 ? 'Good score - access to most professional degrees.' :
-                 apsScore>=22 ? 'Solid score - many diploma and degree options available.' :
-                                'Consider bridging/foundation programmes or TVET pathways.';
+  /* Score message */
+  y = checkPageBreak(doc, y, 18, pageH, margin, headerColor, W);
+  var scoreMsg = apsScore >= 35 ? 'Excellent! You qualify for top competitive programmes.' :
+                 apsScore >= 28 ? 'Good score - access to most professional degrees.' :
+                 apsScore >= 22 ? 'Solid score - many diploma and degree options available.' :
+                                  'Consider bridging/foundation programmes or TVET pathways.';
   doc.setFillColor(240,253,244); doc.setDrawColor(167,243,208);
-  doc.roundedRect(margin, y, W-margin*2, 12, 2, 2, 'FD');
+  doc.roundedRect(margin, y, W - margin * 2, 12, 2, 2, 'FD');
   doc.setTextColor(6,95,70); doc.setFont('helvetica','bold'); doc.setFontSize(10);
-  doc.text(scoreMsg, margin+(W-margin*2)/2, y+7.5, {align:'center'});
+  doc.text(scoreMsg, margin + (W - margin * 2) / 2, y + 7.5, { align:'center' });
   y += 20;
 
-  // Subject table
+  /* Subject table */
   if (subjects.length > 0) {
+    var tableH = 20 + subjects.length * 9 + 12;
+    y = checkPageBreak(doc, y, tableH, pageH, margin, headerColor, W);
     doc.setFillColor(255,255,255); doc.setDrawColor(229,231,235);
-    var tableH = 14 + subjects.length*9 + 10;
-    doc.roundedRect(margin, y, W-margin*2, tableH, 2, 2, 'FD');
+    doc.roundedRect(margin, y, W - margin * 2, tableH, 2, 2, 'FD');
     doc.setTextColor(17,24,39); doc.setFont('helvetica','bold'); doc.setFontSize(11);
-    doc.text('Your Best 6 Subjects (Used for APS)', margin+5, y+9);
-
-    var th = y+16;
-    doc.setFillColor(249,250,251);
-    doc.rect(margin+1, th-4, W-margin*2-2, 7, 'F');
+    doc.text('Your Best 6 Subjects (Used for APS)', margin + 5, y + 9);
+    var th = y + 16;
+    doc.setFillColor(249,250,251); doc.rect(margin + 1, th - 4, W - margin * 2 - 2, 7, 'F');
     doc.setFont('helvetica','bold'); doc.setFontSize(8); doc.setTextColor(100,100,100);
-    doc.text('Subject', margin+5, th);
-    doc.text('Mark %', W-margin-40, th, {align:'right'});
-    doc.text('APS Points', W-margin-5, th, {align:'right'});
-
-    subjects.forEach(function(s,i){
-      var ry = th+6+i*9;
-      if(i%2===0){ doc.setFillColor(250,250,250); doc.rect(margin+1, ry-4, W-margin*2-2, 8, 'F'); }
+    doc.text('Subject', margin + 5, th);
+    doc.text('Mark %', W - margin - 40, th, { align:'right' });
+    doc.text('APS Points', W - margin - 5, th, { align:'right' });
+    subjects.forEach(function(s, i) {
+      var ry = th + 8 + i * 9;
+      if (i % 2 === 0) { doc.setFillColor(250,250,250); doc.rect(margin + 1, ry - 4, W - margin * 2 - 2, 8, 'F'); }
       doc.setFont('helvetica','normal'); doc.setFontSize(9); doc.setTextColor(55,65,81);
       var nm = s.name || SUBJECT_NAMES[s.id] || s.id;
-      doc.text(nm, margin+5, ry);
-      if (s.mark) doc.text(String(s.mark)+'%', W-margin-40, ry, {align:'right'});
+      doc.text(nm, margin + 5, ry);
+      if (s.mark) doc.text(String(s.mark) + '%', W - margin - 40, ry, { align:'right' });
       var pts = s.points || s.aps || 0;
-      var bCol = pts>=6?[16,185,129]:pts>=4?[59,130,246]:[156,163,175];
-      doc.setFillColor(bCol[0],bCol[1],bCol[2]);
-      doc.roundedRect(W-margin-14, ry-5, 10, 7, 1, 1, 'F');
+      var bCol = pts >= 6 ? [16,185,129] : pts >= 4 ? [59,130,246] : [156,163,175];
+      doc.setFillColor(bCol[0], bCol[1], bCol[2]);
+      doc.roundedRect(W - margin - 14, ry - 5, 10, 7, 1, 1, 'F');
       doc.setTextColor(255,255,255); doc.setFont('helvetica','bold'); doc.setFontSize(8);
-      doc.text(String(pts), W-margin-9, ry, {align:'center'});
+      doc.text(String(pts), W - margin - 9, ry, { align:'center' });
     });
-
-    var totalY = th+6+subjects.length*9+2;
-    doc.setDrawColor(229,231,235);
-    doc.line(margin+2, totalY-2, W-margin-2, totalY-2);
+    var totalY = th + 8 + subjects.length * 9 + 2;
+    doc.setDrawColor(229,231,235); doc.line(margin + 2, totalY - 2, W - margin - 2, totalY - 2);
     doc.setFont('helvetica','bold'); doc.setFontSize(9); doc.setTextColor(17,24,39);
-    doc.text('TOTAL APS', margin+5, totalY+4);
-    doc.setTextColor(217,119,6);
-    doc.text(String(apsScore)+' / 42', W-margin-5, totalY+4, {align:'right'});
-    y += tableH+8;
+    doc.text('TOTAL APS', margin + 5, totalY + 5);
+    doc.setTextColor(217,119,6); doc.text(String(apsScore) + ' / 42', W - margin - 5, totalY + 5, { align:'right' });
+    y += tableH + 8;
   }
 
-  // Maths type
+  /* Maths type note */
+  y = checkPageBreak(doc, y, 16, pageH, margin, headerColor, W);
   doc.setFillColor(239,246,255); doc.setDrawColor(147,197,253);
-  doc.roundedRect(margin, y, W-margin*2, 12, 2, 2, 'FD');
+  doc.roundedRect(margin, y, W - margin * 2, 12, 2, 2, 'FD');
   doc.setTextColor(30,64,175); doc.setFont('helvetica','normal'); doc.setFontSize(9);
-  doc.text('Mathematics Type: ' + (mathType==='mathematics'?'Mathematics (Pure)':'Mathematical Literacy'), margin+5, y+7.5);
+  doc.text('Mathematics Type: ' + (mathType === 'mathematics' ? 'Mathematics (Pure)' : 'Mathematical Literacy'), margin + 5, y + 7.5);
   y += 20;
 
-  // Learnership note
-  doc.setFillColor(239,246,255); doc.setDrawColor(147,197,253);
-  doc.roundedRect(margin, y, W-margin*2, 12, 2, 2, 'FD');
-  doc.setTextColor(30,64,175); doc.setFont('helvetica','bold'); doc.setFontSize(9);
-  doc.text('SETA Learnerships: Visit learnership-portal.html to browse paid learning programmes.', margin+5, y+8);
-  y += 20;
+  /* APS interpretation table */
+  var scoreRows = [
+    ['35 – 42', 'Excellent', 'Top universities; Medicine, Law, Engineering (top programmes)'],
+    ['28 – 34', 'Good',      'Most professional degree programmes available'],
+    ['22 – 27', 'Solid',     'Diploma programmes, some degrees'],
+    ['Below 22', 'Basic',    'TVET, bridging/foundation programmes recommended'],
+  ];
+  var interpH = 14 + scoreRows.length * 10 + 6;
+  y = checkPageBreak(doc, y, interpH, pageH, margin, headerColor, W);
+  doc.setFillColor(255,255,255); doc.setDrawColor(229,231,235);
+  doc.roundedRect(margin, y, W - margin * 2, interpH, 2, 2, 'FD');
+  doc.setFont('helvetica','bold'); doc.setFontSize(10); doc.setTextColor(17,24,39);
+  doc.text('APS Score Interpretation', margin + 5, y + 9);
+  var iY = y + 14;
+  doc.setFillColor(249,250,251); doc.rect(margin + 1, iY - 3, W - margin * 2 - 2, 6, 'F');
+  doc.setFontSize(7); doc.setTextColor(100,100,100); doc.setFont('helvetica','bold');
+  doc.text('APS RANGE', margin + 5, iY); doc.text('RATING', margin + 40, iY); doc.text('IMPLICATION', margin + 70, iY);
+  iY += 4;
+  scoreRows.forEach(function(row, ri) {
+    if (ri % 2 === 1) { doc.setFillColor(250,250,250); doc.rect(margin + 1, iY - 1, W - margin * 2 - 2, 8, 'F'); }
+    doc.setFont('helvetica','bold'); doc.setFontSize(8); doc.setTextColor(217,119,6);
+    doc.text(row[0], margin + 5, iY + 4);
+    doc.setFont('helvetica','bold'); doc.setTextColor(17,24,39); doc.text(row[1], margin + 40, iY + 4);
+    doc.setFont('helvetica','normal'); doc.setTextColor(55,65,81); doc.text(row[2], margin + 70, iY + 4);
+    iY += 9;
+  });
+  y += interpH + 8;
 
-  // Bursary note
+  /* ── Eligible Courses based on APS score ── */
+  var courseSet = apsScore >= 30 ? APS_COURSES.high : apsScore >= 22 ? APS_COURSES.mid : APS_COURSES.low;
+  var courseColor = apsScore >= 30 ? [16,185,129] : apsScore >= 22 ? [59,130,246] : [217,119,6];
+  y = drawCoursesTable(doc, y, courseSet, courseColor, W, margin, pageH);
+
+  /* If high APS also show mid-tier options */
+  if (apsScore >= 30) {
+    y = checkPageBreak(doc, y, 14, pageH, margin, headerColor, W);
+    doc.setFillColor(239,246,255); doc.setDrawColor(147,197,253);
+    doc.roundedRect(margin, y, W - margin * 2, 10, 2, 2, 'FD');
+    doc.setFont('helvetica','bold'); doc.setFontSize(8); doc.setTextColor(30,64,175);
+    doc.text('Additional options at APS 22+ also available — see bursary-portal.html for more.', margin + 5, y + 6.5);
+    y += 16;
+  }
+
+  /* Bursary note */
+  y = checkPageBreak(doc, y, 28, pageH, margin, headerColor, W);
   doc.setFillColor(236,253,245); doc.setDrawColor(167,243,208);
-  doc.roundedRect(margin, y, W-margin*2, 24, 2, 2, 'FD');
+  doc.roundedRect(margin, y, W - margin * 2, 24, 2, 2, 'FD');
   doc.setTextColor(6,95,70); doc.setFont('helvetica','bold'); doc.setFontSize(10);
-  doc.text('Funding Opportunities', margin+5, y+8);
+  doc.text('Funding Opportunities', margin + 5, y + 8);
   doc.setFont('helvetica','normal'); doc.setFontSize(8); doc.setTextColor(5,150,105);
-  doc.text('Apply for NSFAS at nsfas.org.za  |  Funza Lushaka: funzalushaka.doe.gov.za', margin+5, y+15);
-  doc.text('ISFAP: isfap.co.za  |  Ikusasa: ikusasasfap.org  |  NRF: nrf.ac.za', margin+5, y+21);
+  doc.text('Apply for NSFAS at nsfas.org.za  |  Funza Lushaka: funzalushaka.doe.gov.za', margin + 5, y + 15);
+  doc.text('ISFAP: isfap.co.za  |  Ikusasa: ikusasasfap.org  |  NRF: nrf.ac.za', margin + 5, y + 21);
   y += 30;
 
-  // Footer
-  doc.setDrawColor(229,231,235);
-  doc.line(margin, y, W-margin, y); y += 5;
-  doc.setFontSize(8); doc.setTextColor(150,150,150);
-  doc.text('Phunya Tsela Career Expo 2026  |  kasiexpo.co.za  |  Kuruman, Northern Cape', margin, y);
-  doc.text('APS requirements are indicative. Verify with institutions directly.', margin, y+5);
+  /* Disclaimer */
+  y = checkPageBreak(doc, y, 12, pageH, margin, headerColor, W);
+  doc.setFontSize(8); doc.setTextColor(150,150,150); doc.setFont('helvetica','normal');
+  doc.text('APS requirements are indicative. Verify with institutions directly before applying.', margin, y);
 
-  doc.save('Phunya_Tsela_APS_Report_' + userName.replace(/\s+/g,'_') + '.pdf');
+  addFooter(doc, W, margin);
+  doc.save('Phunya_Tsela_APS_Report_' + userName.replace(/\s+/g, '_') + '.pdf');
 }
 
 async function doLogout() {

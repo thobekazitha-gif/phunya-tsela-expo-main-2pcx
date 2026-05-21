@@ -562,7 +562,7 @@ button { cursor: pointer; font-family: inherit; border: none; background: none; 
   font-weight: 700;
   text-transform: uppercase;
   letter-spacing: 0.1em;
-  color: rgba(var(--primary-rgb,214,158,28), 0.85);
+  color: rgba(var(--primary-rgb,214,158,28), 1);
   color: var(--primary);
 }
 @media (min-width: 768px) {

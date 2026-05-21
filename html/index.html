@@ -23,7 +23,7 @@
 <header id="site-header" class="site-header">
   <div class="container-tight header-inner">
     <a href="/" class="logo-link">
-      <img src="src/assets/logos/29.png" alt="Phunya Tsela" class="header-logo" />
+      <img src="src/assets/logos/29.png" alt="Phunya Tsela" class="header-logo" style="height: 80px; width: auto;" />
     </a>
 
     <nav class="desktop-nav">
@@ -43,7 +43,6 @@
           <svg class="chevron" xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 9l-7 7-7-7"/></svg>
         </button>
         <div class="dropdown-menu" id="student-tools-menu">
-          <!-- Student Dashboard — only shown when logged in -->
           <button class="dropdown-item nav-dashboard-item" id="nav-dashboard-btn" data-route="/dashboard" style="display:none;">
             <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg>
             Student Dashboard
@@ -65,12 +64,10 @@
     </nav>
 
     <div class="header-actions">
-      <!-- When logged out: show Student Login button -->
-      <button class="btn-student-login" id="student-login-btn">
+      <a href="login.html" class="btn-student-login" id="student-login-btn">
         <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="8" r="5"/><path d="M20 21a8 8 0 1 0-16 0"/></svg>
         Student Login
-      </button>
-      <!-- When logged in: show student's name linking to dashboard -->
+      </a>
       <a href="dashboard.html" class="btn-student-name" id="student-name-btn" style="display:none;">
         <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="8" r="5"/><path d="M20 21a8 8 0 1 0-16 0"/></svg>
         <span id="student-name-label">Student</span>
@@ -98,7 +95,6 @@
 
       <div class="mobile-section-divider">
         <p class="mobile-section-label">Student Tools</p>
-        <!-- Mobile Dashboard (shown when logged in) -->
         <a href="dashboard.html" class="mobile-tool-btn mobile-dashboard-btn" id="mobile-dashboard-btn" style="display:none; text-decoration:none;">
           <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg>
           Student Dashboard
@@ -118,12 +114,10 @@
       </div>
 
       <div class="mobile-section-divider">
-        <!-- Mobile: logged-out state -->
-        <button class="btn-outline w-full" id="mobile-login-btn">
+        <a href="login.html" class="btn-outline w-full" id="mobile-login-btn" style="text-decoration:none; text-align:center;">
           <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="8" r="5"/><path d="M20 21a8 8 0 1 0-16 0"/></svg>
           Student Login / Sign Up
-        </button>
-        <!-- Mobile: logged-in state -->
+        </a>
         <a href="dashboard.html" class="btn-outline w-full" id="mobile-go-dashboard-btn" style="display:none; text-decoration:none; text-align:center;">
           <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg>
           My Dashboard
@@ -143,59 +137,48 @@
 <main>
 
 <!-- ===== HERO SECTION ===== -->
-<section class="hero-section">
+<section class="hero-section" style="min-height: 56vh; padding: 2rem 0;">
   <div class="hero-bg">
     <img src="src/assets/hero-image.jpg" alt="Phunya Tsela Career Expo" class="hero-img" />
     <div class="hero-overlay"></div>
   </div>
 
-  <div class="container-tight hero-content animate-fade-in">
-    <span class="hero-badge">Kasi Career Expo • Next Expo: 24–25 JUNE 2026</span>
-    <h1 class="hero-title">
+  <div class="container-tight hero-content animate-fade-in" style="padding-top: 1rem; padding-bottom: 1rem;">
+    <span class="hero-badge" style="font-size: 0.75rem; padding: 0.3rem 0.8rem;">Kasi Career Expo • Next Expo: 24–25 JUNE 2026</span>
+    <h1 class="hero-title" style="font-size: clamp(1.8rem, 5vw, 3rem); margin-bottom: 0.4rem;">
       Phunya Tsela
       <span class="text-gradient-gold">Career Expo 2026</span>
     </h1>
-    <p class="hero-tagline">Opening Pathways. Building Futures.</p>
-    <p class="hero-venue">Venue: Thabo Moorosi Multi-Purpose Centre • Kurumane, Northern Cape</p>
+    <p class="hero-tagline" style="font-size: clamp(0.95rem, 2vw, 1.15rem); margin-bottom: 0.3rem;">Opening Pathways. Building Futures.</p>
+    <p class="hero-venue" style="font-size: 0.8rem; margin-bottom: 1rem;">Venue: Thabo Moorosi Multi-Purpose Centre • Kurumane, Northern Cape</p>
 
-    <div class="hero-ctas">
-      <a href="learner-registration.html" class="btn-yellow" target="_blank" rel="noopener noreferrer" data-cta="hero-learner-prereg">
-        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+    <div class="hero-ctas" style="gap: 0.6rem; margin-bottom: 1.2rem;">
+      <a href="learner-registration.html" class="btn-yellow" target="_blank" rel="noopener noreferrer" data-cta="hero-learner-prereg" style="padding: 0.6rem 1.2rem; font-size: 0.875rem;">
+        <svg xmlns="http://www.w3.org/2000/svg" width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
         Learner Registration
       </a>
-      <a href="#" class="btn-teal" data-cta="hero-prospectus" onclick="openProspectusModal(event)">
-        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" x2="12" y1="15" y2="3"/></svg>
+      <a href="#" class="btn-teal" data-cta="hero-prospectus" onclick="openProspectusModal(event)" style="padding: 0.6rem 1.2rem; font-size: 0.875rem;">
+        <svg xmlns="http://www.w3.org/2000/svg" width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" x2="12" y1="15" y2="3"/></svg>
         Download Prospectus
       </a>
     </div>
 
-    <div class="hero-student-tools animate-fade-in-delay">
-      <p class="student-tools-label">Student Tools — Free for Learners</p>
-      <div class="student-tools-row">
-        <!-- Dashboard button: shown only when logged in -->
-        <a href="dashboard.html" class="btn-student-tool btn-dashboard-tool hero-dashboard-btn" id="hero-dashboard-btn" style="display:none; text-decoration:none;">
+    <!-- Hero Student Tools — Student Portal only -->
+    <div class="hero-student-tools animate-fade-in-delay" style="padding: 0.8rem 1rem;">
+      <p class="student-tools-label" style="font-size: 0.75rem; margin-bottom: 0.6rem; color: #ffffff;">Student Portal — Free for Learners</p>
+      <div class="student-tools-row" style="justify-content: center;">
+        <!-- Shown when logged in -->
+        <a href="dashboard.html" class="btn-student-tool hero-dashboard-btn" id="hero-dashboard-btn" style="display:none; text-decoration:none; background:#dc2626; color:#fff; font-weight:700; letter-spacing:0.04em;">
           <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg>
-          My Dashboard
+          LEARNER DASHBOARD
         </a>
-        <!-- Dashboard button: shown only when logged out (opens login modal) -->
-        <button class="btn-student-tool btn-dashboard-tool hero-dashboard-gated-btn" id="hero-dashboard-gated-btn" onclick="openAuthModalForDashboard()">
+        <!-- Shown when logged out — links to login.html -->
+        <a href="login.html" class="btn-student-tool hero-dashboard-gated-btn" id="hero-dashboard-gated-btn" style="background:#dc2626; color:#fff; font-weight:700; letter-spacing:0.04em; text-decoration:none;">
           <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg>
-          Student Dashboard
-        </button>
-        <button class="btn-student-tool btn-primary-tool" data-route="/bursary-portal">
-          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg>
-          Bursary Portal
-        </button>
-        <button class="btn-student-tool btn-red-tool" data-route="/psychometric-test">
-          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9.5 2A2.5 2.5 0 0 1 12 4.5v15a2.5 2.5 0 0 1-4.96.44 2.5 2.5 0 0 1-2.96-3.08 3 3 0 0 1-.34-5.58 2.5 2.5 0 0 1 1.32-4.24 2.5 2.5 0 0 1 1.98-3A2.5 2.5 0 0 1 9.5 2Z"/><path d="M14.5 2A2.5 2.5 0 0 0 12 4.5v15a2.5 2.5 0 0 0 4.96.44 2.5 2.5 0 0 0 2.96-3.08 3 3 0 0 0 .34-5.58 2.5 2.5 0 0 0-1.32-4.24 2.5 2.5 0 0 0-1.98-3A2.5 2.5 0 0 0 14.5 2Z"/></svg>
-          Psychometric Test
-        </button>
-        <button class="btn-student-tool btn-green-tool" data-route="/aps-calculator">
-          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect width="16" height="20" x="4" y="2" rx="2"/><line x1="8" x2="16" y1="6" y2="6"/><line x1="8" x2="16" y1="10" y2="10"/><line x1="8" x2="12" y1="14" y2="14"/></svg>
-          APS Calculator
-        </button>
+          LEARNER DASHBOARD
+        </a>
       </div>
-      <p class="student-tools-note">Sign up free to access all student tools — your data is protected under POPIA</p>
+      <p class="student-tools-note" style="font-size: 0.7rem; margin-top: 0.5rem;">Sign up free to access all student tools — your data is protected under POPIA</p>
     </div>
   </div>
 </section>
@@ -761,33 +744,6 @@
   </div>
 </footer>
 
-<!-- ===== AUTH MODAL ===== -->
-<div class="modal-overlay" id="auth-modal" role="dialog" aria-modal="true" aria-label="Student Login">
-  <div class="modal-box">
-    <button class="modal-close" id="modal-close-btn" aria-label="Close">
-      <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg>
-    </button>
-    <h2 class="modal-title">Student Login</h2>
-    <p class="modal-desc" id="modal-desc">Create a free account to access student tools.</p>
-    <div class="modal-tabs">
-      <button class="modal-tab active" id="tab-login">Login</button>
-      <button class="modal-tab" id="tab-signup">Sign Up</button>
-    </div>
-    <form class="modal-form" id="auth-form" novalidate>
-      <div id="signup-fields" style="display:none;">
-        <div class="form-row">
-          <input type="text" placeholder="First Name" class="form-input" id="first-name" />
-          <input type="text" placeholder="Last Name" class="form-input" id="last-name" />
-        </div>
-      </div>
-      <input type="email" placeholder="Email address" class="form-input" id="auth-email" required />
-      <input type="password" placeholder="Password" class="form-input" id="auth-password" required />
-      <button type="submit" class="btn-primary w-full" id="auth-submit">Login</button>
-    </form>
-    <p class="modal-redirect-msg">Access bursary portal, psychometric test, and APS calculator.</p>
-  </div>
-</div>
-
 <!-- ===== PROSPECTUS MODAL ===== -->
 <div id="prospectus-modal" style="
   display:none; position:fixed; inset:0; z-index:300;
@@ -802,7 +758,6 @@
     animation: pmSlideIn .3s cubic-bezier(.175,.885,.32,1.275) both;
   ">
 
-    <!-- Close button -->
     <button onclick="closeProspectusModal()" style="
       position:absolute; top:1rem; right:1rem;
       background:#f3f4f6; border:none; border-radius:50%;
@@ -811,7 +766,6 @@
       color:#6b7280; transition:background .2s;
     " onmouseover="this.style.background='#e5e7eb'" onmouseout="this.style.background='#f3f4f6'">✕</button>
 
-    <!-- Header -->
     <div style="margin-bottom:1.5rem;">
       <div style="
         width:48px; height:48px; border-radius:12px; margin-bottom:1rem;
@@ -826,64 +780,37 @@
       </p>
     </div>
 
-    <!-- Error -->
     <div id="prosp-error" style="
       display:none; background:#fef2f2; border:1px solid #fecaca;
       border-radius:10px; padding:.75rem 1rem; font-size:.8125rem;
       color:#b91c1c; margin-bottom:1rem;
     "></div>
 
-    <!-- Form -->
     <div style="display:flex; flex-direction:column; gap:.875rem;">
-
       <div style="display:grid; grid-template-columns:1fr 1fr; gap:.75rem;">
         <div>
           <label style="display:block; font-size:.75rem; font-weight:700; color:#374151; margin-bottom:.375rem;">First Name <span style="color:#ef4444;">*</span></label>
-          <input id="prosp-fname" type="text" placeholder="First name" style="
-            width:100%; padding:.625rem .875rem; border:1.5px solid #fde68a;
-            border-radius:10px; font-size:.875rem; font-family:inherit;
-            outline:none; transition:border-color .2s;
-          " onfocus="this.style.borderColor='#d97706'" onblur="this.style.borderColor='#fde68a'" />
+          <input id="prosp-fname" type="text" placeholder="First name" style="width:100%; padding:.625rem .875rem; border:1.5px solid #fde68a; border-radius:10px; font-size:.875rem; font-family:inherit; outline:none; transition:border-color .2s;" onfocus="this.style.borderColor='#d97706'" onblur="this.style.borderColor='#fde68a'" />
         </div>
         <div>
           <label style="display:block; font-size:.75rem; font-weight:700; color:#374151; margin-bottom:.375rem;">Surname <span style="color:#ef4444;">*</span></label>
-          <input id="prosp-lname" type="text" placeholder="Last name" style="
-            width:100%; padding:.625rem .875rem; border:1.5px solid #fde68a;
-            border-radius:10px; font-size:.875rem; font-family:inherit;
-            outline:none; transition:border-color .2s;
-          " onfocus="this.style.borderColor='#d97706'" onblur="this.style.borderColor='#fde68a'" />
+          <input id="prosp-lname" type="text" placeholder="Last name" style="width:100%; padding:.625rem .875rem; border:1.5px solid #fde68a; border-radius:10px; font-size:.875rem; font-family:inherit; outline:none; transition:border-color .2s;" onfocus="this.style.borderColor='#d97706'" onblur="this.style.borderColor='#fde68a'" />
         </div>
       </div>
-
       <div>
         <label style="display:block; font-size:.75rem; font-weight:700; color:#374151; margin-bottom:.375rem;">Institution / Organisation <span style="color:#ef4444;">*</span></label>
-        <input id="prosp-org" type="text" placeholder="e.g. Department of Education, Assmang Mine" style="
-          width:100%; padding:.625rem .875rem; border:1.5px solid #fde68a;
-          border-radius:10px; font-size:.875rem; font-family:inherit;
-          outline:none; transition:border-color .2s;
-        " onfocus="this.style.borderColor='#d97706'" onblur="this.style.borderColor='#fde68a'" />
+        <input id="prosp-org" type="text" placeholder="e.g. Department of Education, Assmang Mine" style="width:100%; padding:.625rem .875rem; border:1.5px solid #fde68a; border-radius:10px; font-size:.875rem; font-family:inherit; outline:none; transition:border-color .2s;" onfocus="this.style.borderColor='#d97706'" onblur="this.style.borderColor='#fde68a'" />
       </div>
-
       <div style="display:grid; grid-template-columns:1fr 1fr; gap:.75rem;">
         <div>
           <label style="display:block; font-size:.75rem; font-weight:700; color:#374151; margin-bottom:.375rem;">Contact Number <span style="color:#ef4444;">*</span></label>
-          <input id="prosp-phone" type="tel" placeholder="+27 xx xxx xxxx" style="
-            width:100%; padding:.625rem .875rem; border:1.5px solid #fde68a;
-            border-radius:10px; font-size:.875rem; font-family:inherit;
-            outline:none; transition:border-color .2s;
-          " onfocus="this.style.borderColor='#d97706'" onblur="this.style.borderColor='#fde68a'" />
+          <input id="prosp-phone" type="tel" placeholder="+27 xx xxx xxxx" style="width:100%; padding:.625rem .875rem; border:1.5px solid #fde68a; border-radius:10px; font-size:.875rem; font-family:inherit; outline:none; transition:border-color .2s;" onfocus="this.style.borderColor='#d97706'" onblur="this.style.borderColor='#fde68a'" />
         </div>
         <div>
           <label style="display:block; font-size:.75rem; font-weight:700; color:#374151; margin-bottom:.375rem;">Email Address <span style="color:#ef4444;">*</span></label>
-          <input id="prosp-email" type="email" placeholder="your@email.com" style="
-            width:100%; padding:.625rem .875rem; border:1.5px solid #fde68a;
-            border-radius:10px; font-size:.875rem; font-family:inherit;
-            outline:none; transition:border-color .2s;
-          " onfocus="this.style.borderColor='#d97706'" onblur="this.style.borderColor='#fde68a'" />
+          <input id="prosp-email" type="email" placeholder="your@email.com" style="width:100%; padding:.625rem .875rem; border:1.5px solid #fde68a; border-radius:10px; font-size:.875rem; font-family:inherit; outline:none; transition:border-color .2s;" onfocus="this.style.borderColor='#d97706'" onblur="this.style.borderColor='#fde68a'" />
         </div>
       </div>
-
-      <!-- Submit -->
       <button id="prosp-submit-btn" onclick="handleProspectusSubmit()" style="
         width:100%; height:48px; border:none; border-radius:12px; cursor:pointer;
         background:linear-gradient(135deg,#f59e0b,#d97706);
@@ -897,7 +824,6 @@
         <svg xmlns="http://www.w3.org/2000/svg" width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" x2="12" y1="15" y2="3"/></svg>
         Download Prospectus
       </button>
-
       <p style="font-size:.7rem; color:#9ca3af; text-align:center; margin-top:-.25rem;">
         🔒 Your details are protected under POPIA and will not be shared.
       </p>
@@ -910,8 +836,8 @@
   from { opacity:0; transform:scale(.92) translateY(12px); }
   to   { opacity:1; transform:scale(1) translateY(0); }
 }
+@keyframes prospSpin { to { transform: rotate(360deg); } }
 
-/* ===== Student Name Button (logged-in nav state) ===== */
 .btn-student-name {
   display: inline-flex;
   align-items: center;
@@ -936,16 +862,15 @@
   border-color: hsl(var(--primary, 220 90% 50%) / 0.6);
 }
 
-/* ===== Dashboard tool button in hero ===== */
 .btn-dashboard-tool {
   background: linear-gradient(135deg, #1e3a5f, #2563eb);
   color: #fff;
   border: none;
-  padding: 0.5rem 1rem;
+  padding: 0.5rem 1.2rem;
   border-radius: 8px;
   font-family: 'Space Grotesk', sans-serif;
   font-weight: 600;
-  font-size: 0.8125rem;
+  font-size: 0.875rem;
   display: inline-flex;
   align-items: center;
   gap: 0.4rem;
@@ -958,7 +883,6 @@
   transform: translateY(-1px);
 }
 
-/* Dashboard item in nav dropdown — visually distinct */
 .nav-dashboard-item {
   border-bottom: 1px solid rgba(0,0,0,0.07);
   margin-bottom: 4px;
@@ -970,11 +894,8 @@
 
 <script>
 /* ================================================================
-   AUTH STATE MANAGEMENT
-   Reads/writes to sessionStorage so state persists across page
-   refreshes within the same browser session.
-   ================================================================ */
-
+   AUTH STATE — reads sessionStorage set by login.html
+================================================================ */
 var SESSION_KEY = 'kce_student';
 
 function getStudentSession() {
@@ -984,26 +905,13 @@ function getStudentSession() {
   } catch(e) { return null; }
 }
 
-function setStudentSession(data) {
-  try { sessionStorage.setItem(SESSION_KEY, JSON.stringify(data)); } catch(e) {}
-}
-
-function clearStudentSession() {
-  try { sessionStorage.removeItem(SESSION_KEY); } catch(e) {}
-}
-
-/* ----------------------------------------------------------------
-   applyAuthState — called on page load AND after login/logout
-   Updates every auth-sensitive element on the page.
----------------------------------------------------------------- */
 function applyAuthState() {
   var student = getStudentSession();
   var isLoggedIn = !!student;
 
-  /* ---- Header: Student Login btn vs Student Name btn ---- */
-  var loginBtn    = document.getElementById('student-login-btn');
-  var nameBtn     = document.getElementById('student-name-btn');
-  var nameLabel   = document.getElementById('student-name-label');
+  var loginBtn  = document.getElementById('student-login-btn');
+  var nameBtn   = document.getElementById('student-name-btn');
+  var nameLabel = document.getElementById('student-name-label');
 
   if (isLoggedIn) {
     if (loginBtn)  loginBtn.style.display  = 'none';
@@ -1014,17 +922,14 @@ function applyAuthState() {
     if (nameBtn)   nameBtn.style.display   = 'none';
   }
 
-  /* ---- Nav dropdown: Student Dashboard item ---- */
   var navDashBtn = document.getElementById('nav-dashboard-btn');
   if (navDashBtn) {
     navDashBtn.style.display = isLoggedIn ? 'flex' : 'none';
     navDashBtn.onclick = function() { window.location.href = 'dashboard.html'; };
   }
 
-  /* ---- Hero: Student Dashboard buttons ---- */
-  var heroDashBtn       = document.getElementById('hero-dashboard-btn');        // linked (logged in)
-  var heroDashGatedBtn  = document.getElementById('hero-dashboard-gated-btn');  // opens modal (logged out)
-
+  var heroDashBtn      = document.getElementById('hero-dashboard-btn');
+  var heroDashGatedBtn = document.getElementById('hero-dashboard-gated-btn');
   if (isLoggedIn) {
     if (heroDashBtn)      heroDashBtn.style.display      = 'inline-flex';
     if (heroDashGatedBtn) heroDashGatedBtn.style.display = 'none';
@@ -1033,11 +938,9 @@ function applyAuthState() {
     if (heroDashGatedBtn) heroDashGatedBtn.style.display = 'inline-flex';
   }
 
-  /* ---- Mobile nav: dashboard link and login/dashboard btn ---- */
-  var mobileDashBtn      = document.getElementById('mobile-dashboard-btn');
-  var mobileLoginBtn     = document.getElementById('mobile-login-btn');
-  var mobileGoDashBtn    = document.getElementById('mobile-go-dashboard-btn');
-
+  var mobileDashBtn   = document.getElementById('mobile-dashboard-btn');
+  var mobileLoginBtn  = document.getElementById('mobile-login-btn');
+  var mobileGoDashBtn = document.getElementById('mobile-go-dashboard-btn');
   if (isLoggedIn) {
     if (mobileDashBtn)   mobileDashBtn.style.display   = 'flex';
     if (mobileLoginBtn)  mobileLoginBtn.style.display  = 'none';
@@ -1049,149 +952,8 @@ function applyAuthState() {
   }
 }
 
-/* ================================================================
-   MODAL HELPERS
-================================================================ */
-function openAuthModal() {
-  var modal = document.getElementById('auth-modal');
-  if (modal) {
-    modal.style.display = 'flex';
-    modal.classList.add('active');
-    document.body.style.overflow = 'hidden';
-  }
-}
-
-function closeAuthModal() {
-  var modal = document.getElementById('auth-modal');
-  if (modal) {
-    modal.style.display = 'none';
-    modal.classList.remove('active');
-    document.body.style.overflow = '';
-  }
-}
-
-/* Called by the "Student Dashboard" gated button when logged out */
-function openAuthModalForDashboard() {
-  var desc = document.getElementById('modal-desc');
-  if (desc) desc.textContent = 'Please log in to access your Student Dashboard.';
-  openAuthModal();
-}
-
-/* ================================================================
-   SIMULATED AUTH (replace with your real Firebase / Supabase logic)
-   On successful login/signup, call: onAuthSuccess(firstName, email)
-================================================================ */
-function onAuthSuccess(firstName, email) {
-  setStudentSession({ firstName: firstName, email: email });
-  closeAuthModal();
-  applyAuthState();
-  // If there was a pending dashboard redirect, go now
-  if (window._pendingDashboardRedirect) {
-    window._pendingDashboardRedirect = false;
-    window.location.href = 'dashboard.html';
-  }
-}
-
-/* ================================================================
-   WIRE UP EXISTING AUTH FORM
-   This hooks into the existing #auth-form without replacing its logic.
-================================================================ */
 document.addEventListener('DOMContentLoaded', function() {
-
-  /* Run auth state on load */
   applyAuthState();
-
-  /* Header login button → open modal */
-  var loginBtn = document.getElementById('student-login-btn');
-  if (loginBtn) {
-    loginBtn.addEventListener('click', function() { openAuthModal(); });
-  }
-
-  /* Mobile login button → open modal */
-  var mobileLoginBtn = document.getElementById('mobile-login-btn');
-  if (mobileLoginBtn) {
-    mobileLoginBtn.addEventListener('click', function() { openAuthModal(); });
-  }
-
-  /* Modal close button */
-  var closeBtn = document.getElementById('modal-close-btn');
-  if (closeBtn) {
-    closeBtn.addEventListener('click', function() { closeAuthModal(); });
-  }
-
-  /* Close modal on overlay click */
-  var authModal = document.getElementById('auth-modal');
-  if (authModal) {
-    authModal.addEventListener('click', function(e) {
-      if (e.target === authModal) closeAuthModal();
-    });
-  }
-
-  /* ---- Intercept the existing auth form submission ---- */
-  var authForm = document.getElementById('auth-form');
-  if (authForm) {
-    authForm.addEventListener('submit', function(e) {
-      /* Let the existing script.js handle the real auth logic.
-         We listen for a custom event it fires, OR we patch in here.
-         For safety we also handle a naive fallback below. */
-      /* The existing script may call its own handler — we don't
-         override e.preventDefault() so it still fires. We use a
-         MutationObserver on the modal to detect when it closes
-         after a successful login (script.js hides it). */
-    });
-  }
-
-  /* ---- MutationObserver: detect when script.js closes the modal
-         after successful auth, then sync our state. ---- */
-  var authModalEl = document.getElementById('auth-modal');
-  if (authModalEl && window.MutationObserver) {
-    var observer = new MutationObserver(function(mutations) {
-      mutations.forEach(function(m) {
-        if (m.type === 'attributes' && m.attributeName === 'class') {
-          /* script.js removes 'active' class on success */
-          if (!authModalEl.classList.contains('active')) {
-            /* Try to read first name from filled form fields */
-            var firstName = '';
-            var fnField = document.getElementById('first-name');
-            var emailField = document.getElementById('auth-email');
-            /* For login (no first-name field), try email prefix */
-            if (fnField && fnField.value.trim()) {
-              firstName = fnField.value.trim();
-            } else if (emailField && emailField.value.trim()) {
-              firstName = emailField.value.trim().split('@')[0];
-            }
-            if (firstName && !getStudentSession()) {
-              onAuthSuccess(firstName, emailField ? emailField.value.trim() : '');
-            }
-          }
-        }
-      });
-    });
-    observer.observe(authModalEl, { attributes: true });
-  }
-
-  /* ---- Tab switching (login vs signup) ---- */
-  var tabLogin  = document.getElementById('tab-login');
-  var tabSignup = document.getElementById('tab-signup');
-  var submitBtn = document.getElementById('auth-submit');
-
-  if (tabLogin && tabSignup) {
-    tabLogin.addEventListener('click', function() {
-      tabLogin.classList.add('active');
-      tabSignup.classList.remove('active');
-      var sf = document.getElementById('signup-fields');
-      if (sf) sf.style.display = 'none';
-      if (submitBtn) submitBtn.textContent = 'Login';
-    });
-    tabSignup.addEventListener('click', function() {
-      tabSignup.classList.add('active');
-      tabLogin.classList.remove('active');
-      var sf = document.getElementById('signup-fields');
-      if (sf) sf.style.display = 'block';
-      if (submitBtn) submitBtn.textContent = 'Create Account';
-    });
-  }
-
 });
 </script>
 
@@ -1280,14 +1042,10 @@ function handleProspectusSubmit() {
 
 function showProspErr(msg) {
   var err = document.getElementById('prosp-error');
-  err.textContent =  msg;
+  err.textContent = msg;
   err.style.display = 'block';
 }
 </script>
-
-<style>
-@keyframes prospSpin { to { transform: rotate(360deg); } }
-</style>
 
 <script src="script.js"></script>
 </body>
