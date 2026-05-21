@@ -1,30 +1,41 @@
 /**
- * auth.js — Phunya Tsela v4.1
- * Supabase Authentication + Local Storage User Data
- * Supports: email+password OR phone+password
+ * auth.js — Phunya Tsela v5.0
  *
- * FIX (v4.1): Phone logins now work by converting the phone number to a
- * synthetic email address (e.g. +27821234567@phunya-tsela.app) so that
- * Supabase's always-available email+password flow is used instead of the
- * phone/OTP flow (which requires Twilio and is disabled by default).
+ * HOW PHONE AUTH WORKS (no OTP, no verification, no custom table needed):
+ * ─────────────────────────────────────────────────────────────────────────
+ * Supabase Auth requires an email OR phone for every account.
+ * Their phone provider needs Twilio (disabled on free plans).
+ * Their email provider works fine but sends confirmation emails.
+ *
+ * SOLUTION:
+ *   1. In Supabase Dashboard → Authentication → Settings:
+ *        ✅ Disable "Enable email confirmations"  ← REQUIRED
+ *        (Users sign up instantly with no email sent)
+ *
+ *   2. We convert a phone number into a private internal email that
+ *      Supabase uses only as a unique key — it is NEVER shown to
+ *      students, never emailed, never validated externally.
+ *      Format: pt{digits}@pt.local
+ *      e.g.  0821234567  →  pt27821234567@pt.local
+ *
+ *   3. The student's real phone number is saved in user_metadata.phone
+ *      so you can display it on the dashboard.
+ *
+ *   4. Login with phone works by re-deriving the same internal email.
+ *
+ * Net result: students sign up / sign in with just their phone number
+ * and password. No OTP. No email. No verification. Instant access.
  */
 
 (function (global) {
   'use strict';
 
   /* ── SUPABASE CONFIG ───────────────────────────────── */
-
   var SUPABASE_URL = 'https://lfnnglzjqszdjomjmpkw.supabase.co';
   var SUPABASE_KEY = 'sb_publishable_zfTqPTfONlZ04Of9ERrKww_2ICi7FCU';
   var supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
-  /* ── PHONE-AS-EMAIL DOMAIN ─────────────────────────── */
-  // We store phone users as <e164>@phunya-tsela.app so Supabase always uses
-  // the email+password provider (no Twilio / phone OTP needed).
-  var PHONE_EMAIL_DOMAIN = 'phunya-tsela.app';
-
   /* ── LOCAL STORAGE KEYS ───────────────────────────── */
-
   var APS_KEY     = 'pt_aps_';
   var PSYCH_KEY   = 'pt_psych_';
   var HISTORY_KEY = 'pt_history_';
@@ -43,16 +54,13 @@
     return out;
   }
 
-  /**
-   * Normalise a raw Supabase user object into a friendly shape.
-   */
   function normaliseUser(rawUser) {
     if (!rawUser) return null;
     var meta = rawUser.user_metadata || {};
     return {
       id:        rawUser.id,
-      email:     rawUser.email || '',
-      phone:     rawUser.phone || meta.phone || meta.rawPhone || '',
+      phone:     meta.phone     || '',
+      email:     meta.realEmail || '',          // only set for email sign-ups
       firstName: meta.firstName || meta.first_name || '',
       lastName:  meta.lastName  || meta.last_name  || '',
       grade:     meta.grade     || '',
@@ -61,23 +69,22 @@
   }
 
   /**
-   * Normalise a SA phone number to E.164 format (+27...).
-   * Accepts: 0821234567, 082 123 4567, +27821234567, 27821234567
+   * Normalise SA phone → E.164 digits (no +).
+   * Accepts: 0821234567 / 082 123 4567 / +27821234567 / 27821234567
    */
   function normalisePhone(raw) {
     var digits = String(raw).replace(/\D/g, '');
-    if (digits.length === 11 && digits.startsWith('27')) return '+' + digits;
-    if (digits.length === 10 && digits.startsWith('0'))  return '+27' + digits.slice(1);
+    if (digits.length === 11 && digits.startsWith('27')) return digits;        // 27821234567
+    if (digits.length === 10 && digits.startsWith('0'))  return '27' + digits.slice(1); // 0821234567
     return null; // invalid
   }
 
   /**
-   * Convert an E.164 phone to a synthetic email address.
-   * e.g. "+27821234567" → "ph_27821234567@phunya-tsela.app"
-   * The "ph_" prefix avoids any domain issues with leading "+".
+   * Build a deterministic internal email from a phone number.
+   * Supabase uses this only as a unique key — it is never shown or emailed.
    */
-  function phoneToEmail(e164) {
-    return 'ph_' + e164.replace('+', '') + '@' + PHONE_EMAIL_DOMAIN;
+  function phoneToInternalEmail(digits) {
+    return 'pt' + digits + '@pt.local';
   }
 
   function isEmail(val) {
@@ -85,10 +92,10 @@
   }
 
   function isPhone(val) {
-    return /^[0-9\s\+\-()]+$/.test(val) && val.replace(/\D/g,'').length >= 9;
+    return /^[0-9\s\+\-()]+$/.test(val) && val.replace(/\D/g, '').length >= 9;
   }
 
-  /* ── AUTH: REGISTER ───────────────────────────────── */
+  /* ── REGISTER ─────────────────────────────────────── */
 
   async function register(opts) {
     if (!opts || !opts.identifier || !opts.password || !opts.firstName || !opts.lastName) {
@@ -96,15 +103,16 @@
     }
 
     var identifier = String(opts.identifier).trim();
-    var emailToUse, rawPhone = '';
+    var emailToUse, metaPhone = '', metaRealEmail = '';
 
     if (isEmail(identifier)) {
-      emailToUse = identifier.toLowerCase();
+      emailToUse    = identifier.toLowerCase();
+      metaRealEmail = emailToUse;
     } else if (isPhone(identifier)) {
-      var e164 = normalisePhone(identifier);
-      if (!e164) return { ok: false, error: 'Invalid phone number. Use format: 0821234567.' };
-      emailToUse = phoneToEmail(e164);
-      rawPhone   = e164;
+      var digits = normalisePhone(identifier);
+      if (!digits) return { ok: false, error: 'Invalid phone number. Try: 0821234567' };
+      emailToUse = phoneToInternalEmail(digits);
+      metaPhone  = '+' + digits;
     } else {
       return { ok: false, error: 'Enter a valid email address or SA cell number.' };
     }
@@ -113,33 +121,39 @@
       email:    emailToUse,
       password: String(opts.password),
       options: {
+        emailRedirectTo: null,
         data: {
           firstName: String(opts.firstName).trim(),
           lastName:  String(opts.lastName).trim(),
           grade:     opts.grade  ? String(opts.grade)  : '',
           school:    opts.school ? String(opts.school) : '',
-          rawPhone:  rawPhone,   // store original phone for display
+          phone:     metaPhone,
+          realEmail: metaRealEmail,
         },
-        emailRedirectTo: null,
-      }
+      },
     });
 
-    if (result.error) return { ok: false, error: result.error.message };
+    if (result.error) {
+      // Friendly message for duplicate accounts
+      if (result.error.message.toLowerCase().includes('already registered')) {
+        return { ok: false, error: 'An account with this ' + (metaPhone ? 'number' : 'email') + ' already exists. Please sign in.' };
+      }
+      return { ok: false, error: result.error.message };
+    }
 
-    // If Supabase returns a session immediately (email confirm disabled), great
     if (result.data && result.data.session) {
       return { ok: true, user: normaliseUser(result.data.user) };
     }
 
-    // Auto-login after sign-up
+    // Email confirmations disabled → auto-login
     return await login({ identifier: identifier, password: opts.password });
   }
 
-  /* ── AUTH: LOGIN ──────────────────────────────────── */
+  /* ── LOGIN ────────────────────────────────────────── */
 
   async function login(opts) {
     if (!opts || !opts.identifier || !opts.password) {
-      return { ok: false, error: 'Please enter your email/phone and password.' };
+      return { ok: false, error: 'Please enter your cell number / email and password.' };
     }
 
     var identifier = String(opts.identifier).trim();
@@ -148,9 +162,9 @@
     if (isEmail(identifier)) {
       emailToUse = identifier.toLowerCase();
     } else if (isPhone(identifier)) {
-      var e164 = normalisePhone(identifier);
-      if (!e164) return { ok: false, error: 'Invalid phone number. Use format: 0821234567.' };
-      emailToUse = phoneToEmail(e164);
+      var digits = normalisePhone(identifier);
+      if (!digits) return { ok: false, error: 'Invalid phone number. Try: 0821234567' };
+      emailToUse = phoneToInternalEmail(digits);
     } else {
       return { ok: false, error: 'Enter a valid email address or SA cell number.' };
     }
@@ -160,17 +174,25 @@
       password: String(opts.password),
     });
 
-    if (result.error) return { ok: false, error: result.error.message };
+    if (result.error) {
+      var msg = result.error.message;
+      // Friendlier errors
+      if (msg.toLowerCase().includes('invalid login')) {
+        return { ok: false, error: 'Incorrect number/email or password. Please try again.' };
+      }
+      return { ok: false, error: msg };
+    }
+
     return { ok: true, user: normaliseUser(result.data.user) };
   }
 
-  /* ── AUTH: LOGOUT ─────────────────────────────────── */
+  /* ── LOGOUT ───────────────────────────────────────── */
 
   async function logout() {
     await supabaseClient.auth.signOut();
   }
 
-  /* ── AUTH: GET SESSION ────────────────────────────── */
+  /* ── GET SESSION ──────────────────────────────────── */
 
   async function getSession() {
     var result = await supabaseClient.auth.getSession();
@@ -180,7 +202,7 @@
     return null;
   }
 
-  /* ── AUTH: REQUIRE LOGIN ──────────────────────────── */
+  /* ── REQUIRE AUTH ─────────────────────────────────── */
 
   async function requireAuth() {
     var user = await getSession();
@@ -192,18 +214,18 @@
     return user;
   }
 
-  /* ── AUTH: FORGOT PASSWORD ────────────────────────── */
+  /* ── FORGOT PASSWORD ──────────────────────────────── */
 
   async function forgotPassword(identifier) {
-    var emailToUse;
     identifier = String(identifier).trim();
+    var emailToUse;
 
     if (isEmail(identifier)) {
       emailToUse = identifier.toLowerCase();
     } else if (isPhone(identifier)) {
-      var e164 = normalisePhone(identifier);
-      if (!e164) return { ok: false, error: 'Invalid phone number.' };
-      emailToUse = phoneToEmail(e164);
+      var digits = normalisePhone(identifier);
+      if (!digits) return { ok: false, error: 'Invalid phone number.' };
+      emailToUse = phoneToInternalEmail(digits);
     } else {
       return { ok: false, error: 'Enter a valid email address or SA cell number.' };
     }
@@ -216,7 +238,7 @@
     return { ok: true };
   }
 
-  /* ── AUTH: UPDATE PASSWORD ────────────────────────── */
+  /* ── UPDATE PASSWORD ──────────────────────────────── */
 
   async function updatePassword(password) {
     var result = await supabaseClient.auth.updateUser({ password: String(password) });
@@ -279,13 +301,13 @@
   }
 
   function loadHistory(userId) {
-    var raw, parsed;
-    try { raw = localStorage.getItem(HISTORY_KEY + userId); }
-    catch (e) { return []; }
+    var raw;
+    try { raw = localStorage.getItem(HISTORY_KEY + userId); } catch (e) { return []; }
     if (!raw) return [];
-    try { parsed = JSON.parse(raw); }
-    catch (e) { return []; }
-    return (Object.prototype.toString.call(parsed) === '[object Array]') ? parsed : [];
+    try {
+      var parsed = JSON.parse(raw);
+      return Array.isArray(parsed) ? parsed : [];
+    } catch (e) { return []; }
   }
 
   function clearHistory(userId) {
@@ -308,9 +330,7 @@
     loadPsychResult,
     loadHistory,
     clearHistory,
-    // Utilities exposed for pages that need them
     normalisePhone,
-    phoneToEmail,
     isEmail,
     isPhone,
   };
