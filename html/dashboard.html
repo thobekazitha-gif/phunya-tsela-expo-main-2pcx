@@ -41,15 +41,18 @@
   .main { max-width: 860px; margin: 0 auto; padding: 36px 16px 60px; }
   .section-title { font-size: 18px; font-weight: 800; margin-bottom: 16px; display: flex; align-items: center; gap: 8px; }
 
-  .tool-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap: 14px; margin-bottom: 40px; }
+  .tool-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 14px; margin-bottom: 40px; }
   .tool-card { background: white; border: 1px solid var(--border); border-radius: var(--radius-lg); padding: 20px; cursor: pointer; transition: all .2s; text-decoration: none; color: var(--text); display: flex; flex-direction: column; gap: 10px; }
   .tool-card:hover { border-color: var(--primary); box-shadow: 0 4px 20px rgba(0,0,0,.08); transform: translateY(-2px); }
+  .tool-card.tool-blue:hover  { border-color: #2563eb; }
+  .tool-card.tool-green:hover { border-color: #059669; }
   .tool-icon { font-size: 28px; }
   .tool-name { font-family: 'Sora', sans-serif; font-size: 15px; font-weight: 800; }
   .tool-desc { font-size: 12px; color: var(--muted); line-height: 1.5; }
   .tool-badge { display: inline-flex; align-items: center; gap: 4px; font-size: 10px; font-weight: 800; padding: 3px 10px; border-radius: 99px; }
-  .badge-done { background: #d1fae5; color: #065f46; }
-  .badge-new  { background: #fff7ed; color: #92400e; }
+  .badge-done  { background: #d1fae5; color: #065f46; }
+  .badge-new   { background: #fff7ed; color: #92400e; }
+  .badge-avail { background: #eff6ff; color: #1d4ed8; }
 
   .history-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 16px; }
   .clear-btn { font-size: 12px; color: var(--muted); background: none; border: none; cursor: pointer; font-family: 'DM Sans', sans-serif; font-weight: 600; transition: color .2s; }
@@ -67,7 +70,6 @@
   .hc-label { font-size: 15px; font-weight: 800; }
   .hc-date  { font-size: 12px; color: var(--muted); margin-top: 2px; }
 
-  /* Download PDF button on history cards */
   .btn-pdf-sm { display: inline-flex; align-items: center; gap: 6px; background: linear-gradient(135deg,#1e40af,#2563eb); color: white; font-family: 'Sora', sans-serif; font-weight: 700; font-size: 12px; padding: 8px 14px; border-radius: 8px; border: none; cursor: pointer; transition: filter .2s; flex-shrink: 0; }
   .btn-pdf-sm:hover { filter: brightness(1.1); }
   .btn-pdf-sm:disabled { opacity: .6; cursor: not-allowed; }
@@ -197,18 +199,51 @@ document.addEventListener('DOMContentLoaded', async function () {
     hasPsych ? '\uD83E\uDDE0 ' + psychHistory.length + ' Psychometric test' + (psychHistory.length > 1 ? 's' : '') : '\uD83E\uDDE0 Psychometric test \u2014 not taken yet',
     hasAPS   ? '\uD83D\uDCD0 ' + apsHistory.length + ' APS calculation' + (apsHistory.length > 1 ? 's' : '') : '\uD83D\uDCD0 APS Calculator \u2014 not used yet',
     '\uD83D\uDCDA Bursary Portal \u2014 available',
+    '\uD83C\uDF93 Learnership Portal \u2014 available',
   ].map(function (p) { return '<div class="stat-pill">' + p + '</div>'; }).join('');
 
+  // ── Student Tools — 4 cards including Learnership Portal ──
   var tools = [
-    { icon:'\uD83E\uDDE0', name:'Career Psychometric Test', desc:'Discover your RIASEC profile and matching career paths.', href:'psychometric-test.html', done: hasPsych },
-    { icon:'\uD83D\uDCD0', name:'APS Calculator',           desc:'Calculate your Admission Point Score for university entry.', href:'aps-calculator.html', done: hasAPS },
-    { icon:'\uD83D\uDCDA', name:'Bursary Portal',            desc:'Search 20+ South African bursaries and funding opportunities.', href:'bursary-portal.html', done: false },
+    {
+      icon: '\uD83E\uDDE0',
+      name: 'Career Psychometric Test',
+      desc: 'Discover your RIASEC profile and matching career paths.',
+      href: 'psychometric-test.html',
+      badgeClass: hasPsych ? 'badge-done' : 'badge-new',
+      badgeText:  hasPsych ? '\u2713 Completed' : 'Try Now',
+    },
+    {
+      icon: '\uD83D\uDCD0',
+      name: 'APS Calculator',
+      desc: 'Calculate your Admission Point Score for university entry.',
+      href: 'aps-calculator.html',
+      badgeClass: hasAPS ? 'badge-done' : 'badge-new',
+      badgeText:  hasAPS ? '\u2713 Completed' : 'Try Now',
+    },
+    {
+      icon: '\uD83D\uDCDA',
+      name: 'Bursary Portal',
+      desc: 'Search 20+ South African bursaries and funding opportunities.',
+      href: 'bursary-portal.html',
+      badgeClass: 'badge-avail',
+      badgeText:  'Browse',
+    },
+    {
+      icon: '\uD83C\uDF93',
+      name: 'SETA Learnership Portal',
+      desc: 'Browse 23 SETAs — get paid to learn with a monthly stipend.',
+      href: 'learnership-portal.html',
+      badgeClass: 'badge-avail',
+      badgeText:  'Browse',
+      accent: 'tool-blue',
+    },
   ];
+
   document.getElementById('toolGrid').innerHTML = tools.map(function (t) {
-    return '<a href="' + t.href + '" class="tool-card">' +
+    return '<a href="' + t.href + '" class="tool-card' + (t.accent ? ' ' + t.accent : '') + '">' +
       '<div style="display:flex;align-items:center;justify-content:space-between;gap:8px">' +
         '<div class="tool-icon">' + t.icon + '</div>' +
-        '<span class="tool-badge ' + (t.done ? 'badge-done' : 'badge-new') + '">' + (t.done ? '\u2713 Completed' : 'Try Now') + '</span>' +
+        '<span class="tool-badge ' + t.badgeClass + '">' + t.badgeText + '</span>' +
       '</div>' +
       '<div class="tool-name">' + t.name + '</div>' +
       '<div class="tool-desc">' + t.desc + '</div>' +
@@ -296,7 +331,10 @@ function renderPsychBody(data, idx) {
 
   return '<div class="psych-result-grid">' + profileBoxes + '</div>' +
     '<div class="riasec-mini">' + riasecBars + '</div>' +
-    '<div class="action-row-card"><a href="psychometric-test.html" class="retake-btn">Retake Test \u2192</a></div>';
+    '<div class="action-row-card">' +
+      '<a href="psychometric-test.html" class="retake-btn">Retake Test \u2192</a>' +
+      '<a href="learnership-portal.html" class="retake-btn">\uD83C\uDF93 Browse Learnerships \u2192</a>' +
+    '</div>';
 }
 
 function renderAPSBody(data, idx) {
@@ -309,7 +347,10 @@ function renderAPSBody(data, idx) {
 
   return '<div class="aps-result-grid"><div class="aps-score-box"><div class="score-num">' + apsScore + '</div><div class="score-label">APS Score</div></div></div>' +
     (subjectTags ? '<div class="aps-subject-list">' + subjectTags + '</div>' : '') +
-    '<div class="action-row-card"><a href="aps-calculator.html" class="retake-btn">Recalculate \u2192</a></div>';
+    '<div class="action-row-card">' +
+      '<a href="aps-calculator.html" class="retake-btn">Recalculate \u2192</a>' +
+      '<a href="learnership-portal.html" class="retake-btn">\uD83C\uDF93 Browse Learnerships \u2192</a>' +
+    '</div>';
 }
 
 // ── PDF from dashboard history ─────────────────────────────────────────────
@@ -453,6 +494,13 @@ function generatePsychPDF(data) {
   (primary.saOpps||[]).forEach(function(o,i){ doc.text('\u2022 '+o, margin+5, y+17+(i*6)); });
   y += 48;
 
+  // SETA note
+  doc.setFillColor(239,246,255); doc.setDrawColor(191,219,254);
+  doc.roundedRect(margin, y, W-margin*2, 12, 2, 2, 'FD');
+  doc.setFont('helvetica','bold'); doc.setFontSize(9); doc.setTextColor(37,99,235);
+  doc.text('SETA Learnerships: Visit learnership-portal.html to browse paid learning programmes.', margin+5, y+8);
+  y += 18;
+
   // Footer
   doc.setDrawColor(229,231,235);
   doc.line(margin, y, W-margin, y); y += 6;
@@ -557,6 +605,13 @@ function generateAPSPDF(data) {
   doc.roundedRect(margin, y, W-margin*2, 12, 2, 2, 'FD');
   doc.setTextColor(30,64,175); doc.setFont('helvetica','normal'); doc.setFontSize(9);
   doc.text('Mathematics Type: ' + (mathType==='mathematics'?'Mathematics (Pure)':'Mathematical Literacy'), margin+5, y+7.5);
+  y += 20;
+
+  // Learnership note
+  doc.setFillColor(239,246,255); doc.setDrawColor(147,197,253);
+  doc.roundedRect(margin, y, W-margin*2, 12, 2, 2, 'FD');
+  doc.setTextColor(30,64,175); doc.setFont('helvetica','bold'); doc.setFontSize(9);
+  doc.text('SETA Learnerships: Visit learnership-portal.html to browse paid learning programmes.', margin+5, y+8);
   y += 20;
 
   // Bursary note

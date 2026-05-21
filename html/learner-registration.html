@@ -381,209 +381,13 @@
     color: #4c1d95;
   }
 
-  /* ── APS Calculator ── */
-  .aps-calculator-wrap {
-    background: linear-gradient(135deg, #fffbeb 0%, #fff 70%);
-    border: 1.5px solid var(--amber-border);
-    border-radius: var(--radius-lg);
-    padding: 18px 20px 16px;
-    margin-top: 4px;
-  }
-  .aps-calc-header {
-    display: flex; align-items: flex-start; gap: 12px; margin-bottom: 14px;
-  }
-  .aps-calc-icon { font-size: 22px; flex-shrink: 0; margin-top: 2px; }
-  .aps-calc-title {
-    font-size: 13.5px; font-weight: 700; color: #92400e;
-    font-family: 'Syne', sans-serif;
-  }
-  .aps-calc-sub { font-size: 11.5px; color: var(--muted); margin-top: 2px; }
-  .aps-live-badge {
-    margin-left: auto; flex-shrink: 0;
-    display: flex; align-items: center; gap: 6px;
-    background: #92400e; color: white;
-    border-radius: 99px; padding: 6px 14px;
-    font-family: 'Syne', sans-serif;
-  }
-  .aps-live-dot {
-    width: 7px; height: 7px; border-radius: 50%;
-    background: #fbbf24; animation: pulse 2s infinite; flex-shrink: 0;
-  }
-  #apsLiveScore {
-    font-size: 20px; font-weight: 800; line-height: 1;
-  }
-  .aps-live-label { font-size: 11px; opacity: .7; }
-  .aps-info-strip {
+  /* ── APS input hint box ── */
+  .aps-hint-box {
     background: #fffbeb; border: 1px solid var(--amber-border);
-    border-radius: 10px; padding: 10px 14px;
-    font-size: 11.5px; color: #78350f; line-height: 1.6;
-    margin-bottom: 14px;
+    border-radius: var(--radius-lg); padding: 12px 16px;
+    font-size: 12px; color: #78350f; line-height: 1.6; margin-top: 8px;
   }
-  .aps-info-strip strong { color: #92400e; }
-
-  /* APS subject rows */
-  .aps-subject-row {
-    display: grid; grid-template-columns: 1fr 90px 52px 32px;
-    gap: 8px; align-items: center; margin-bottom: 8px;
-  }
-  @media(max-width:500px) {
-    .aps-subject-row { grid-template-columns: 1fr 80px 44px 28px; gap:6px; }
-  }
-  .aps-subject-name {
-    padding: 9px 11px; border: 1.5px solid var(--amber-border);
-    border-radius: 10px; background: white; font-size: 13px;
-    font-family: 'Plus Jakarta Sans', sans-serif; color: var(--text);
-    outline: none; transition: border-color .2s, box-shadow .2s; width: 100%;
-  }
-  .aps-subject-name::placeholder { color: #b3bac6; font-size: 12px; }
-  .aps-subject-name:focus { border-color: var(--gold); box-shadow: 0 0 0 3px rgba(217,119,6,.1); }
-  .aps-subject-pct {
-    padding: 9px 8px; border: 1.5px solid var(--amber-border);
-    border-radius: 10px; background: white; font-size: 13px; font-weight: 600;
-    font-family: 'Plus Jakarta Sans', sans-serif; color: var(--text);
-    text-align: center; outline: none; width: 100%;
-    transition: border-color .2s, box-shadow .2s;
-  }
-  .aps-subject-pct::placeholder { color: #b3bac6; font-weight:400; font-size:12px; }
-  .aps-subject-pct:focus { border-color: var(--gold); box-shadow: 0 0 0 3px rgba(217,119,6,.1); }
-  .aps-pts-badge {
-    height: 36px; border-radius: 10px;
-    display: flex; align-items: center; justify-content: center;
-    font-size: 14px; font-weight: 800; font-family: 'Syne', sans-serif;
-    background: var(--muted-light); color: var(--muted);
-    transition: background .2s, color .2s;
-    user-select: none;
-  }
-  .aps-pts-badge.has-val { background: var(--amber-light); color: var(--gold-dark); }
-  .aps-pts-badge.lo { background: #ede9fe; color: #6d28d9; }
-
-  /* Breakdown */
-  .aps-breakdown {
-    background: #fffbeb; border: 1px solid var(--amber-border);
-    border-radius: 10px; padding: 12px 14px; margin-top: 14px;
-  }
-  .aps-breakdown-title {
-    font-size: 11px; font-weight: 700; letter-spacing: .08em;
-    text-transform: uppercase; color: #92400e; margin-bottom: 8px;
-  }
-  .aps-bd-row {
-    display: flex; justify-content: space-between; align-items: center;
-    font-size: 12.5px; padding: 3px 0; border-bottom: 1px solid #fde68a;
-  }
-  .aps-bd-row:last-of-type { border-bottom: none; }
-  .aps-bd-subj { color: #374151; font-weight: 600; }
-  .aps-bd-pts {
-    font-weight: 800; color: var(--gold-dark);
-    font-family: 'Syne', sans-serif;
-  }
-  .aps-bd-pts.lo { color: #7c3aed; }
-  .aps-bd-pts.excluded { color: var(--muted); text-decoration: line-through; font-size: 11px; }
-  .aps-total-row {
-    display: flex; justify-content: space-between; align-items: center;
-    margin-top: 10px; padding-top: 10px; border-top: 2px solid var(--amber-border);
-    font-size: 13.5px; font-weight: 700; color: #92400e;
-  }
-  .aps-total-val {
-    font-size: 24px; font-weight: 800;
-    font-family: 'Syne', sans-serif; color: var(--gold-dark);
-  }
-
-  /* ── Latest results section ── */
-  .results-section {
-    background: linear-gradient(135deg, #f0fdf4 0%, #fff 70%);
-    border: 1.5px solid #a7f3d0;
-    border-radius: var(--radius-lg);
-    padding: 20px 20px 18px;
-    margin-bottom: 18px;
-  }
-  .results-section-header {
-    display: flex; align-items: center; gap: 10px;
-    margin-bottom: 14px;
-  }
-  .results-section-icon {
-    width: 32px; height: 32px; border-radius: 50%;
-    background: linear-gradient(135deg, #059669, #047857);
-    display: flex; align-items: center; justify-content: center;
-    font-size: 14px; flex-shrink: 0;
-    box-shadow: 0 3px 10px rgba(5,150,105,.25);
-  }
-  .results-section-title {
-    font-size: 14px; font-weight: 700; color: #065f46;
-    font-family: 'Syne', sans-serif;
-  }
-  .results-section-sub {
-    font-size: 11.5px; color: #047857; margin-top: 2px; font-weight: 400;
-  }
-  .results-subjects-grid {
-    display: grid; grid-template-columns: 1fr 1fr; gap: 10px;
-    margin-bottom: 14px;
-  }
-  @media(max-width: 500px) { .results-subjects-grid { grid-template-columns: 1fr; } }
-  .results-subject-row {
-    display: flex; gap: 8px; align-items: center;
-  }
-  .results-subject-input {
-    flex: 1; padding: 9px 11px;
-    border: 1.5px solid #a7f3d0; border-radius: 10px;
-    background: white; font-size: 13px;
-    font-family: 'Plus Jakarta Sans', sans-serif; color: var(--text);
-    outline: none; transition: border-color .2s, box-shadow .2s;
-  }
-  .results-subject-input::placeholder { color: #b3bac6; font-size: 12px; }
-  .results-subject-input:focus {
-    border-color: var(--green);
-    box-shadow: 0 0 0 3px rgba(5,150,105,.1);
-  }
-  .results-mark-input {
-    width: 72px; padding: 9px 8px;
-    border: 1.5px solid #a7f3d0; border-radius: 10px;
-    background: white; font-size: 13px; font-weight: 700;
-    font-family: 'Plus Jakarta Sans', sans-serif; color: #065f46;
-    text-align: center; outline: none;
-    transition: border-color .2s, box-shadow .2s;
-  }
-  .results-mark-input::placeholder { color: #b3bac6; font-weight: 400; font-size: 12px; }
-  .results-mark-input:focus {
-    border-color: var(--green);
-    box-shadow: 0 0 0 3px rgba(5,150,105,.1);
-  }
-  .results-add-btn {
-    display: inline-flex; align-items: center; gap: 6px;
-    font-size: 12.5px; font-weight: 700; color: var(--green);
-    background: transparent; border: 1.5px dashed #a7f3d0;
-    border-radius: 10px; padding: 8px 14px; cursor: pointer;
-    transition: all .15s; font-family: 'Plus Jakarta Sans', sans-serif;
-    margin-bottom: 14px;
-  }
-  .results-add-btn:hover { background: #ecfdf5; border-color: var(--green); }
-  .results-remove-btn {
-    width: 28px; height: 28px; border-radius: 50%; border: none;
-    background: #fee2e2; color: #ef4444;
-    font-size: 14px; cursor: pointer; display: flex;
-    align-items: center; justify-content: center;
-    flex-shrink: 0; transition: background .15s;
-  }
-  .results-remove-btn:hover { background: #fecaca; }
-  .results-context-field { margin-top: 4px; }
-  .results-context-field label {
-    display: block; font-size: 12px; font-weight: 700;
-    color: #065f46; margin-bottom: 6px;
-  }
-  .results-context-select {
-    width: 100%; padding: 9px 14px;
-    border: 1.5px solid #a7f3d0; border-radius: 10px;
-    background: white; font-size: 13px;
-    font-family: 'Plus Jakarta Sans', sans-serif; color: var(--text);
-    outline: none; cursor: pointer;
-    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%236b7280' stroke-width='2'%3E%3Cpath d='M19 9l-7 7-7-7'/%3E%3C/svg%3E");
-    background-repeat: no-repeat; background-position: right 12px center;
-    padding-right: 32px;
-    transition: border-color .2s, box-shadow .2s;
-  }
-  .results-context-select:focus {
-    border-color: var(--green);
-    box-shadow: 0 0 0 3px rgba(5,150,105,.1);
-  }
+  .aps-hint-box strong { color: #92400e; }
 
   /* ── Conditional block ── */
   .cond { display: none; }
@@ -960,7 +764,7 @@
         </div>
         <div class="field">
           <label class="field-label">Grade / Level <span class="req">*</span></label>
-          <select id="grade" class="field-select" onchange="onGradeChange()">
+          <select id="grade" class="field-select" onchange="updateProgress()">
             <option value="">Select grade…</option>
             <optgroup label="High School">
               <option>Grade 9</option>
@@ -988,47 +792,22 @@
         </div>
       </div>
 
-      <!-- ── APS Calculator (shown after grade selected) ── -->
-      <div class="cond" id="apsScoreWrap">
-        <div class="field">
-          <div class="aps-calculator-wrap">
-            <div class="aps-calc-header">
-              <div class="aps-calc-icon">🎯</div>
-              <div>
-                <div class="aps-calc-title">APS Score Calculator <span class="optional-tag">optional</span></div>
-                <div class="aps-calc-sub">Enter your subject marks below — your APS updates automatically in real time</div>
-              </div>
-              <div class="aps-live-badge" id="apsLiveBadge">
-                <span class="aps-live-dot"></span>
-                <span id="apsLiveScore">—</span>
-                <span class="aps-live-label">/ 42</span>
-              </div>
-            </div>
-
-            <div class="aps-info-strip">
-              <strong>How APS works:</strong> Each subject % converts to points (0–7). Your APS is the sum of your best 6 subjects (excluding Life Orientation, which is capped at 4 pts). Max possible = 42.
-            </div>
-
-            <div id="apsSubjectRows">
-              <!-- APS subject rows injected by JS -->
-            </div>
-
-            <button type="button" class="results-add-btn" onclick="addApsRow()" style="border-color:#fde68a;color:var(--gold-dark);">
-              + Add subject
-            </button>
-
-            <div class="aps-breakdown" id="apsBreakdown" style="display:none;">
-              <div class="aps-breakdown-title">Score Breakdown</div>
-              <div id="apsBreakdownRows"></div>
-              <div class="aps-total-row">
-                <span>Your APS Score</span>
-                <span class="aps-total-val" id="apsTotalVal">—</span>
-              </div>
-            </div>
-
-            <!-- Hidden input carries the calculated value into FormData -->
-            <input type="hidden" id="apsScore" value="" />
-          </div>
+      <!-- ── APS Score text input ── -->
+      <div class="field">
+        <label class="field-label">
+          Current APS Score <span class="optional-tag">optional</span>
+        </label>
+        <input
+          type="number"
+          id="apsScore"
+          class="field-input"
+          placeholder="e.g. 32"
+          min="0"
+          max="42"
+          style="max-width: 200px;"
+        />
+        <div class="aps-hint-box">
+          <strong>What is an APS?</strong> Your Admission Point Score is calculated from your subject marks. Each subject % converts to points (0–7) and your best 6 subjects are added together (Life Orientation is capped at 4 pts). The maximum possible APS is 42. If you're unsure of your score, leave this blank.
         </div>
       </div>
 
@@ -1078,56 +857,6 @@
       <div class="field">
         <label class="field-label">Sessions You'd Like to Attend</label>
         <div class="check-pill-group" id="sessionsGroup" data-name="sessions"></div>
-      </div>
-
-      <!-- ── Latest Results ── -->
-      <div class="field">
-        <div class="results-section">
-          <div class="results-section-header">
-            <div class="results-section-icon">📊</div>
-            <div>
-              <div class="results-section-title">Please enter your latest results</div>
-              <div class="results-section-sub">These could be your current grades, Term 1–4 results, first year university results, certificate results, or any recent academic results you have — all optional</div>
-            </div>
-          </div>
-
-          <div class="results-context-field" style="margin-bottom:14px;">
-            <label>What results are you entering?</label>
-            <select id="resultsContext" class="results-context-select">
-              <option value="">Select result type…</option>
-              <option value="Term 1">Term 1 results</option>
-              <option value="Term 2">Term 2 results</option>
-              <option value="Term 3">Term 3 results</option>
-              <option value="Term 4 / Final">Term 4 / Final results</option>
-              <option value="Mid-year exams">Mid-year exam results</option>
-              <option value="Trial / Prelim exams">Trial / Prelim exam results</option>
-              <option value="Matric / NSC">Matric / NSC results</option>
-              <option value="1st Year University">1st year university results</option>
-              <option value="Certificate / Diploma">Certificate or Diploma results</option>
-              <option value="TVET">TVET / College results</option>
-              <option value="Other">Other</option>
-            </select>
-          </div>
-
-          <div id="subjectRowsContainer">
-            <!-- Subject rows injected by JS -->
-          </div>
-
-          <button type="button" class="results-add-btn" onclick="addSubjectRow()">
-            + Add another subject
-          </button>
-
-          <div class="results-context-field">
-            <label>Any notes about your results? <span style="font-weight:400;color:var(--muted);font-size:11px;">(optional)</span></label>
-            <textarea
-              id="resultsNotes"
-              class="field-textarea"
-              style="border-color:#a7f3d0; min-height:60px;"
-              placeholder="e.g. These are my Term 2 marks — I'm expecting to improve my Maths by Term 3…"
-              rows="2"
-            ></textarea>
-          </div>
-        </div>
       </div>
 
       <div class="field">
@@ -1363,167 +1092,6 @@ var HELP_NEEDS_DEFS = [
   { id: 'hn_skills',       label: 'Skills Programmes',           desc: 'Short courses, artisans, trades' },
 ];
 
-// ── Subject rows ──────────────────────────────────────────────────────────────
-var subjectRowCount = 0;
-
-function addSubjectRow() {
-  subjectRowCount++;
-  var container = document.getElementById('subjectRowsContainer');
-  var row = document.createElement('div');
-  row.className = 'results-subject-row';
-  row.id = 'subjectRow_' + subjectRowCount;
-  row.style.marginBottom = '8px';
-  row.innerHTML =
-    '<input type="text" class="results-subject-input" placeholder="Subject name (e.g. Mathematics)" id="subj_name_' + subjectRowCount + '" />' +
-    '<input type="text" class="results-mark-input" placeholder="%" id="subj_mark_' + subjectRowCount + '" maxlength="5" />' +
-    (subjectRowCount > 1
-      ? '<button type="button" class="results-remove-btn" onclick="removeSubjectRow(' + subjectRowCount + ')" title="Remove">✕</button>'
-      : '<div style="width:28px;flex-shrink:0;"></div>'
-    );
-  container.appendChild(row);
-}
-
-function removeSubjectRow(id) {
-  var row = document.getElementById('subjectRow_' + id);
-  if (row) row.remove();
-}
-
-function getSubjectResults() {
-  var results = [];
-  var rows = document.getElementById('subjectRowsContainer').querySelectorAll('.results-subject-row');
-  rows.forEach(function(row) {
-    var nameInput = row.querySelector('input[id^="subj_name_"]');
-    var markInput = row.querySelector('input[id^="subj_mark_"]');
-    var name = nameInput ? nameInput.value.trim() : '';
-    var mark = markInput ? markInput.value.trim() : '';
-    if (name || mark) {
-      results.push(name + (mark ? ': ' + mark + '%' : ''));
-    }
-  });
-  return results;
-}
-
-// ── APS conversion table ─────────────────────────────────────────────────────
-// SA standard: percentage → APS points
-function pctToAps(pct) {
-  pct = parseFloat(pct);
-  if (isNaN(pct) || pct < 0) return null;
-  if (pct >= 80) return 7;
-  if (pct >= 70) return 6;
-  if (pct >= 60) return 5;
-  if (pct >= 50) return 4;
-  if (pct >= 40) return 3;
-  if (pct >= 30) return 2;
-  if (pct >= 0)  return 1;
-  return 0;
-}
-
-var apsRowCount = 0;
-
-function addApsRow() {
-  apsRowCount++;
-  var id = apsRowCount;
-  var container = document.getElementById('apsSubjectRows');
-  var row = document.createElement('div');
-  row.className = 'aps-subject-row';
-  row.id = 'apsRow_' + id;
-  // Common subject suggestions for placeholder rotation
-  var placeholders = ['Mathematics','Physical Science','English Home Lang','Life Sciences','Accounting','Geography','History','Business Studies','Life Orientation','Afrikaans','Tourism','Economics'];
-  var ph = placeholders[(id - 1) % placeholders.length];
-  row.innerHTML =
-    '<input type="text" class="aps-subject-name" id="apsName_' + id + '" placeholder="' + ph + '" oninput="recalcAps()" />' +
-    '<input type="number" class="aps-subject-pct" id="apsPct_' + id + '" placeholder="%" min="0" max="100" oninput="recalcAps()" />' +
-    '<div class="aps-pts-badge" id="apsBadge_' + id + '">—</div>' +
-    (id > 1
-      ? '<button type="button" class="results-remove-btn" onclick="removeApsRow(' + id + ')" title="Remove">✕</button>'
-      : '<div></div>'
-    );
-  container.appendChild(row);
-  recalcAps();
-}
-
-function removeApsRow(id) {
-  var row = document.getElementById('apsRow_' + id);
-  if (row) { row.remove(); recalcAps(); }
-}
-
-function recalcAps() {
-  var rows = document.getElementById('apsSubjectRows').querySelectorAll('.aps-subject-row');
-  var entries = [];
-  rows.forEach(function(row) {
-    var nameEl = row.querySelector('[id^="apsName_"]');
-    var pctEl  = row.querySelector('[id^="apsPct_"]');
-    var badgeEl = row.querySelector('[id^="apsBadge_"]');
-    var name = nameEl ? nameEl.value.trim() : '';
-    var pctRaw = pctEl ? pctEl.value.trim() : '';
-    var pts = pctToAps(pctRaw);
-
-    // Update badge
-    if (badgeEl) {
-      if (pts !== null) {
-        var isLO = /life\s*orientation/i.test(name);
-        var displayPts = isLO ? Math.min(pts, 4) : pts;
-        badgeEl.textContent = displayPts;
-        badgeEl.className = 'aps-pts-badge has-val' + (isLO ? ' lo' : '');
-      } else {
-        badgeEl.textContent = '—';
-        badgeEl.className = 'aps-pts-badge';
-      }
-    }
-
-    if (pts !== null && (name || pctRaw)) {
-      var isLO = /life\s*orientation/i.test(name);
-      entries.push({ name: name || 'Subject ' + (entries.length + 1), pct: pctRaw, pts: pts, isLO: isLO });
-    }
-  });
-
-  // APS = best 6, LO capped at 4, excluded from top-6 if it drags score down
-  // First cap LO
-  entries = entries.map(function(e) {
-    return { name: e.name, pct: e.pct, pts: e.isLO ? Math.min(e.pts, 4) : e.pts, isLO: e.isLO, raw: e.pts };
-  });
-
-  // Sort by pts desc, take best 6
-  var sorted = entries.slice().sort(function(a,b) { return b.pts - a.pts; });
-  var top6 = sorted.slice(0, 6);
-  var aps = top6.reduce(function(s, e) { return s + e.pts; }, 0);
-
-  // Update live badge
-  var liveEl = document.getElementById('apsLiveScore');
-  if (liveEl) liveEl.textContent = entries.length > 0 ? aps : '—';
-
-  // Update hidden input
-  var hidden = document.getElementById('apsScore');
-  if (hidden) hidden.value = entries.length > 0 ? aps : '';
-
-  // Breakdown
-  var breakdown = document.getElementById('apsBreakdown');
-  var bdRows = document.getElementById('apsBreakdownRows');
-  var totalEl = document.getElementById('apsTotalVal');
-  if (breakdown && bdRows && entries.length > 0) {
-    breakdown.style.display = 'block';
-    var top6names = top6.map(function(e) { return e.name; });
-    bdRows.innerHTML = entries.map(function(e) {
-      var inTop = top6names.includes(e.name);
-      var ptsCls = e.isLO ? 'aps-bd-pts lo' : (inTop ? 'aps-bd-pts' : 'aps-bd-pts excluded');
-      var label = inTop ? e.pts + ' pts' : e.pts + ' pts (not in top 6)';
-      if (e.isLO && inTop) label = e.pts + ' pts (LO capped)';
-      return '<div class="aps-bd-row"><span class="aps-bd-subj">' + esc(e.name) + (e.pct ? ' (' + e.pct + '%)' : '') + '</span><span class="' + ptsCls + '">' + label + '</span></div>';
-    }).join('');
-    if (totalEl) totalEl.textContent = aps;
-  } else if (breakdown) {
-    breakdown.style.display = 'none';
-  }
-}
-
-// ── Grade change handler ───────────────────────────────────────────────────────
-function onGradeChange() {
-  var grade = document.getElementById('grade').value;
-  var apsWrap = document.getElementById('apsScoreWrap');
-  apsWrap.classList.toggle('show', grade !== '');
-  updateProgress();
-}
-
 // ── Build pill groups ─────────────────────────────────────────────────────────
 function buildRadios() {
   Object.keys(RADIO_DEFS).forEach(function(name) {
@@ -1724,16 +1292,9 @@ function handleSubmit() {
   fd.append('Subject Stream',  document.getElementById('stream').value || '—');
   fd.append('Expected Matric', state.matricYear || '—');
 
-  // Section 3 — Interests & Results
+  // Section 3 — Interests
   fd.append('Career Interests', state.careerInterests.length ? state.careerInterests.join(', ') : '—');
   fd.append('Sessions',         state.sessions.length ? state.sessions.join(', ') : '—');
-
-  var subjectResults = getSubjectResults();
-  var resultsContext = document.getElementById('resultsContext').value || '—';
-  fd.append('Results Type',    resultsContext);
-  fd.append('Latest Results',  subjectResults.length ? subjectResults.join(' | ') : '—');
-  fd.append('Results Notes',   document.getElementById('resultsNotes').value.trim() || '—');
-
   fd.append('Expectations',     document.getElementById('expectations').value.trim() || '—');
   fd.append('Heard About Expo', document.getElementById('hearAbout').value || '—');
 
@@ -1803,12 +1364,6 @@ document.addEventListener('DOMContentLoaded', function() {
   buildRadios();
   buildChecks();
   buildHelpNeeds();
-  // Seed APS calculator with 6 rows (common subject count)
-  for (var i = 0; i < 6; i++) addApsRow();
-  // Seed latest results rows
-  addSubjectRow();
-  addSubjectRow();
-  addSubjectRow();
   updateProgress();
 });
 

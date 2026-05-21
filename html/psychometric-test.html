@@ -123,6 +123,27 @@
   .sec-title { font-size:15px; font-weight:800; }
   .sec-desc { font-size:12px; opacity:.8; margin-top:4px; }
 
+  /* ── Courses card ── */
+  .courses-card { background:white; border:1px solid var(--border); border-radius:var(--radius-xl); padding:24px; margin-bottom:24px; }
+  .courses-card h3 { font-size:16px; font-weight:800; margin-bottom:6px; }
+  .courses-intro { font-size:13px; color:var(--muted); margin-bottom:16px; }
+  .courses-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(200px,1fr)); gap:10px; }
+  .course-pill { display:flex; align-items:flex-start; gap:10px; background:#f9fafb; border:1px solid var(--border); border-radius:var(--radius-lg); padding:12px 14px; }
+  .course-pill-icon { font-size:18px; flex-shrink:0; margin-top:1px; }
+  .course-pill-text { flex:1; }
+  .course-pill-name { font-size:13px; font-weight:700; color:var(--text); line-height:1.3; }
+  .course-pill-meta { font-size:11px; color:var(--muted); margin-top:2px; }
+
+  /* ── SETA learnership banner ── */
+  .seta-banner { background:linear-gradient(135deg,#1e3a5f,#1e40af); border-radius:var(--radius-xl); padding:24px; margin-bottom:24px; color:white; display:flex; align-items:center; gap:20px; }
+  .seta-icon { font-size:36px; flex-shrink:0; }
+  .seta-text { flex:1; }
+  .seta-text h3 { font-size:16px; font-weight:800; margin-bottom:4px; }
+  .seta-text p { font-size:13px; opacity:.8; line-height:1.5; }
+  .seta-btn { flex-shrink:0; display:inline-flex; align-items:center; gap:8px; background:white; color:#1e40af; font-family:'Sora',sans-serif; font-weight:800; font-size:13px; padding:10px 18px; border-radius:var(--radius-lg); text-decoration:none; transition:opacity .2s; white-space:nowrap; }
+  .seta-btn:hover { opacity:.9; }
+  @media(max-width:520px){ .seta-banner { flex-direction:column; align-items:flex-start; } .seta-btn { width:100%; justify-content:center; } }
+
   .opp-card { background:white; border:1px solid var(--border); border-radius:var(--radius-xl); padding:24px; margin-bottom:24px; }
   .opp-card h3 { font-size:16px; font-weight:800; margin-bottom:14px; }
   .opp-list { list-style:none; display:flex; flex-direction:column; gap:10px; }
@@ -146,12 +167,10 @@
   .btn-ghost { height:52px; padding:0 20px; border-radius:var(--radius-lg); background:none; border:none; color:var(--muted); font-family:'Sora',sans-serif; font-weight:700; font-size:14px; cursor:pointer; display:flex; align-items:center; gap:8px; transition:color .2s; }
   .btn-ghost:hover { color:var(--text); }
 
-  /* PDF download button */
   .btn-pdf { flex:1; height:52px; border-radius:var(--radius-lg); background:linear-gradient(135deg,#1e40af,#2563eb); color:white; font-family:'Sora',sans-serif; font-weight:800; font-size:14px; border:none; cursor:pointer; display:flex; align-items:center; justify-content:center; gap:8px; transition:filter .2s; min-width:160px; }
   .btn-pdf:hover { filter:brightness(1.1); }
   .btn-pdf:disabled { opacity:.6; cursor:not-allowed; }
 
-  /* Spinner inside button */
   .btn-spinner { width:16px; height:16px; border:2px solid rgba(255,255,255,.4); border-top-color:white; border-radius:50%; animation:loadspin .6s linear infinite; display:inline-block; }
 </style>
 </head>
@@ -205,12 +224,108 @@
 
 <script>
 var RIASEC_PROFILES = {
-  R: { type:"R", label:"Realistic (Doer)",         color:"orange", description:"You enjoy hands-on work, physical tasks, tools, and working with real-world objects and machines.", traits:["Practical & hands-on","Mechanically inclined","Enjoys outdoor work","Good with tools & technology","Athletic & physical"], careers:["Civil/Mechanical Engineer","Electrician","Artisan","Farmer/Agriculturalist","Environmental Technologist","Mining Engineer","Vehicle Mechanic","Carpenter"], saOpportunities:["Scarce skills in engineering trades","TVET apprenticeships (electrical, plumbing, welding)","Eskom, Transnet technical learnerships","Mining sector (Northern Cape has major mines)","Agricultural sector (John Taolo Gaetsewe)"] },
-  I: { type:"I", label:"Investigative (Thinker)",  color:"blue",   description:"You love analysing, researching, and solving complex intellectual problems.", traits:["Analytical & curious","Loves research","Strong in maths & science","Independent thinker","Detail-oriented"], careers:["Medical Doctor","Data Scientist","Pharmacist","Chemist","Software Developer","Researcher","Geologist","Actuary"], saOpportunities:["STEM bursaries (NRF, Eskom, Sasol)","Research careers at CSIR, MRC, universities","Growing demand for data scientists in SA","Medical & health sciences — NSFAS eligible","Biotech & pharmaceutical sector growth"] },
-  A: { type:"A", label:"Artistic (Creator)",       color:"purple", description:"You express yourself through creativity, art, design, and original thinking.", traits:["Creative & imaginative","Original thinker","Expressive & intuitive","Values aesthetics","Dislikes rigid structure"], careers:["Graphic Designer","Architect","Musician","Journalist","Fashion Designer","Film Director","Copywriter","UX Designer"], saOpportunities:["Growing creative economy in SA","Digital media & content creation demand","Architecture & urban design for growing cities","SABC, independent media opportunities","Tourism sector needs creative talent"] },
-  S: { type:"S", label:"Social (Helper)",          color:"green",  description:"You thrive on helping, teaching, and supporting others in a community context.", traits:["Empathetic & caring","Natural communicator","Patient & understanding","Enjoys teamwork","Community-focused"], careers:["Teacher","Social Worker","Nurse","Psychologist","HR Manager","Community Developer","Doctor","Counsellor"], saOpportunities:["Massive teacher shortage — Funza Lushaka bursaries","Social work — DSD bursaries available","Nursing — critical national need, NSFAS eligible","Psychology growing demand","NGO and community development sector"] },
-  E: { type:"E", label:"Enterprising (Leader)",    color:"red",    description:"You're a natural leader who loves persuasion, business, and making things happen.", traits:["Persuasive & influential","Natural leader","Goal-oriented","Risk-taker","Strong communicator"], careers:["Entrepreneur","Business Manager","Lawyer","Politician","Sales Executive","Marketing Director","Investment Banker","HR Director"], saOpportunities:["SA needs more black entrepreneurs and business leaders","Legal sector with high earning potential","Banking & financial services — many bursaries","Government and public service leadership","Mining, energy sector management roles"] },
-  C: { type:"C", label:"Conventional (Organiser)", color:"teal",   description:"You excel with structured tasks, data, organisation, and systematic processes.", traits:["Organised & systematic","Detail-oriented","Reliable & accurate","Follows procedures","Works well with data"], careers:["Accountant/CA(SA)","Auditor","Financial Analyst","Database Administrator","Compliance Officer","Tax Consultant","Secretary","Supply Chain Manager"], saOpportunities:["CA(SA) — highest starting salaries in SA","SAICA Thuthuka Bursary for accounting","Financial sector growth: banking, insurance, FinTech","Shortage of certified auditors in SA","Government needs more financial compliance experts"] },
+  R: {
+    type:"R", label:"Realistic (Doer)", color:"orange",
+    description:"You enjoy hands-on work, physical tasks, tools, and working with real-world objects and machines.",
+    traits:["Practical & hands-on","Mechanically inclined","Enjoys outdoor work","Good with tools & technology","Athletic & physical"],
+    careers:["Civil/Mechanical Engineer","Electrician","Artisan","Farmer/Agriculturalist","Environmental Technologist","Mining Engineer","Vehicle Mechanic","Carpenter"],
+    saOpportunities:["Scarce skills in engineering trades","TVET apprenticeships (electrical, plumbing, welding)","Eskom, Transnet technical learnerships","Mining sector (Northern Cape has major mines)","Agricultural sector (John Taolo Gaetsewe)"],
+    courses:[
+      { name:"BSc Civil Engineering", inst:"UCT / UP / Wits", icon:"🏗️" },
+      { name:"BSc Mechanical Engineering", inst:"Stellenbosch / UKZN", icon:"⚙️" },
+      { name:"National Diploma: Electrical Engineering", inst:"TVET Colleges", icon:"⚡" },
+      { name:"BSc Mining Engineering", inst:"Wits / UP", icon:"⛏️" },
+      { name:"Diploma: Agriculture", inst:"ARC / Unizulu", icon:"🌾" },
+      { name:"NCV: Civil & Building Construction", inst:"TVET Colleges", icon:"🧱" },
+      { name:"BSc Environmental Management", inst:"UNISA / NWU", icon:"🌿" },
+      { name:"Trade Test: Fitting & Turning", inst:"MERSETA / TVET", icon:"🔧" },
+    ]
+  },
+  I: {
+    type:"I", label:"Investigative (Thinker)", color:"blue",
+    description:"You love analysing, researching, and solving complex intellectual problems.",
+    traits:["Analytical & curious","Loves research","Strong in maths & science","Independent thinker","Detail-oriented"],
+    careers:["Medical Doctor","Data Scientist","Pharmacist","Chemist","Software Developer","Researcher","Geologist","Actuary"],
+    saOpportunities:["STEM bursaries (NRF, Eskom, Sasol)","Research careers at CSIR, MRC, universities","Growing demand for data scientists in SA","Medical & health sciences — NSFAS eligible","Biotech & pharmaceutical sector growth"],
+    courses:[
+      { name:"MBChB (Medicine & Surgery)", inst:"UCT / Wits / UP / SMU", icon:"🩺" },
+      { name:"BSc Computer Science", inst:"UCT / Wits / UP / UNISA", icon:"💻" },
+      { name:"BSc Pharmacy", inst:"Rhodes / NWU / UWC", icon:"💊" },
+      { name:"BSc Data Science", inst:"UCT / Wits / Stellenbosch", icon:"📊" },
+      { name:"BSc Chemistry / Biochemistry", inst:"Most SA universities", icon:"🔬" },
+      { name:"BSc Geology / Earth Sciences", inst:"Wits / UP / Rhodes", icon:"🪨" },
+      { name:"BSc Actuarial Science", inst:"UCT / Wits / UP", icon:"📈" },
+      { name:"BSc Biotechnology", inst:"NWU / UWC / TUT", icon:"🧬" },
+    ]
+  },
+  A: {
+    type:"A", label:"Artistic (Creator)", color:"purple",
+    description:"You express yourself through creativity, art, design, and original thinking.",
+    traits:["Creative & imaginative","Original thinker","Expressive & intuitive","Values aesthetics","Dislikes rigid structure"],
+    careers:["Graphic Designer","Architect","Musician","Journalist","Fashion Designer","Film Director","Copywriter","UX Designer"],
+    saOpportunities:["Growing creative economy in SA","Digital media & content creation demand","Architecture & urban design for growing cities","SABC, independent media opportunities","Tourism sector needs creative talent"],
+    courses:[
+      { name:"Bachelor of Architecture", inst:"UCT / Wits / TUT / UKZN", icon:"🏛️" },
+      { name:"BA Graphic Design", inst:"VEGA / AAA School / TUT", icon:"🎨" },
+      { name:"BA Journalism & Media Studies", inst:"Wits / Rhodes / UJ", icon:"📰" },
+      { name:"BA Film & Television", inst:"AFDA / SAE / UNISA", icon:"🎬" },
+      { name:"Bachelor of Music", inst:"UCT / Wits / Pretoria", icon:"🎵" },
+      { name:"Diploma: Fashion Design", inst:"Lisof / CPUT / TUT", icon:"👗" },
+      { name:"BA UX / Interaction Design", inst:"Red & Yellow / IIE", icon:"🖥️" },
+      { name:"BA Fine Arts", inst:"UCT / Wits / UNISA", icon:"🖼️" },
+    ]
+  },
+  S: {
+    type:"S", label:"Social (Helper)", color:"green",
+    description:"You thrive on helping, teaching, and supporting others in a community context.",
+    traits:["Empathetic & caring","Natural communicator","Patient & understanding","Enjoys teamwork","Community-focused"],
+    careers:["Teacher","Social Worker","Nurse","Psychologist","HR Manager","Community Developer","Doctor","Counsellor"],
+    saOpportunities:["Massive teacher shortage — Funza Lushaka bursaries","Social work — DSD bursaries available","Nursing — critical national need, NSFAS eligible","Psychology growing demand","NGO and community development sector"],
+    courses:[
+      { name:"BEd Foundation/Intermediate Phase", inst:"UNISA / NWU / UFS", icon:"📚" },
+      { name:"BSocWork (Social Work)", inst:"Most SA universities", icon:"🤝" },
+      { name:"B Nursing (4-year)", inst:"UKZN / UWC / UP", icon:"🏥" },
+      { name:"BA Psychology", inst:"UNISA / NWU / UFS", icon:"🧠" },
+      { name:"BCur (Community Nursing)", inst:"UNISA / UFS", icon:"💉" },
+      { name:"BPsych (Honours entry)", inst:"UJ / Wits / UCT", icon:"🗣️" },
+      { name:"BA Human Resource Management", inst:"UNISA / UJ / TUT", icon:"👥" },
+      { name:"Diploma: Early Childhood Development", inst:"TVET / UNISA", icon:"🧒" },
+    ]
+  },
+  E: {
+    type:"E", label:"Enterprising (Leader)", color:"red",
+    description:"You're a natural leader who loves persuasion, business, and making things happen.",
+    traits:["Persuasive & influential","Natural leader","Goal-oriented","Risk-taker","Strong communicator"],
+    careers:["Entrepreneur","Business Manager","Lawyer","Politician","Sales Executive","Marketing Director","Investment Banker","HR Director"],
+    saOpportunities:["SA needs more black entrepreneurs and business leaders","Legal sector with high earning potential","Banking & financial services — many bursaries","Government and public service leadership","Mining, energy sector management roles"],
+    courses:[
+      { name:"LLB (Law)", inst:"UCT / Wits / UP / UZ", icon:"⚖️" },
+      { name:"BCom Business Management", inst:"UNISA / UJ / NWU", icon:"💼" },
+      { name:"BCom Marketing Management", inst:"UNISA / Vega / IIE", icon:"📣" },
+      { name:"BBA / BBusSci", inst:"UCT / Wits / Stellenbosch", icon:"🎓" },
+      { name:"BCom Entrepreneurship", inst:"UWC / TUT / DUT", icon:"🚀" },
+      { name:"Diploma: Public Management", inst:"TVET / UNISA", icon:"🏛️" },
+      { name:"BCom Investment Management", inst:"Stellenbosch / UP / UCT", icon:"📊" },
+      { name:"PGDip Business Admin (MBA entry)", inst:"GIBS / USB / Henley", icon:"🏆" },
+    ]
+  },
+  C: {
+    type:"C", label:"Conventional (Organiser)", color:"teal",
+    description:"You excel with structured tasks, data, organisation, and systematic processes.",
+    traits:["Organised & systematic","Detail-oriented","Reliable & accurate","Follows procedures","Works well with data"],
+    careers:["Accountant/CA(SA)","Auditor","Financial Analyst","Database Administrator","Compliance Officer","Tax Consultant","Secretary","Supply Chain Manager"],
+    saOpportunities:["CA(SA) — highest starting salaries in SA","SAICA Thuthuka Bursary for accounting","Financial sector growth: banking, insurance, FinTech","Shortage of certified auditors in SA","Government needs more financial compliance experts"],
+    courses:[
+      { name:"BCom Accounting (CA stream)", inst:"UCT / Wits / Stellenbosch / UP", icon:"📒" },
+      { name:"BCom Financial Accounting", inst:"UNISA / UJ / NWU", icon:"💰" },
+      { name:"Diploma: Public Finance & Accounting", inst:"TVET Colleges", icon:"🏦" },
+      { name:"BCom Information Systems", inst:"UCT / UJ / Wits", icon:"🖥️" },
+      { name:"BCom Supply Chain Management", inst:"CPUT / TUT / DUT", icon:"📦" },
+      { name:"BCom Taxation", inst:"Stellenbosch / UNISA / UP", icon:"📋" },
+      { name:"National Diploma: Office Admin", inst:"TVET Colleges", icon:"📁" },
+      { name:"BCom Internal Auditing", inst:"UJ / UNISA / NWU", icon:"🔍" },
+    ]
+  },
 };
 
 var QUESTIONS = [
@@ -311,8 +426,36 @@ function calculateResults() {
   showResults(scores, topTypes);
 }
 
+function buildCoursesHTML(primary) {
+  if (!primary.courses || !primary.courses.length) return '';
+  var pills = primary.courses.map(function(c) {
+    return '<div class="course-pill">' +
+      '<div class="course-pill-icon">' + c.icon + '</div>' +
+      '<div class="course-pill-text">' +
+        '<div class="course-pill-name">' + c.name + '</div>' +
+        '<div class="course-pill-meta">' + c.inst + '</div>' +
+      '</div>' +
+    '</div>';
+  }).join('');
+  return '<div class="courses-card">' +
+    '<h3>📚 Courses You Can Apply For</h3>' +
+    '<p class="courses-intro">Based on your <strong>' + primary.label + '</strong> profile, these qualifications align with your strengths and interests.</p>' +
+    '<div class="courses-grid">' + pills + '</div>' +
+  '</div>';
+}
+
+function buildSetaBannerHTML() {
+  return '<div class="seta-banner">' +
+    '<div class="seta-icon">🎓</div>' +
+    '<div class="seta-text">' +
+      '<h3>SETA Learnerships — Get Paid to Learn</h3>' +
+      '<p>Learnerships are workplace-based learning programmes funded by SETAs. You earn a monthly stipend while gaining a nationally-recognised qualification. Browse all available learnerships below.</p>' +
+    '</div>' +
+    '<a href="learnership-portal.html" class="seta-btn">View All Learnerships →</a>' +
+  '</div>';
+}
+
 function showResults(scores, topTypes) {
-  // Save result
   if (_user) {
     try {
       var primary = RIASEC_PROFILES[topTypes[0]];
@@ -356,6 +499,8 @@ function showResults(scores, topTypes) {
   document.getElementById("reportBody").innerHTML =
     '<div class="saved-banner">\u2705 Your results have been saved to your dashboard.</div>' +
     '<div class="report-header"><div class="eyebrow">Phunya Tsela Career Expo 2026 \u2014 Student Career Report</div><h2>Career Psychometric Summary</h2><div class="byline">Generated: ' + today + '</div></div>' +
+
+    // Primary profile card
     '<div class="profile-card ' + primary.color + '">' +
       '<div class="profile-card-top"><div>' +
         '<div class="profile-eyebrow">Primary Career Type</div>' +
@@ -367,16 +512,31 @@ function showResults(scores, topTypes) {
         '<div><div class="profile-grid-label">Matching Career Paths</div><ul class="profile-list">' + primary.careers.slice(0,6).map(function(c){ return '<li>'+c+'</li>'; }).join('') + '</ul></div>' +
       '</div>' +
     '</div>' +
+
+    // RIASEC scores
     '<div class="riasec-card"><h3>Your RIASEC Profile Scores</h3>' + riasecRows + '</div>' +
+
+    // Secondary profiles
     (topTypes.length > 1 ? '<div class="secondary-grid">' + secondaryCards + '</div>' : '') +
+
+    // ── NEW: Courses you can apply for ──
+    buildCoursesHTML(primary) +
+
+    // ── NEW: SETA Learnerships banner ──
+    buildSetaBannerHTML() +
+
+    // SA Opportunities
     '<div class="opp-card"><h3>SA Opportunities for Your Profile</h3><ul class="opp-list">' + primary.saOpportunities.map(function(o){ return '<li>'+o+'</li>'; }).join('') + '</ul></div>' +
+
+    // Next steps
     '<div class="next-steps"><h3>\uD83D\uDCCB Your Next Steps</h3><ol>' +
       '<li>Use our <strong>APS Calculator</strong> to find specific university courses you qualify for</li>' +
       '<li>Visit the <strong>Bursary Portal</strong> to find funding for your chosen field</li>' +
-      '<li>Research the top universities offering your preferred courses</li>' +
+      '<li>Browse <strong>SETA Learnerships</strong> — earn a stipend while you qualify</li>' +
       '<li>Apply for <strong>NSFAS</strong> at nsfas.org.za before the closing date (November)</li>' +
-      '<li>Attend the Phunya Tsela Career Expo 2026 to meet employers and universities face-to-face</li>' +
+      '<li>Attend the <strong>Phunya Tsela Career Expo 2026</strong> to meet employers and universities face-to-face</li>' +
     '</ol></div>' +
+
     '<div class="report-footer">' +
       '<p>This report was generated by the Phunya Tsela Career Expo Student Portal</p>' +
       '<p>Kasi Career Expo \u2022 kasiexpo.co.za \u2022 Kuruman, Northern Cape</p>' +
@@ -385,8 +545,9 @@ function showResults(scores, topTypes) {
 
   document.getElementById("actionRow").innerHTML =
     '<button class="btn-pdf" id="btnDownloadPdf" onclick="downloadPsychPDF(this)">&#128196; Download PDF Report</button>' +
-    '<a href="aps-calculator.html" class="btn-outline">Calculate My APS Score</a>' +
-    '<a href="dashboard.html" class="btn-outline">View My Dashboard</a>' +
+    '<a href="learnership-portal.html" class="btn-outline">🎓 Browse Learnerships</a>' +
+    '<a href="aps-calculator.html" class="btn-outline">Calculate My APS</a>' +
+    '<a href="dashboard.html" class="btn-outline">My Dashboard</a>' +
     '<button class="btn-ghost" onclick="restart()">\u21A9 Retake Test</button>';
 
   window.scrollTo({ top: 0, behavior: "smooth" });
@@ -406,7 +567,7 @@ function downloadPsychPDF(btn) {
 
     var jsPDF = window.jspdf.jsPDF;
     var doc = new jsPDF({ unit:'mm', format:'a4' });
-    var W = 210, margin = 18, y = 0, lineH = 6;
+    var W = 210, margin = 18, y = 0;
 
     var COLOR_MAP = {
       orange: [249,115,22], blue: [37,99,235], purple: [147,51,234],
@@ -417,19 +578,15 @@ function downloadPsychPDF(btn) {
     // ── Header banner ──
     doc.setFillColor(primaryColor[0], primaryColor[1], primaryColor[2]);
     doc.rect(0, 0, W, 42, 'F');
-
     doc.setTextColor(255,255,255);
     doc.setFont('helvetica','bold');
     doc.setFontSize(9);
     doc.text('PHUNYA TSELA CAREER EXPO 2026  |  STUDENT CAREER REPORT', margin, 14);
-
     doc.setFontSize(20);
     doc.text('Career Psychometric Report', margin, 27);
-
     doc.setFont('helvetica','normal');
     doc.setFontSize(10);
     doc.text(userName + '  |  Generated: ' + today, margin, 36);
-
     y = 52;
 
     // ── Primary type card ──
@@ -437,25 +594,13 @@ function downloadPsychPDF(btn) {
     doc.setDrawColor(primaryColor[0], primaryColor[1], primaryColor[2]);
     doc.setLineWidth(0.5);
     doc.roundedRect(margin, y, W - margin*2, 52, 3, 3, 'FD');
-
     doc.setTextColor(120,53,15);
     doc.setFont('helvetica','bold');
     doc.setFontSize(8);
     doc.text('PRIMARY CAREER TYPE', margin+6, y+8);
-
     doc.setTextColor(primaryColor[0], primaryColor[1], primaryColor[2]);
     doc.setFontSize(16);
     doc.text(primary.label, margin+6, y+18);
-
-    // Big letter watermark
-    doc.setTextColor(primaryColor[0], primaryColor[1], primaryColor[2]);
-    doc.setFont('helvetica','bold');
-    doc.setFontSize(48);
-    doc.setTextColor(primaryColor[0], primaryColor[1], primaryColor[2]);
-    doc.setGState && doc.setGState(doc.GState && new doc.GState({opacity:0.12}));
-    doc.text(primary.type, W - margin - 20, y + 46);
-    doc.setGState && doc.setGState(doc.GState && new doc.GState({opacity:1}));
-
     doc.setTextColor(80,80,80);
     doc.setFont('helvetica','normal');
     doc.setFontSize(9);
@@ -465,8 +610,6 @@ function downloadPsychPDF(btn) {
 
     // ── Traits & Careers two columns ──
     var colW = (W - margin*2 - 8) / 2;
-
-    // Traits
     doc.setFillColor(249,250,251);
     doc.setDrawColor(229,231,235);
     doc.roundedRect(margin, y, colW, 52, 2, 2, 'FD');
@@ -479,7 +622,6 @@ function downloadPsychPDF(btn) {
     doc.setFontSize(9);
     primary.traits.forEach(function(t, i) { doc.text('\u2022 ' + t, margin+5, y+16+(i*7)); });
 
-    // Careers
     doc.setFillColor(249,250,251);
     doc.setDrawColor(229,231,235);
     doc.roundedRect(margin+colW+8, y, colW, 52, 2, 2, 'FD');
@@ -493,6 +635,28 @@ function downloadPsychPDF(btn) {
     primary.careers.slice(0,6).forEach(function(c, i) { doc.text('\u2022 ' + c, margin+colW+13, y+16+(i*7)); });
     y += 60;
 
+    // ── Courses ──
+    doc.setFillColor(255,255,255);
+    doc.setDrawColor(229,231,235);
+    var courseBoxH = 12 + Math.ceil(primary.courses.length / 2) * 10;
+    doc.roundedRect(margin, y, W-margin*2, courseBoxH, 2, 2, 'FD');
+    doc.setTextColor(17,24,39);
+    doc.setFont('helvetica','bold');
+    doc.setFontSize(11);
+    doc.text('Courses You Can Apply For', margin+5, y+9);
+    doc.setFont('helvetica','normal');
+    doc.setFontSize(8.5);
+    doc.setTextColor(55,65,81);
+    var halfW = (W - margin*2 - 16) / 2;
+    primary.courses.forEach(function(c, i) {
+      var col = i % 2;
+      var row = Math.floor(i / 2);
+      var cx = margin + 5 + col * (halfW + 8);
+      var cy = y + 16 + row * 10;
+      doc.text('\u2022 ' + c.name + ' — ' + c.inst, cx, cy, { maxWidth: halfW - 4 });
+    });
+    y += courseBoxH + 6;
+
     // ── RIASEC Scores ──
     doc.setFillColor(255,255,255);
     doc.setDrawColor(229,231,235);
@@ -501,37 +665,28 @@ function downloadPsychPDF(btn) {
     doc.setFont('helvetica','bold');
     doc.setFontSize(11);
     doc.text('Your RIASEC Profile Scores', margin+5, y+9);
-
     var maxScore = Math.max.apply(null, Object.values(scores).concat([1]));
     var barY = y + 16;
     var barMaxW = W - margin*2 - 60;
-
     ["R","I","A","S","E","C"].forEach(function(type) {
       var p    = RIASEC_PROFILES[type];
       var pts  = Math.round(scores[type]);
       var pct  = scores[type] / maxScore;
       var col  = COLOR_MAP[p.color] || [100,100,100];
-
       doc.setFont('helvetica','bold');
       doc.setFontSize(8);
       doc.setTextColor(100,100,100);
       doc.text(type, margin+5, barY+3.5);
-
       doc.setFont('helvetica','normal');
       doc.setFontSize(8);
       doc.setTextColor(55,65,81);
       doc.text(p.label, margin+13, barY+3.5);
-
-      // Bar background
       doc.setFillColor(243,244,246);
       doc.roundedRect(margin+68, barY, barMaxW, 5, 1, 1, 'F');
-      // Bar fill
       doc.setFillColor(col[0], col[1], col[2]);
       if (pct > 0) doc.roundedRect(margin+68, barY, barMaxW * pct, 5, 1, 1, 'F');
-      // Points
       doc.setTextColor(100,100,100);
       doc.text(pts + ' pts', W - margin - 12, barY+3.5);
-
       if (topTypes[0] === type) {
         doc.setTextColor(primaryColor[0], primaryColor[1], primaryColor[2]);
         doc.setFont('helvetica','bold');
@@ -555,6 +710,16 @@ function downloadPsychPDF(btn) {
     primary.saOpportunities.forEach(function(o, i) { doc.text('\u2022 ' + o, margin+5, y+17+(i*6)); });
     y += 48;
 
+    // ── SETA note ──
+    doc.setFillColor(239,246,255);
+    doc.setDrawColor(191,219,254);
+    doc.roundedRect(margin, y, W-margin*2, 18, 2, 2, 'FD');
+    doc.setFont('helvetica','bold');
+    doc.setFontSize(9);
+    doc.setTextColor(37,99,235);
+    doc.text('SETA Learnerships: Visit learnership-portal.html to browse paid learning programmes.', margin+5, y+11);
+    y += 24;
+
     // ── Next Steps ──
     doc.setFillColor(255,251,235);
     doc.setDrawColor(253,230,138);
@@ -569,8 +734,8 @@ function downloadPsychPDF(btn) {
     var steps = [
       '1. Use the APS Calculator to find specific university courses you qualify for',
       '2. Visit the Bursary Portal to find funding for your chosen field',
-      '3. Apply for NSFAS at nsfas.org.za before the closing date (November)',
-      '4. Research the top universities offering your preferred courses',
+      '3. Browse SETA Learnerships at learnership-portal.html — earn while you learn',
+      '4. Apply for NSFAS at nsfas.org.za before the closing date (November)',
       '5. Attend the Phunya Tsela Career Expo 2026 to meet employers and universities',
     ];
     steps.forEach(function(s, i) { doc.text(s, margin+5, y+17+(i*6)); });

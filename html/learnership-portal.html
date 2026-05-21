@@ -1,0 +1,751 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SETA Learnership Portal — Phunya Tsela</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;600;700;800;900&family=DM+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root {
+  --primary:#d97706; --yellow:#f59e0b; --bg:#fafaf9; --card:#fff;
+  --border:#e5e7eb; --text:#111827; --muted:#6b7280;
+  --radius:12px; --radius-lg:16px; --radius-xl:20px;
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;}
+h1,h2,h3,h4{font-family:'Sora',sans-serif;}
+
+/* ── Hero ── */
+.hero{background:linear-gradient(135deg,#1e3a5f 0%,#1e40af 55%,#2563eb 100%);color:white;padding:44px 16px 40px;position:relative;overflow:hidden;}
+.hero::before{content:'';position:absolute;inset:0;background:url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.04'%3E%3Ccircle cx='30' cy='30' r='4'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");}
+.hero-inner{max-width:900px;margin:0 auto;position:relative;}
+.back-btn{display:inline-flex;align-items:center;gap:6px;color:rgba(255,255,255,.75);font-size:14px;font-weight:600;border:none;background:none;cursor:pointer;margin-bottom:22px;transition:color .2s;text-decoration:none;}
+.back-btn:hover{color:white;}
+.hero-badge{display:inline-block;background:rgba(255,255,255,.15);border:1px solid rgba(255,255,255,.25);color:white;font-size:11px;font-weight:800;letter-spacing:.07em;text-transform:uppercase;padding:4px 14px;border-radius:99px;margin-bottom:14px;}
+.hero h1{font-size:clamp(26px,5vw,42px);font-weight:900;line-height:1.15;margin-bottom:10px;}
+.hero p{font-size:15px;color:rgba(255,255,255,.78);max-width:540px;line-height:1.6;}
+.hero-stats{display:flex;gap:24px;margin-top:28px;flex-wrap:wrap;}
+.hero-stat{text-align:center;}
+.hero-stat-num{font-family:'Sora',sans-serif;font-size:28px;font-weight:900;color:white;}
+.hero-stat-label{font-size:12px;color:rgba(255,255,255,.65);margin-top:2px;}
+
+/* ── Search & Filter ── */
+.controls{max-width:900px;margin:0 auto;padding:28px 16px 0;}
+.search-row{display:flex;gap:10px;margin-bottom:16px;flex-wrap:wrap;}
+.search-input{flex:1;min-width:220px;height:48px;border-radius:var(--radius-lg);border:1.5px solid var(--border);background:white;padding:0 16px 0 44px;font-size:14px;font-family:'DM Sans',sans-serif;color:var(--text);outline:none;transition:border-color .2s;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='18' height='18' viewBox='0 0 24 24' fill='none' stroke='%236b7280' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Ccircle cx='11' cy='11' r='8'/%3E%3Cline x1='21' y1='21' x2='16.65' y2='16.65'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:14px center;}
+.search-input:focus{border-color:#2563eb;box-shadow:0 0 0 3px rgba(37,99,235,.1);}
+.filter-scroll{display:flex;gap:8px;overflow-x:auto;padding-bottom:4px;scrollbar-width:none;}
+.filter-scroll::-webkit-scrollbar{display:none;}
+.filter-btn{flex-shrink:0;height:36px;padding:0 16px;border-radius:99px;border:1.5px solid var(--border);background:white;font-size:12px;font-weight:700;font-family:'DM Sans',sans-serif;color:var(--muted);cursor:pointer;transition:all .15s;white-space:nowrap;}
+.filter-btn:hover{border-color:#2563eb;color:#2563eb;}
+.filter-btn.active{background:#2563eb;border-color:#2563eb;color:white;}
+.results-count{font-size:13px;color:var(--muted);margin-bottom:16px;padding:0 16px;}
+.results-count span{color:var(--text);font-weight:700;}
+
+/* ── Grid ── */
+.portal-wrap{max-width:900px;margin:0 auto;padding:0 16px 60px;}
+.seta-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:16px;}
+
+/* ── SETA Card ── */
+.seta-card{background:white;border:1px solid var(--border);border-radius:var(--radius-xl);overflow:hidden;display:flex;flex-direction:column;transition:transform .15s,box-shadow .15s;}
+.seta-card:hover{transform:translateY(-2px);box-shadow:0 8px 24px rgba(0,0,0,.09);}
+.seta-card-header{padding:18px 18px 14px;display:flex;align-items:flex-start;gap:12px;}
+.seta-num{width:34px;height:34px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:900;flex-shrink:0;font-family:'Sora',sans-serif;}
+.seta-header-text{flex:1;}
+.seta-acronym{font-size:11px;font-weight:800;letter-spacing:.05em;margin-bottom:2px;}
+.seta-name{font-size:13px;font-weight:700;color:var(--text);line-height:1.35;}
+.seta-sector-tag{display:inline-block;font-size:10px;font-weight:700;padding:2px 10px;border-radius:99px;margin-top:6px;}
+
+.seta-card-body{padding:0 18px 14px;flex:1;}
+.seta-learnerships{list-style:none;display:flex;flex-direction:column;gap:6px;margin-bottom:12px;}
+.seta-learnerships li{display:flex;align-items:flex-start;gap:8px;font-size:12px;color:var(--muted);line-height:1.4;}
+.seta-learnerships li::before{content:"📌";font-size:10px;flex-shrink:0;margin-top:1px;}
+
+.criteria-box{background:#f9fafb;border:1px solid var(--border);border-radius:var(--radius);padding:10px 12px;margin-bottom:12px;}
+.criteria-label{font-size:10px;font-weight:800;text-transform:uppercase;letter-spacing:.06em;color:var(--muted);margin-bottom:6px;}
+.criteria-list{list-style:none;display:flex;flex-direction:column;gap:4px;}
+.criteria-list li{font-size:11px;color:var(--text);display:flex;align-items:center;gap:6px;}
+.criteria-list li::before{content:"✓";font-size:10px;color:#059669;flex-shrink:0;}
+
+.seta-card-footer{padding:12px 18px 16px;border-top:1px solid var(--border);display:flex;gap:8px;}
+.btn-apply{flex:1;height:40px;border-radius:var(--radius);background:#2563eb;color:white;font-family:'Sora',sans-serif;font-weight:800;font-size:12px;border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:6px;text-decoration:none;transition:filter .2s;}
+.btn-apply:hover{filter:brightness(1.1);}
+.btn-info{height:40px;width:40px;border-radius:var(--radius);background:#f3f4f6;border:none;cursor:pointer;font-size:16px;display:flex;align-items:center;justify-content:center;transition:background .2s;text-decoration:none;}
+.btn-info:hover{background:#e5e7eb;}
+
+/* ── No results ── */
+.no-results{text-align:center;padding:60px 20px;display:none;}
+.no-results.show{display:block;}
+.no-results-icon{font-size:48px;margin-bottom:16px;}
+.no-results h3{font-size:18px;font-weight:800;margin-bottom:6px;}
+.no-results p{font-size:14px;color:var(--muted);}
+
+/* ── Info banner ── */
+.info-banner{background:linear-gradient(135deg,#fffbeb,#fff7ed);border:1px solid #fde68a;border-radius:var(--radius-xl);padding:20px 24px;margin:0 16px 24px;max-width:900px;margin-left:auto;margin-right:auto;}
+.info-banner-inner{max-width:900px;margin:0 auto;display:flex;align-items:flex-start;gap:14px;}
+.info-icon{font-size:24px;flex-shrink:0;}
+.info-text h4{font-size:14px;font-weight:800;margin-bottom:4px;}
+.info-text p{font-size:13px;color:var(--muted);line-height:1.55;}
+
+/* ── Sector colors ── */
+.color-blue   { background:#eff6ff; } .color-blue   .seta-num { background:#dbeafe; color:#1d4ed8; } .color-blue   .seta-acronym { color:#1d4ed8; } .color-blue   .seta-sector-tag { background:#dbeafe; color:#1d4ed8; }
+.color-green  { background:#ecfdf5; } .color-green  .seta-num { background:#d1fae5; color:#065f46; } .color-green  .seta-acronym { color:#065f46; } .color-green  .seta-sector-tag { background:#d1fae5; color:#065f46; }
+.color-orange { background:#fff7ed; } .color-orange .seta-num { background:#fed7aa; color:#92400e; } .color-orange .seta-acronym { color:#92400e; } .color-orange .seta-sector-tag { background:#fed7aa; color:#92400e; }
+.color-purple { background:#f5f3ff; } .color-purple .seta-num { background:#ede9fe; color:#5b21b6; } .color-purple .seta-acronym { color:#5b21b6; } .color-purple .seta-sector-tag { background:#ede9fe; color:#5b21b6; }
+.color-teal   { background:#f0fdfa; } .color-teal   .seta-num { background:#ccfbf1; color:#0f5450; } .color-teal   .seta-acronym { color:#0f5450; } .color-teal   .seta-sector-tag { background:#ccfbf1; color:#0f5450; }
+.color-red    { background:#fff1f2; } .color-red    .seta-num { background:#ffe4e6; color:#9f1239; } .color-red    .seta-acronym { color:#9f1239; } .color-red    .seta-sector-tag { background:#ffe4e6; color:#9f1239; }
+.color-amber  { background:#fffbeb; } .color-amber  .seta-num { background:#fef3c7; color:#92400e; } .color-amber  .seta-acronym { color:#92400e; } .color-amber  .seta-sector-tag { background:#fef3c7; color:#92400e; }
+.color-pink   { background:#fdf2f8; } .color-pink   .seta-num { background:#fce7f3; color:#831843; } .color-pink   .seta-acronym { color:#831843; } .color-pink   .seta-sector-tag { background:#fce7f3; color:#831843; }
+.color-slate  { background:#f8fafc; } .color-slate  .seta-num { background:#e2e8f0; color:#334155; } .color-slate  .seta-acronym { color:#334155; } .color-slate  .seta-sector-tag { background:#e2e8f0; color:#334155; }
+
+/* Card header uses color scheme */
+.seta-card.color-blue   .seta-card-header { background:#eff6ff; }
+.seta-card.color-green  .seta-card-header { background:#ecfdf5; }
+.seta-card.color-orange .seta-card-header { background:#fff7ed; }
+.seta-card.color-purple .seta-card-header { background:#f5f3ff; }
+.seta-card.color-teal   .seta-card-header { background:#f0fdfa; }
+.seta-card.color-red    .seta-card-header { background:#fff1f2; }
+.seta-card.color-amber  .seta-card-header { background:#fffbeb; }
+.seta-card.color-pink   .seta-card-header { background:#fdf2f8; }
+.seta-card.color-slate  .seta-card-header { background:#f8fafc; }
+
+@media(max-width:500px){
+  .seta-grid { grid-template-columns:1fr; }
+  .hero-stats { gap:16px; }
+}
+</style>
+</head>
+<body>
+
+<!-- Hero -->
+<div class="hero">
+  <div class="hero-inner">
+    <a class="back-btn" href="javascript:history.back()">← Back</a>
+    <div class="hero-badge">🎓 Phunya Tsela Career Expo 2026</div>
+    <h1>SETA Learnership Portal</h1>
+    <p>Get paid to learn. Learnerships combine theory and workplace experience — you earn a monthly stipend while gaining a nationally recognised qualification. Browse all 23 SETAs below.</p>
+    <div class="hero-stats">
+      <div class="hero-stat"><div class="hero-stat-num">23</div><div class="hero-stat-label">SETAs</div></div>
+      <div class="hero-stat"><div class="hero-stat-num">100+</div><div class="hero-stat-label">Learnership types</div></div>
+      <div class="hero-stat"><div class="hero-stat-num">R3 500</div><div class="hero-stat-label">Avg. monthly stipend</div></div>
+      <div class="hero-stat"><div class="hero-stat-num">NQF 1–8</div><div class="hero-stat-label">Qualification levels</div></div>
+    </div>
+  </div>
+</div>
+
+<!-- Info banner -->
+<div style="max-width:900px;margin:24px auto 0;padding:0 16px;">
+  <div class="info-banner" style="margin:0 0 0 0;">
+    <div class="info-banner-inner">
+      <div class="info-icon">💡</div>
+      <div class="info-text">
+        <h4>How learnerships work</h4>
+        <p>A learnership is a 12–24 month programme combining classroom learning (20%) with on-the-job training (80%). You receive a monthly stipend from the employer, a nationally recognised NQF qualification at the end, and often a pathway to permanent employment. Grade 12 (Matric) is the minimum requirement for most learnerships.</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Search & Filter -->
+<div class="controls" style="padding-top:24px;">
+  <div class="search-row">
+    <input class="search-input" id="searchInput" type="text" placeholder="Search by SETA name, sector, or learnership type…" oninput="filterCards()">
+  </div>
+  <div class="filter-scroll" id="filterRow">
+    <button class="filter-btn active" onclick="setFilter('all',this)">All SETAs</button>
+    <button class="filter-btn" onclick="setFilter('finance',this)">Finance &amp; Business</button>
+    <button class="filter-btn" onclick="setFilter('tech',this)">Technology</button>
+    <button class="filter-btn" onclick="setFilter('health',this)">Health &amp; Welfare</button>
+    <button class="filter-btn" onclick="setFilter('construction',this)">Construction</button>
+    <button class="filter-btn" onclick="setFilter('agri',this)">Agriculture</button>
+    <button class="filter-btn" onclick="setFilter('creative',this)">Creative &amp; Media</button>
+    <button class="filter-btn" onclick="setFilter('transport',this)">Transport &amp; Logistics</button>
+    <button class="filter-btn" onclick="setFilter('hospitality',this)">Hospitality &amp; Tourism</button>
+    <button class="filter-btn" onclick="setFilter('public',this)">Public Sector</button>
+    <button class="filter-btn" onclick="setFilter('energy',this)">Energy &amp; Mining</button>
+    <button class="filter-btn" onclick="setFilter('manufacturing',this)">Manufacturing</button>
+  </div>
+</div>
+<div class="results-count" id="resultsCount" style="max-width:900px;margin:12px auto 0;"></div>
+
+<!-- Cards Grid -->
+<div class="portal-wrap">
+  <div class="seta-grid" id="setaGrid"></div>
+  <div class="no-results" id="noResults">
+    <div class="no-results-icon">🔍</div>
+    <h3>No SETAs found</h3>
+    <p>Try a different search term or clear the filter.</p>
+  </div>
+</div>
+
+<script>
+var SETAS = [
+  {
+    id:1, num:"01", acronym:"FASSET", color:"blue",
+    name:"Financial and Accounting Services Education and Training Authority",
+    sector:"Finance & Business", tags:["finance"],
+    icon:"💰", stipendRange:"R2 500 – R5 000/month",
+    learnerships:[
+      "Accounting Technician Learnership (NQF 4)",
+      "Financial Management Learnership (NQF 5)",
+      "Bookkeeping Learnership (NQF 3)",
+      "Tax Administration Learnership (NQF 5)",
+      "Internal Audit Learnership (NQF 5)",
+    ],
+    criteria:[
+      "Grade 12 / Matric (Mathematics advantageous)",
+      "South African citizen",
+      "Age 18–35 (youth priority)",
+      "No prior qualification in accounting",
+    ],
+    website:"https://www.fasset.org.za",
+    applyUrl:"https://www.fasset.org.za/learnership"
+  },
+  {
+    id:2, num:"02", acronym:"BANKSETA", color:"blue",
+    name:"Banking Sector Education and Training Authority",
+    sector:"Finance & Business", tags:["finance","tech"],
+    icon:"🏦", stipendRange:"R3 000 – R6 000/month",
+    learnerships:[
+      "Banking NQF Level 4 Learnership",
+      "Credit Management Learnership (NQF 5)",
+      "Retail Banking Services (NQF 3)",
+      "Risk Management Learnership (NQF 6)",
+      "Financial Technology (FinTech) Learnership",
+    ],
+    criteria:[
+      "Grade 12 / Matric",
+      "South African citizen or permanent resident",
+      "Age 18–35",
+      "Must pass numeracy & literacy assessment",
+    ],
+    website:"https://www.bankseta.org.za",
+    applyUrl:"https://www.bankseta.org.za/learnerships"
+  },
+  {
+    id:3, num:"03", acronym:"CHIETA", color:"green",
+    name:"Chemical Industries Education and Training Authority",
+    sector:"Manufacturing & Science", tags:["manufacturing","tech"],
+    icon:"🧪", stipendRange:"R2 800 – R5 500/month",
+    learnerships:[
+      "Chemical Plant Operations (NQF 3)",
+      "Petrochemical Operations (NQF 4)",
+      "Laboratory Science Learnership (NQF 5)",
+      "Occupational Health & Safety (NQF 4)",
+      "Quality Management in Chemical Industries (NQF 5)",
+    ],
+    criteria:[
+      "Grade 12 with Physical Sciences and Maths",
+      "South African citizen",
+      "Age 18–35",
+      "Fit and able to work in industrial environments",
+    ],
+    website:"https://www.chieta.org.za",
+    applyUrl:"https://www.chieta.org.za/learnerships"
+  },
+  {
+    id:4, num:"04", acronym:"CTFL SETA", color:"pink",
+    name:"Clothing, Textile, Footwear & Leather Education and Training Authority",
+    sector:"Manufacturing", tags:["manufacturing"],
+    icon:"👗", stipendRange:"R2 000 – R3 500/month",
+    learnerships:[
+      "Clothing Production Learnership (NQF 3)",
+      "Textile Machine Operator (NQF 2)",
+      "Fashion Design Learnership (NQF 5)",
+      "Footwear Production (NQF 3)",
+      "Leather Goods Manufacturing (NQF 3)",
+    ],
+    criteria:[
+      "Grade 9 minimum (Grade 12 preferred)",
+      "South African citizen",
+      "Interest in fashion/textiles",
+      "Age 16–35",
+    ],
+    website:"https://www.ctflseta.org.za",
+    applyUrl:"https://www.ctflseta.org.za/learnerships"
+  },
+  {
+    id:5, num:"05", acronym:"CETA", color:"orange",
+    name:"Construction Education and Training Authority",
+    sector:"Construction", tags:["construction"],
+    icon:"🏗️", stipendRange:"R2 500 – R5 000/month",
+    learnerships:[
+      "Site Supervision Learnership (NQF 5)",
+      "Bricklaying & Plastering (NQF 3)",
+      "Plumbing Trade Learnership (NQF 3)",
+      "Project Management in Construction (NQF 6)",
+      "Electrical Infrastructure Construction (NQF 4)",
+      "Road Construction Learnership (NQF 4)",
+    ],
+    criteria:[
+      "Grade 12 / Matric",
+      "South African citizen",
+      "Physical fitness for site work",
+      "Age 18–35",
+    ],
+    website:"https://www.ceta.org.za",
+    applyUrl:"https://www.ceta.org.za/learnerships"
+  },
+  {
+    id:7, num:"07", acronym:"ETDP SETA", color:"purple",
+    name:"Education, Training & Development Practices Education and Training Authority",
+    sector:"Education", tags:["public","health"],
+    icon:"📚", stipendRange:"R2 500 – R4 500/month",
+    learnerships:[
+      "Early Childhood Development (NQF 4)",
+      "Outcomes-Based Education & Training (NQF 5)",
+      "Adult Basic Education & Training (NQF 4)",
+      "Library & Information Services (NQF 5)",
+      "Youth Development Learnership (NQF 4)",
+    ],
+    criteria:[
+      "Grade 12 / Matric",
+      "Passion for teaching and community development",
+      "South African citizen",
+      "Age 18–35",
+    ],
+    website:"https://www.etdpseta.org.za",
+    applyUrl:"https://www.etdpseta.org.za/learnerships"
+  },
+  {
+    id:8, num:"08", acronym:"ESETA", color:"amber",
+    name:"Energy Sector Education Training Authority",
+    sector:"Energy & Utilities", tags:["energy"],
+    icon:"⚡", stipendRange:"R3 000 – R6 500/month",
+    learnerships:[
+      "Electrical Engineering Learnership (NQF 4)",
+      "Renewable Energy (Solar PV) Learnership (NQF 4)",
+      "Gas Distribution Operations (NQF 3)",
+      "Energy Management Learnership (NQF 5)",
+      "Water & Wastewater Management (NQF 4)",
+    ],
+    criteria:[
+      "Grade 12 with Maths and Physical Sciences",
+      "South African citizen",
+      "Age 18–35",
+      "No criminal record",
+    ],
+    website:"https://www.eseta.org.za",
+    applyUrl:"https://www.eseta.org.za/learnerships"
+  },
+  {
+    id:9, num:"09", acronym:"FoodBev SETA", color:"orange",
+    name:"Food & Beverages Manufacturing Education and Training Authority",
+    sector:"Food & Beverage", tags:["manufacturing"],
+    icon:"🍽️", stipendRange:"R2 000 – R4 000/month",
+    learnerships:[
+      "Food Processing Operations (NQF 3)",
+      "Beverage Processing (NQF 3)",
+      "Quality Assurance in Food Manufacturing (NQF 4)",
+      "Food Technology Learnership (NQF 5)",
+      "Hospitality Food Preparation (NQF 2)",
+    ],
+    criteria:[
+      "Grade 12 / Matric",
+      "South African citizen",
+      "Health clearance certificate",
+      "Age 18–35",
+    ],
+    website:"https://www.foodbev.co.za",
+    applyUrl:"https://www.foodbev.co.za/learnerships"
+  },
+  {
+    id:10, num:"10", acronym:"FIETA", color:"green",
+    name:"Forestry Industries Education and Training Authority",
+    sector:"Agriculture & Forestry", tags:["agri"],
+    icon:"🌲", stipendRange:"R2 000 – R3 500/month",
+    learnerships:[
+      "Silviculture (Tree Farming) Learnership (NQF 3)",
+      "Timber Harvesting Operations (NQF 3)",
+      "Forest Protection & Fire Management (NQF 4)",
+      "Wood Products Processing (NQF 3)",
+      "Environmental Monitoring (NQF 4)",
+    ],
+    criteria:[
+      "Grade 10 minimum (Grade 12 preferred)",
+      "South African citizen",
+      "Physical fitness for outdoor work",
+      "Age 16–35",
+    ],
+    website:"https://www.fieta.org.za",
+    applyUrl:"https://www.fieta.org.za/learnerships"
+  },
+  {
+    id:11, num:"11", acronym:"HWSETA", color:"red",
+    name:"Health & Welfare Sector Education and Training Authority",
+    sector:"Health & Welfare", tags:["health"],
+    icon:"🏥", stipendRange:"R2 500 – R5 000/month",
+    learnerships:[
+      "Home Community Based Care (NQF 3)",
+      "Pharmacy Technician Learnership (NQF 4)",
+      "Child & Youth Care Work (NQF 5)",
+      "Disability Studies Learnership (NQF 4)",
+      "Social Auxiliary Work (NQF 4)",
+      "Occupational Therapy Assistant (NQF 4)",
+    ],
+    criteria:[
+      "Grade 12 / Matric",
+      "South African citizen",
+      "Compassionate disposition",
+      "Age 18–35 (some programmes 18–40)",
+    ],
+    website:"https://www.hwseta.org.za",
+    applyUrl:"https://www.hwseta.org.za/learnerships"
+  },
+  {
+    id:12, num:"12", acronym:"ISETT", color:"blue",
+    name:"Information Systems, Electronics and Telecommunication Technologies",
+    sector:"Technology & ICT", tags:["tech"],
+    icon:"💻", stipendRange:"R3 500 – R7 000/month",
+    learnerships:[
+      "IT End User Computing (NQF 3)",
+      "Systems Development Learnership (NQF 5–6)",
+      "Network Engineering Learnership (NQF 5)",
+      "Cybersecurity Learnership (NQF 5)",
+      "Technical Support (NQF 4)",
+      "Data Analytics Learnership (NQF 5)",
+    ],
+    criteria:[
+      "Grade 12 with Maths (Computer Science advantageous)",
+      "South African citizen",
+      "Age 18–35",
+      "Aptitude test may be required",
+    ],
+    website:"https://www.merseta.org.za",
+    applyUrl:"https://www.merseta.org.za/learnerships/ict"
+  },
+  {
+    id:13, num:"13", acronym:"INSETA", color:"teal",
+    name:"Insurance Sector Education and Training Authority",
+    sector:"Finance & Business", tags:["finance"],
+    icon:"🛡️", stipendRange:"R3 000 – R5 500/month",
+    learnerships:[
+      "Short-Term Insurance Learnership (NQF 4)",
+      "Long-Term Insurance Learnership (NQF 4)",
+      "Risk Management Learnership (NQF 5)",
+      "Claims Management (NQF 4)",
+      "Medical Aid Administration (NQF 4)",
+    ],
+    criteria:[
+      "Grade 12 / Matric",
+      "South African citizen or permanent resident",
+      "Clean credit record (advantageous)",
+      "Age 18–35",
+    ],
+    website:"https://www.inseta.org.za",
+    applyUrl:"https://www.inseta.org.za/learnerships"
+  },
+  {
+    id:14, num:"14", acronym:"LGSETA", color:"purple",
+    name:"Local Government Education and Training Authority",
+    sector:"Public Sector", tags:["public"],
+    icon:"🏛️", stipendRange:"R2 500 – R5 000/month",
+    learnerships:[
+      "Municipal Finance Management (NQF 6)",
+      "Local Government Administration (NQF 4–5)",
+      "Water & Sanitation Management (NQF 4)",
+      "Town & Regional Planning (NQF 6)",
+      "Community Development Work (NQF 5)",
+    ],
+    criteria:[
+      "Grade 12 / Matric",
+      "South African citizen",
+      "Interest in public service",
+      "Age 18–35",
+    ],
+    website:"https://www.lgseta.co.za",
+    applyUrl:"https://www.lgseta.co.za/learnerships"
+  },
+  {
+    id:15, num:"15", acronym:"MAPPP-SETA", color:"pink",
+    name:"Media, Advertising, Publishing, Printing and Packaging SETA",
+    sector:"Creative & Media", tags:["creative"],
+    icon:"🎨", stipendRange:"R2 500 – R5 000/month",
+    learnerships:[
+      "Media & Advertising Learnership (NQF 5)",
+      "Print Technology Learnership (NQF 4)",
+      "Packaging Technology (NQF 4)",
+      "Digital Marketing Learnership (NQF 5)",
+      "Journalism & Content Creation (NQF 5)",
+      "Graphic Design Production (NQF 4)",
+    ],
+    criteria:[
+      "Grade 12 / Matric",
+      "Portfolio of creative work (advantageous)",
+      "South African citizen",
+      "Age 18–35",
+    ],
+    website:"https://www.mapppseta.org.za",
+    applyUrl:"https://www.mapppseta.org.za/learnerships"
+  },
+  {
+    id:16, num:"16", acronym:"MQA", color:"amber",
+    name:"Mining Qualifications Authority",
+    sector:"Mining & Energy", tags:["energy"],
+    icon:"⛏️", stipendRange:"R3 500 – R7 000/month",
+    learnerships:[
+      "Rock Drill Operator Learnership (NQF 2)",
+      "Mine Environmental Control (NQF 4)",
+      "Blasting Assistant Learnership (NQF 3)",
+      "Surface & Underground Mining (NQF 3–4)",
+      "Mine Survey Learnership (NQF 5)",
+      "Mine Health & Safety (NQF 4)",
+    ],
+    criteria:[
+      "Grade 12 / Matric (some NQF 2 programmes accept Grade 9)",
+      "South African citizen",
+      "Medical fitness certificate required",
+      "Age 18–35",
+    ],
+    website:"https://www.mqa.org.za",
+    applyUrl:"https://www.mqa.org.za/learnerships"
+  },
+  {
+    id:17, num:"17", acronym:"MERSETA", color:"slate",
+    name:"Manufacturing, Engineering & Related Services Education and Training Authority",
+    sector:"Manufacturing & Engineering", tags:["manufacturing","construction"],
+    icon:"⚙️", stipendRange:"R3 000 – R6 500/month",
+    learnerships:[
+      "Fitting & Turning Learnership (NQF 3)",
+      "Welding Learnership (NQF 3–4)",
+      "Automotive Motor Mechanic (NQF 3)",
+      "Mechanical Engineering Learnership (NQF 4–5)",
+      "Plastics Manufacturing (NQF 3)",
+      "Quality Control in Manufacturing (NQF 4)",
+    ],
+    criteria:[
+      "Grade 12 with Maths and Physical Science",
+      "South African citizen",
+      "Physical dexterity for workshop environments",
+      "Age 18–35",
+    ],
+    website:"https://www.merseta.org.za",
+    applyUrl:"https://www.merseta.org.za/learnerships"
+  },
+  {
+    id:19, num:"19", acronym:"SASSETA", color:"red",
+    name:"Security and Safety Sector Education Training Authority",
+    sector:"Security & Safety", tags:["public"],
+    icon:"🔒", stipendRange:"R2 000 – R4 000/month",
+    learnerships:[
+      "Security Operations Learnership (NQF 3)",
+      "Private Investigation (NQF 5)",
+      "Fire & Rescue Operations (NQF 4)",
+      "Close Protection (Bodyguard) Learnership (NQF 4)",
+      "Security Management Learnership (NQF 5)",
+    ],
+    criteria:[
+      "Grade 12 / Matric",
+      "South African citizen",
+      "No criminal record (SAPS clearance required)",
+      "Physical fitness assessment",
+      "Age 18–35",
+    ],
+    website:"https://www.sasseta.org.za",
+    applyUrl:"https://www.sasseta.org.za/learnerships"
+  },
+  {
+    id:20, num:"20", acronym:"AgriSETA", color:"green",
+    name:"Agricultural Sector Education and Training Authority",
+    sector:"Agriculture", tags:["agri"],
+    icon:"🌾", stipendRange:"R2 000 – R4 000/month",
+    learnerships:[
+      "Crop Production Learnership (NQF 3–4)",
+      "Animal Production Learnership (NQF 3)",
+      "Agricultural Management (NQF 5)",
+      "Irrigation Management (NQF 4)",
+      "Agro-Processing Learnership (NQF 3)",
+      "Game Ranch Management (NQF 4)",
+    ],
+    criteria:[
+      "Grade 12 / Matric (some NQF 2/3 accept Grade 9)",
+      "South African citizen",
+      "Interest in agriculture and rural development",
+      "Age 16–35",
+    ],
+    website:"https://www.agriseta.co.za",
+    applyUrl:"https://www.agriseta.co.za/learnerships"
+  },
+  {
+    id:21, num:"21", acronym:"PSETA", color:"purple",
+    name:"Public Services Sector Education and Training Authority",
+    sector:"Public Sector", tags:["public"],
+    icon:"📋", stipendRange:"R2 500 – R5 000/month",
+    learnerships:[
+      "Public Administration Learnership (NQF 4–5)",
+      "Human Resource Management (NQF 5)",
+      "Records & Archives Management (NQF 5)",
+      "Project Management in Public Sector (NQF 5)",
+      "Government Finance & Budgeting (NQF 6)",
+    ],
+    criteria:[
+      "Grade 12 / Matric",
+      "South African citizen",
+      "Interest in government and public service",
+      "Age 18–35",
+    ],
+    website:"https://www.pseta.gov.za",
+    applyUrl:"https://www.pseta.gov.za/learnerships"
+  },
+  {
+    id:23, num:"23", acronym:"SERVICES SETA", color:"teal",
+    name:"Services Sector Education and Training Authority",
+    sector:"Services", tags:["finance","hospitality","public"],
+    icon:"🤝", stipendRange:"R2 500 – R5 000/month",
+    learnerships:[
+      "Cleaning & Hygiene Services (NQF 2)",
+      "Security Services (NQF 3)",
+      "Real Estate Learnership (NQF 4)",
+      "Facilities Management (NQF 5)",
+      "Call Centre Operations (NQF 3)",
+      "Hair Care & Beauty Learnership (NQF 4)",
+    ],
+    criteria:[
+      "Grade 12 / Matric (Grade 10 accepted for NQF 2 programmes)",
+      "South African citizen",
+      "Customer-service orientation",
+      "Age 18–35",
+    ],
+    website:"https://www.serviceseta.org.za",
+    applyUrl:"https://www.serviceseta.org.za/learnerships"
+  },
+  {
+    id:25, num:"25", acronym:"THETA", color:"orange",
+    name:"Tourism And Hospitality Education and Training Authority",
+    sector:"Tourism & Hospitality", tags:["hospitality"],
+    icon:"✈️", stipendRange:"R2 500 – R4 500/month",
+    learnerships:[
+      "Professional Cookery Learnership (NQF 4)",
+      "Front Office & Accommodation (NQF 4)",
+      "Tourism & Travel Services (NQF 4)",
+      "Food & Beverage Management (NQF 5)",
+      "Guiding Learnership (NQF 4)",
+      "Events Management (NQF 5)",
+    ],
+    criteria:[
+      "Grade 12 / Matric",
+      "South African citizen",
+      "Customer service aptitude",
+      "Willingness to work shifts/weekends",
+      "Age 18–35",
+    ],
+    website:"https://www.theta.org.za",
+    applyUrl:"https://www.theta.org.za/learnerships"
+  },
+  {
+    id:26, num:"26", acronym:"TETA", color:"slate",
+    name:"Transport Education and Training Authority",
+    sector:"Transport & Logistics", tags:["transport"],
+    icon:"🚛", stipendRange:"R2 500 – R5 500/month",
+    learnerships:[
+      "Road Transport Management (NQF 5)",
+      "Freight Logistics Learnership (NQF 4)",
+      "Maritime Operations (NQF 4)",
+      "Aviation Ground Operations (NQF 4)",
+      "Warehousing & Distribution (NQF 3–4)",
+      "Rail Operations Learnership (NQF 3)",
+    ],
+    criteria:[
+      "Grade 12 / Matric",
+      "South African citizen",
+      "Valid driver's licence (advantageous for transport roles)",
+      "Age 18–35",
+    ],
+    website:"https://www.teta.org.za",
+    applyUrl:"https://www.teta.org.za/learnerships"
+  },
+  {
+    id:27, num:"27", acronym:"W&RSETA", color:"amber",
+    name:"Wholesale and Retail Sector Education and Training Authority",
+    sector:"Retail & Wholesale", tags:["finance","hospitality"],
+    icon:"🛒", stipendRange:"R2 000 – R4 000/month",
+    learnerships:[
+      "Retail Supervisor Learnership (NQF 4)",
+      "Generic Management in Retail (NQF 5)",
+      "Wholesale & Retail Operations (NQF 3)",
+      "Customer Service & Sales (NQF 3)",
+      "Supply Chain & Procurement (NQF 5)",
+      "Visual Merchandising (NQF 4)",
+    ],
+    criteria:[
+      "Grade 12 / Matric",
+      "South African citizen",
+      "Willingness to work in retail environment",
+      "Age 18–35",
+    ],
+    website:"https://www.wrseta.org.za",
+    applyUrl:"https://www.wrseta.org.za/learnerships"
+  },
+];
+
+var activeFilter = 'all';
+
+function renderCards(data) {
+  var grid = document.getElementById('setaGrid');
+  var noResults = document.getElementById('noResults');
+  var count = document.getElementById('resultsCount');
+
+  if (!data.length) {
+    grid.innerHTML = '';
+    noResults.classList.add('show');
+    count.innerHTML = '';
+    return;
+  }
+  noResults.classList.remove('show');
+  count.innerHTML = 'Showing <span>' + data.length + '</span> of ' + SETAS.length + ' SETAs';
+
+  grid.innerHTML = data.map(function(s) {
+    var learnHtml = s.learnerships.slice(0,4).map(function(l){ return '<li>' + l + '</li>'; }).join('');
+    if (s.learnerships.length > 4) learnHtml += '<li>+ ' + (s.learnerships.length - 4) + ' more programmes</li>';
+    var criteriaHtml = s.criteria.map(function(c){ return '<li>' + c + '</li>'; }).join('');
+
+    return '<div class="seta-card color-' + s.color + '" data-tags="' + s.tags.join(' ') + '" data-name="' + (s.name + ' ' + s.acronym + ' ' + s.sector).toLowerCase() + '">' +
+      '<div class="seta-card-header">' +
+        '<div class="seta-num">' + s.num + '</div>' +
+        '<div class="seta-header-text">' +
+          '<div class="seta-acronym">' + s.acronym + '</div>' +
+          '<div class="seta-name">' + s.name + '</div>' +
+          '<div class="seta-sector-tag">' + s.icon + ' ' + s.sector + '</div>' +
+        '</div>' +
+      '</div>' +
+      '<div class="seta-card-body">' +
+        '<ul class="seta-learnerships">' + learnHtml + '</ul>' +
+        '<div class="criteria-box">' +
+          '<div class="criteria-label">Criteria to apply</div>' +
+          '<ul class="criteria-list">' + criteriaHtml + '</ul>' +
+        '</div>' +
+        '<div style="font-size:11px;color:var(--muted);margin-bottom:4px;">💵 Stipend: <strong style="color:var(--text);">' + s.stipendRange + '</strong></div>' +
+      '</div>' +
+      '<div class="seta-card-footer">' +
+        '<a href="' + s.applyUrl + '" target="_blank" rel="noopener" class="btn-apply">Apply Now ↗</a>' +
+        '<a href="' + s.website + '" target="_blank" rel="noopener" class="btn-info" title="Visit SETA website">🌐</a>' +
+      '</div>' +
+    '</div>';
+  }).join('');
+}
+
+function getFiltered() {
+  var q = document.getElementById('searchInput').value.toLowerCase().trim();
+  return SETAS.filter(function(s) {
+    var tagMatch = activeFilter === 'all' || s.tags.indexOf(activeFilter) !== -1;
+    var searchMatch = !q || (s.name + ' ' + s.acronym + ' ' + s.sector + ' ' + s.learnerships.join(' ')).toLowerCase().indexOf(q) !== -1;
+    return tagMatch && searchMatch;
+  });
+}
+
+function filterCards() { renderCards(getFiltered()); }
+
+function setFilter(tag, btn) {
+  activeFilter = tag;
+  document.querySelectorAll('.filter-btn').forEach(function(b){ b.classList.remove('active'); });
+  btn.classList.add('active');
+  filterCards();
+}
+
+// Initial render
+renderCards(SETAS);
+document.getElementById('resultsCount').innerHTML = 'Showing <span>' + SETAS.length + '</span> of ' + SETAS.length + ' SETAs';
+</script>
+</body>
+</html>

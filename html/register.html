@@ -3,499 +3,395 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
 <title>Register — Phunya Tsela</title>
-
 <link rel="preconnect" href="https://fonts.googleapis.com">
-
 <link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;600;700;800;900&family=DM+Sans:wght@400;500;600&display=swap" rel="stylesheet">
-
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<script src="auth.js?v=3"></script>
-
+<script src="auth.js?v=5"></script>
 <style>
 
-:root{
-  --primary:#d97706;
-  --yellow:#f59e0b;
-  --bg:#fafaf9;
-  --border:#e5e7eb;
-  --text:#111827;
-  --muted:#6b7280;
-  --error:#ef4444;
-  --radius:12px;
-  --radius-lg:16px;
-  --radius-xl:20px;
+:root {
+  --primary: #d97706;
+  --yellow:  #f59e0b;
+  --bg:      #fafaf9;
+  --border:  #e5e7eb;
+  --text:    #111827;
+  --muted:   #6b7280;
+  --error:   #ef4444;
+  --radius:  12px;
+  --radius-lg: 16px;
+  --radius-xl: 20px;
 }
 
-*{
-  box-sizing:border-box;
-  margin:0;
-  padding:0;
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+  font-family: 'DM Sans', sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
 }
 
-body{
-  font-family:'DM Sans',sans-serif;
-  background:var(--bg);
-  color:var(--text);
-  min-height:100vh;
-  display:flex;
-  flex-direction:column;
+h1, h2, h3 { font-family: 'Sora', sans-serif; }
+
+.page {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 40px 16px;
 }
 
-h1,h2,h3{
-  font-family:'Sora',sans-serif;
+.card {
+  background: white;
+  border-radius: var(--radius-xl);
+  border: 1px solid var(--border);
+  box-shadow: 0 8px 40px rgba(0,0,0,.07);
+  width: 100%;
+  max-width: 480px;
+  overflow: hidden;
 }
 
-.page{
-  flex:1;
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  padding:40px 16px;
+.card-header {
+  background: linear-gradient(135deg, var(--primary), var(--yellow));
+  padding: 32px 32px 28px;
+  text-align: center;
+  color: white;
 }
 
-.card{
-  background:white;
-  border-radius:var(--radius-xl);
-  border:1px solid var(--border);
-  box-shadow:0 8px 40px rgba(0,0,0,.07);
-  width:100%;
-  max-width:480px;
-  overflow:hidden;
+.logo { font-size: 40px; margin-bottom: 10px; }
+
+.card-header h1 { font-size: 26px; font-weight: 900; }
+.card-header p  { font-size: 13px; opacity: .8; margin-top: 4px; }
+
+.card-body { padding: 32px; }
+
+.name-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
 }
 
-.card-header{
-  background:linear-gradient(
-    135deg,
-    var(--primary),
-    var(--yellow)
-  );
-
-  padding:32px 32px 28px;
-  text-align:center;
-  color:white;
-}
-
-.logo{
-  font-size:40px;
-  margin-bottom:10px;
-}
-
-.card-header h1{
-  font-size:26px;
-  font-weight:900;
-}
-
-.card-header p{
-  font-size:13px;
-  opacity:.8;
-  margin-top:4px;
-}
-
-.card-body{
-  padding:32px;
-}
-
-.name-row{
-  display:grid;
-  grid-template-columns:1fr 1fr;
-  gap:12px;
-}
-
-.form-group{
-  margin-bottom:16px;
-}
-
-.form-group label{
-  display:block;
-  font-size:13px;
-  font-weight:700;
-  margin-bottom:6px;
+.form-group { margin-bottom: 16px; }
+.form-group label {
+  display: block;
+  font-size: 13px;
+  font-weight: 700;
+  margin-bottom: 6px;
 }
 
 .form-group input,
-.form-group select{
-  width:100%;
-  padding:11px 14px;
-  border:1px solid var(--border);
-  border-radius:var(--radius);
-  font-size:14px;
-  background:white;
-  outline:none;
+.form-group select {
+  width: 100%;
+  padding: 11px 14px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  font-size: 14px;
+  font-family: 'DM Sans', sans-serif;
+  background: white;
+  outline: none;
+  transition: border-color .2s, box-shadow .2s;
 }
 
 .form-group input:focus,
-.form-group select:focus{
-  border-color:var(--primary);
-  box-shadow:0 0 0 3px #fde68a44;
+.form-group select:focus {
+  border-color: var(--primary);
+  box-shadow: 0 0 0 3px #fde68a44;
 }
 
-.error-field{
-  border-color:var(--error)!important;
+/* ── Toggle tabs: Email / Phone ── */
+.id-tabs {
+  display: flex;
+  background: #f3f4f6;
+  border-radius: 10px;
+  padding: 4px;
+  margin-bottom: 16px;
+  gap: 4px;
 }
 
-.password-hint{
-  font-size:11px;
-  color:var(--muted);
-  margin-top:5px;
+.id-tab {
+  flex: 1;
+  padding: 9px 0;
+  border: none;
+  border-radius: 8px;
+  font-size: 13px;
+  font-weight: 700;
+  font-family: 'DM Sans', sans-serif;
+  cursor: pointer;
+  background: transparent;
+  color: var(--muted);
+  transition: all .18s;
 }
 
-.error-banner{
-  background:#fef2f2;
-  border:1px solid #fecaca;
-  border-radius:var(--radius);
-  padding:10px 14px;
-  font-size:13px;
-  color:#b91c1c;
-  margin-bottom:18px;
-  display:none;
+.id-tab.active {
+  background: white;
+  color: var(--primary);
+  box-shadow: 0 1px 6px rgba(0,0,0,.1);
 }
 
-.error-banner.show{
-  display:block;
+.id-tab:hover:not(.active) { color: var(--text); }
+
+.id-hint {
+  font-size: 11.5px;
+  color: var(--muted);
+  margin-top: 5px;
+  line-height: 1.5;
 }
 
-.submit-btn{
-  width:100%;
-  height:50px;
-  border:none;
-  border-radius:var(--radius-lg);
-  background:var(--primary);
-  color:white;
-  font-family:'Sora',sans-serif;
-  font-weight:800;
-  font-size:15px;
-  cursor:pointer;
-  margin-top:8px;
+.password-hint {
+  font-size: 11px;
+  color: var(--muted);
+  margin-top: 5px;
 }
 
-.submit-btn:disabled{
-  opacity:.6;
+.error-banner {
+  background: #fef2f2;
+  border: 1px solid #fecaca;
+  border-radius: var(--radius);
+  padding: 10px 14px;
+  font-size: 13px;
+  color: #b91c1c;
+  margin-bottom: 18px;
+  display: none;
 }
+.error-banner.show { display: block; }
 
-.card-footer{
-  text-align:center;
-  padding:20px;
-  border-top:1px solid var(--border);
+.submit-btn {
+  width: 100%;
+  height: 50px;
+  border: none;
+  border-radius: var(--radius-lg);
+  background: var(--primary);
+  color: white;
+  font-family: 'Sora', sans-serif;
+  font-weight: 800;
+  font-size: 15px;
+  cursor: pointer;
+  margin-top: 8px;
+  transition: filter .2s;
 }
+.submit-btn:hover:not(:disabled) { filter: brightness(1.08); }
+.submit-btn:disabled { opacity: .6; cursor: not-allowed; }
 
-.card-footer a{
-  color:var(--primary);
-  font-weight:700;
-  text-decoration:none;
+.card-footer {
+  text-align: center;
+  padding: 20px;
+  border-top: 1px solid var(--border);
 }
+.card-footer a { color: var(--primary); font-weight: 700; text-decoration: none; }
 
-.back-link{
-  text-align:center;
-  margin-bottom:24px;
-}
+.back-link { text-align: center; margin-bottom: 24px; }
+.back-link a { color: var(--muted); text-decoration: none; font-size: 13px; }
 
-.back-link a{
-  color:var(--muted);
-  text-decoration:none;
-  font-size:13px;
+.spinner {
+  width: 18px; height: 18px;
+  border: 2px solid rgba(255,255,255,.3);
+  border-top-color: white;
+  border-radius: 50%;
+  animation: spin .6s linear infinite;
+  margin: auto;
 }
-
-.spinner{
-  width:18px;
-  height:18px;
-  border:2px solid rgba(255,255,255,.3);
-  border-top-color:white;
-  border-radius:50%;
-  animation:spin .6s linear infinite;
-  margin:auto;
-}
-
-@keyframes spin{
-  to{
-    transform:rotate(360deg);
-  }
-}
+@keyframes spin { to { transform: rotate(360deg); } }
 
 </style>
 </head>
-
 <body>
 
 <div class="page">
-
 <div style="width:100%;max-width:480px">
 
-<div class="back-link">
-  <a href="index.html">
-    ← Back to Home
-  </a>
-</div>
+  <div class="back-link">
+    <a href="index.html">← Back to Home</a>
+  </div>
 
-<div class="card">
+  <div class="card">
 
-<div class="card-header">
-  <div class="logo">🎓</div>
-  <h1>Create Your Account</h1>
-  <p>Free access to all Phunya Tsela student tools</p>
-</div>
+    <div class="card-header">
+      <div class="logo">🎓</div>
+      <h1>Create Your Account</h1>
+      <p>Free access to all Phunya Tsela student tools</p>
+    </div>
 
-<div class="card-body">
+    <div class="card-body">
 
-<div class="error-banner" id="errorBanner">
-  <span id="errorText"></span>
-</div>
+      <div class="error-banner" id="errorBanner">
+        <span id="errorText"></span>
+      </div>
 
-<div class="name-row">
+      <!-- Name row -->
+      <div class="name-row">
+        <div class="form-group">
+          <label>First Name</label>
+          <input type="text" id="firstName" placeholder="Thabo" autocomplete="given-name">
+        </div>
+        <div class="form-group">
+          <label>Last Name</label>
+          <input type="text" id="lastName" placeholder="Molefe" autocomplete="family-name">
+        </div>
+      </div>
 
-<div class="form-group">
-<label>First Name</label>
-<input type="text" id="firstName">
-</div>
+      <!-- Identifier toggle -->
+      <div class="form-group">
+        <label>Sign Up With</label>
+        <div class="id-tabs">
+          <button class="id-tab active" id="tabPhone" onclick="switchTab('phone')">📱 Cell Number</button>
+          <button class="id-tab"        id="tabEmail" onclick="switchTab('email')">✉️ Email</button>
+        </div>
 
-<div class="form-group">
-<label>Last Name</label>
-<input type="text" id="lastName">
-</div>
+        <!-- Phone input -->
+        <div id="phoneWrap">
+          <input
+            type="tel"
+            id="phoneInput"
+            placeholder="e.g. 0821234567"
+            autocomplete="tel"
+          >
+          <p class="id-hint">SA numbers only — we'll format it automatically (e.g. 082 123 4567 or 0821234567).</p>
+        </div>
 
-</div>
+        <!-- Email input (hidden by default) -->
+        <div id="emailWrap" style="display:none;">
+          <input
+            type="email"
+            id="emailInput"
+            placeholder="you@example.com"
+            autocomplete="email"
+          >
+        </div>
+      </div>
 
-<div class="form-group">
-<label>Email Address</label>
-<input type="email" id="email">
-</div>
+      <!-- Password -->
+      <div class="form-group">
+        <label>Password</label>
+        <input type="password" id="password" placeholder="Create a password" autocomplete="new-password">
+        <p class="password-hint">Minimum 6 characters</p>
+      </div>
 
-<div class="form-group">
-<label>Password</label>
-<input type="password" id="password">
-<p class="password-hint">
-Minimum 6 characters
-</p>
-</div>
+      <div class="form-group">
+        <label>Confirm Password</label>
+        <input type="password" id="confirmPassword" placeholder="Repeat your password" autocomplete="new-password">
+      </div>
 
-<div class="form-group">
-<label>Confirm Password</label>
-<input type="password" id="confirmPassword">
-</div>
+      <!-- Grade -->
+      <div class="form-group">
+        <label>Grade</label>
+        <select id="grade">
+          <option value="">Select grade</option>
+          <option>Grade 8</option>
+          <option>Grade 9</option>
+          <option>Grade 10</option>
+          <option>Grade 11</option>
+          <option>Grade 12</option>
+          <option>Post-Matric</option>
+          <option>TVET Student</option>
+          <option>University Student</option>
+        </select>
+      </div>
 
-<div class="form-group">
-<label>Grade</label>
+      <!-- School -->
+      <div class="form-group">
+        <label>School Name</label>
+        <input type="text" id="school" placeholder="Your school or institution" autocomplete="organization">
+      </div>
 
-<select id="grade">
-<option value="">Select grade</option>
-<option>Grade 8</option>
-<option>Grade 9</option>
-<option>Grade 10</option>
-<option>Grade 11</option>
-<option>Grade 12</option>
-</select>
+      <button class="submit-btn" id="registerBtn" onclick="doRegister()">
+        Create My Free Account
+      </button>
 
-</div>
+    </div>
 
-<div class="form-group">
-<label>School Name</label>
-<input type="text" id="school">
-</div>
+    <div class="card-footer">
+      <p>Already have an account? <a href="login.html">Sign in →</a></p>
+    </div>
 
-<button
-  class="submit-btn"
-  id="registerBtn"
-  onclick="doRegister()">
-
-  Create My Free Account
-
-</button>
-
-</div>
-
-<div class="card-footer">
-
-<p>
-Already have an account?
-
-<a href="login.html">
-Sign in →
-</a>
-</p>
-
-</div>
-
-</div>
+  </div>
 </div>
 </div>
 
 <script>
 
-async function checkSession(){
+/* ── Tab switching ── */
+var currentTab = 'phone';
 
-  var session =
-    await Auth.getSession();
-
-  if(session){
-    window.location.href =
-      'dashboard.html';
-  }
-
+function switchTab(tab) {
+  currentTab = tab;
+  document.getElementById('tabPhone').classList.toggle('active', tab === 'phone');
+  document.getElementById('tabEmail').classList.toggle('active', tab === 'email');
+  document.getElementById('phoneWrap').style.display = tab === 'phone' ? 'block' : 'none';
+  document.getElementById('emailWrap').style.display = tab === 'email' ? 'block' : 'none';
+  clearError();
 }
 
-checkSession();
+/* ── Session check ── */
+(async function () {
+  var session = await Auth.getSession();
+  if (session) window.location.href = 'dashboard.html';
+})();
 
-function showError(msg){
-
-  document.getElementById(
-    'errorText'
-  ).textContent = msg;
-
-  document.getElementById(
-    'errorBanner'
-  ).classList.add('show');
-
+/* ── Helpers ── */
+function showError(msg) {
+  document.getElementById('errorText').textContent = msg;
+  document.getElementById('errorBanner').classList.add('show');
 }
-
-function clearError(){
-
-  document.getElementById(
-    'errorBanner'
-  ).classList.remove('show');
-
+function clearError() {
+  document.getElementById('errorBanner').classList.remove('show');
 }
-
-function setLoading(yes){
-
-  var btn =
-    document.getElementById(
-      'registerBtn'
-    );
-
+function setLoading(yes) {
+  var btn = document.getElementById('registerBtn');
   btn.disabled = yes;
-
-  btn.innerHTML = yes
-
-    ? '<div class="spinner"></div>'
-
-    : 'Create My Free Account';
-
+  btn.innerHTML = yes ? '<div class="spinner"></div>' : 'Create My Free Account';
 }
 
-async function doRegister(){
-
+/* ── Register ── */
+async function doRegister() {
   clearError();
 
-  var firstName =
-    document.getElementById(
-      'firstName'
-    ).value.trim();
+  var firstName       = document.getElementById('firstName').value.trim();
+  var lastName        = document.getElementById('lastName').value.trim();
+  var password        = document.getElementById('password').value;
+  var confirmPassword = document.getElementById('confirmPassword').value;
+  var grade           = document.getElementById('grade').value;
+  var school          = document.getElementById('school').value.trim();
 
-  var lastName =
-    document.getElementById(
-      'lastName'
-    ).value.trim();
+  var identifier = currentTab === 'phone'
+    ? document.getElementById('phoneInput').value.trim()
+    : document.getElementById('emailInput').value.trim();
 
-  var email =
-    document.getElementById(
-      'email'
-    ).value.trim();
-
-  var password =
-    document.getElementById(
-      'password'
-    ).value;
-
-  var confirmPassword =
-    document.getElementById(
-      'confirmPassword'
-    ).value;
-
-  var grade =
-    document.getElementById(
-      'grade'
-    ).value;
-
-  var school =
-    document.getElementById(
-      'school'
-    ).value.trim();
-
-  if(!firstName){
-    showError('Enter first name');
-    return;
-  }
-
-  if(!lastName){
-    showError('Enter last name');
-    return;
-  }
-
-  if(!email){
-    showError('Enter email');
-    return;
-  }
-
-  if(password.length < 6){
-    showError('Password too short');
-    return;
-  }
-
-  if(password !== confirmPassword){
-    showError('Passwords do not match');
-    return;
-  }
+  if (!firstName)                   { showError('Please enter your first name.');   return; }
+  if (!lastName)                    { showError('Please enter your last name.');    return; }
+  if (!identifier)                  { showError(currentTab === 'phone' ? 'Please enter your cell number.' : 'Please enter your email address.'); return; }
+  if (password.length < 6)          { showError('Password must be at least 6 characters.'); return; }
+  if (password !== confirmPassword)  { showError('Passwords do not match.');        return; }
 
   setLoading(true);
 
-  try{
-
-    var result =
-      await Auth.register({
-
-        firstName:firstName,
-        lastName:lastName,
-        email:email,
-        password:password,
-        grade:grade,
-        school:school
-
-      });
+  try {
+    var result = await Auth.register({
+      identifier,
+      firstName,
+      lastName,
+      password,
+      grade,
+      school,
+    });
 
     setLoading(false);
 
-    if(result.ok){
-
-      alert(
-        'Account created successfully!'
-      );
-
-      window.location.href =
-        'dashboard.html';
-
-    }else{
-
-      showError(
-        result.error
-      );
-
+    if (result.ok) {
+      window.location.href = 'dashboard.html';
+    } else {
+      showError(result.error);
     }
-
-  }catch(e){
-
+  } catch (e) {
     setLoading(false);
-
-    showError(
-      e.message
-    );
-
+    showError(e.message);
   }
-
 }
 
-document.addEventListener(
-  'keydown',
-  function(e){
-
-    if(e.key === 'Enter'){
-      doRegister();
-    }
-
-  }
-);
+document.addEventListener('keydown', function (e) { if (e.key === 'Enter') doRegister(); });
 
 </script>
-
 </body>
 </html>
