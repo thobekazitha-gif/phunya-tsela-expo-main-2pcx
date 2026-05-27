@@ -1,7 +1,8 @@
 /**
- * auth.js — Phunya Tsela  (v7 — Fixed Supabase sync)
+ * auth.js — Phunya Tsela  (v8 — Supabase load-safe)
  * ─────────────────────────────────────────────────────────────────────────────
  * Handles auth, profile, history (localStorage), and result syncing to Supabase.
+ * IMPORTANT: This file must be loaded AFTER the Supabase CDN script tag.
  * ─────────────────────────────────────────────────────────────────────────────
  */
 
@@ -11,10 +12,27 @@ var SUPABASE_KEY = 'sb_publishable_zfTqPTfONlZ04Of9ERrKww_2ICi7FCU';
 // ─────────────────────────────────────────────────────────────────────────────
 
 var _sbClient = null;
+
+/**
+ * Returns the Supabase client, throwing a clear error if the CDN
+ * hasn't loaded yet (so the developer knows exactly what's wrong).
+ */
 function _sb() {
-  if (!_sbClient) {
-    _sbClient = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+  if (_sbClient) return _sbClient;
+
+  // Check every possible way the Supabase CDN exposes itself
+  var sbLib = (typeof supabase !== 'undefined' && supabase)
+           || (typeof window !== 'undefined' && window.supabase)
+           || (typeof globalThis !== 'undefined' && globalThis.supabase);
+
+  if (!sbLib || typeof sbLib.createClient !== 'function') {
+    throw new Error(
+      'Supabase CDN not loaded. Add this BEFORE auth.js on every page:\n' +
+      '<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"><\/script>'
+    );
   }
+
+  _sbClient = sbLib.createClient(SUPABASE_URL, SUPABASE_KEY);
   return _sbClient;
 }
 
@@ -44,6 +62,9 @@ function _buildEmail(identifier) {
 var HISTORY_PREFIX = 'phunya_history_';
 function _historyKey(uid) { return HISTORY_PREFIX + uid; }
 
+// ─────────────────────────────────────────────────────────────────────────────
+// Auth object
+// ─────────────────────────────────────────────────────────────────────────────
 var Auth = {
 
   // ── Auth ──────────────────────────────────────────────────────────────────
@@ -70,7 +91,6 @@ var Auth = {
       if (error) return { ok: false, error: error.message };
       if (!data.user) return { ok: false, error: 'Registration failed. Please try again.' };
 
-      // Save profile to database
       var { error: profileError } = await _sb().from('profiles').upsert({
         id:         data.user.id,
         email:      email,
@@ -109,36 +129,43 @@ var Auth = {
       var { data } = await _sb().auth.getSession();
       return data.session || null;
     } catch (e) {
+      console.error('getSession error:', e.message);
       return null;
     }
   },
 
   async requireAuth() {
-    var session = await this.getSession();
-    if (!session || !session.user) {
+    try {
+      var session = await this.getSession();
+      if (!session || !session.user) {
+        window.location.href = 'login.html';
+        return null;
+      }
+
+      var uid  = session.user.id;
+      var meta = session.user.user_metadata || {};
+
+      var profile = null;
+      try {
+        var { data } = await _sb().from('profiles').select('*').eq('id', uid).single();
+        profile = data;
+      } catch (e) { /* fallback to meta */ }
+
+      return {
+        id:        uid,
+        email:     session.user.email,
+        firstName: (profile && profile.first_name) || meta.first_name || '',
+        lastName:  (profile && profile.last_name)  || meta.last_name  || '',
+        grade:     (profile && profile.grade)       || meta.grade      || '',
+        school:    (profile && profile.school)      || meta.school     || '',
+        phone:     (profile && profile.phone)       || meta.phone      || '',
+        role:      (profile && profile.role)        || 'learner',
+      };
+    } catch (e) {
+      console.error('requireAuth error:', e.message);
       window.location.href = 'login.html';
       return null;
     }
-
-    var uid  = session.user.id;
-    var meta = session.user.user_metadata || {};
-
-    var profile = null;
-    try {
-      var { data } = await _sb().from('profiles').select('*').eq('id', uid).single();
-      profile = data;
-    } catch (e) { /* fallback to meta */ }
-
-    return {
-      id:        uid,
-      email:     session.user.email,
-      firstName: (profile && profile.first_name) || meta.first_name || '',
-      lastName:  (profile && profile.last_name)  || meta.last_name  || '',
-      grade:     (profile && profile.grade)       || meta.grade      || '',
-      school:    (profile && profile.school)      || meta.school     || '',
-      phone:     (profile && profile.phone)       || meta.phone      || '',
-      role:      (profile && profile.role)        || 'learner',
-    };
   },
 
   async logout() {
@@ -170,7 +197,6 @@ var Auth = {
   // ── Save APS Result ───────────────────────────────────────────────────────
 
   async saveAPSResult(uid, { apsScore, subjects, mathType, summary }) {
-    // 1. Always save to localStorage first (instant, offline-safe)
     var history = this.loadHistory(uid);
     history.unshift({
       type:    'aps',
@@ -185,27 +211,16 @@ var Auth = {
     });
     this._saveHistory(uid, history);
 
-    // 2. Save to Supabase using the active authenticated session
     try {
       var sb = _sb();
-
-      // Verify we have an active session before attempting DB write
       var { data: sessionData } = await sb.auth.getSession();
       if (!sessionData || !sessionData.session) {
-        console.warn('⚠️  No active Supabase session — APS result saved to localStorage only');
+        console.warn('No active Supabase session — APS result saved to localStorage only');
         return;
       }
 
-      // Delete existing record for this user, then insert fresh
-      // (avoids upsert conflict issues with JSONB columns)
-      var { error: delError } = await sb
-        .from('aps_results')
-        .delete()
-        .eq('user_id', uid);
-
-      if (delError) {
-        console.warn('APS delete before insert failed:', delError.message);
-      }
+      var { error: delError } = await sb.from('aps_results').delete().eq('user_id', uid);
+      if (delError) console.warn('APS delete before insert failed:', delError.message);
 
       var { error: insError } = await sb.from('aps_results').insert({
         user_id:   uid,
@@ -215,19 +230,18 @@ var Auth = {
       });
 
       if (insError) {
-        console.error('❌ Supabase APS save error:', insError.message, insError.details, insError.hint);
+        console.error('Supabase APS save error:', insError.message);
       } else {
-        console.log('✅ APS result saved to Supabase — score:', apsScore);
+        console.log('APS result saved to Supabase — score:', apsScore);
       }
     } catch (e) {
-      console.error('❌ Supabase APS save exception:', e.message);
+      console.error('Supabase APS save exception:', e.message);
     }
   },
 
   // ── Save Psychometric Result ──────────────────────────────────────────────
 
   async savePsychResult(uid, { scores, topTypes, primaryType, summary }) {
-    // 1. Always save to localStorage first
     var history = this.loadHistory(uid);
     history.unshift({
       type:    'psych',
@@ -241,28 +255,17 @@ var Auth = {
     });
     this._saveHistory(uid, history);
 
-    // 2. Save to Supabase using the active authenticated session
     try {
       var sb = _sb();
-
-      // Verify we have an active session before attempting DB write
       var { data: sessionData } = await sb.auth.getSession();
       if (!sessionData || !sessionData.session) {
-        console.warn('⚠️  No active Supabase session — psych result saved to localStorage only');
+        console.warn('No active Supabase session — psych result saved to localStorage only');
         return;
       }
 
-      // Delete existing record for this user, then insert fresh
-      var { error: delError } = await sb
-        .from('psych_results')
-        .delete()
-        .eq('user_id', uid);
+      var { error: delError } = await sb.from('psych_results').delete().eq('user_id', uid);
+      if (delError) console.warn('Psych delete before insert failed:', delError.message);
 
-      if (delError) {
-        console.warn('Psych delete before insert failed:', delError.message);
-      }
-
-      // Cast topTypes to proper postgres array format
       var topTypesArray = Array.isArray(topTypes) ? topTypes : [];
 
       var { error: insError } = await sb.from('psych_results').insert({
@@ -273,12 +276,12 @@ var Auth = {
       });
 
       if (insError) {
-        console.error('❌ Supabase psych save error:', insError.message, insError.details, insError.hint);
+        console.error('Supabase psych save error:', insError.message);
       } else {
-        console.log('✅ Psych result saved to Supabase — type:', primaryType || topTypesArray[0]);
+        console.log('Psych result saved to Supabase — type:', primaryType || topTypesArray[0]);
       }
     } catch (e) {
-      console.error('❌ Supabase psych save exception:', e.message);
+      console.error('Supabase psych save exception:', e.message);
     }
   },
 };

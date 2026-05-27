@@ -6,6 +6,11 @@
 <title>Bursary Portal — Phunya Tsela</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;600;700;800&family=DM+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+
+<!-- ✅ FIX 1: Supabase MUST load before auth.js on every page -->
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="auth.js"></script>
+
 <style>
   :root {
     --primary: #d97706;
@@ -24,6 +29,20 @@
   *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
   body { font-family: 'DM Sans', sans-serif; background: var(--bg); color: var(--text); min-height: 100vh; }
   h1, h2, h3, h4 { font-family: 'Sora', sans-serif; }
+
+  /* ── Page loader ── */
+  #pageLoader {
+    position: fixed; inset: 0; background: var(--bg);
+    display: flex; align-items: center; justify-content: center;
+    z-index: 999; transition: opacity .3s;
+  }
+  #pageLoader.hidden { opacity: 0; pointer-events: none; }
+  .loader-spinner {
+    width: 36px; height: 36px;
+    border: 3px solid #fde68a; border-top-color: var(--primary);
+    border-radius: 50%; animation: spin .7s linear infinite;
+  }
+  @keyframes spin { to { transform: rotate(360deg); } }
 
   /* ── Hero ── */
   .hero { background: linear-gradient(135deg, var(--primary) 0%, var(--yellow) 100%); color: white; padding: 48px 16px 40px; }
@@ -80,10 +99,6 @@
   .empty { text-align: center; padding: 60px 20px; color: var(--muted); }
   .empty .emoji { font-size: 40px; margin-bottom: 12px; }
 
-  /* Notice */
-  .notice { margin-top: 32px; background: #f3f4f6; border-radius: var(--radius-lg); padding: 20px; font-size: 13px; color: var(--muted); }
-  .notice strong { color: var(--text); }
-
   /* ── Modal ── */
   .modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,.55); z-index: 100; display: none; align-items: center; justify-content: center; padding: 16px; backdrop-filter: blur(4px); }
   .modal-overlay.open { display: flex; }
@@ -113,79 +128,75 @@
   .more-link { text-align: center; font-size: 12px; color: var(--muted); }
   .more-link a { color: var(--primary); font-weight: 700; }
 </style>
-<script src="auth.js"></script>
-<script>
-  (function() {
-    Auth.requireAuth();
-  })();
-</script>
-
 </head>
 <body>
 
-<!-- Hero -->
-<div class="hero">
-  <div class="hero-inner">
-    <button class="back-btn" onclick="window.history.back()">← Back to Home</button>
-    <div class="hero-title-row">
-      <div class="hero-icon">📚</div>
-      <div>
-        <h1>Bursary Portal</h1>
-        <p class="sub">South African Bursaries &amp; Funding Opportunities</p>
+<!-- ✅ FIX 2: Show loader while auth check runs, hide it after -->
+<div id="pageLoader"><div class="loader-spinner"></div></div>
+
+<!-- Page content — hidden until auth confirmed -->
+<div id="pageContent" style="display:none">
+
+  <div class="hero">
+    <div class="hero-inner">
+      <a href="dashboard.html" class="back-btn">← Back to Dashboard</a>
+      <div class="hero-title-row">
+        <div class="hero-icon">📚</div>
+        <div>
+          <h1>Bursary Portal</h1>
+          <p class="sub">South African Bursaries &amp; Funding Opportunities</p>
+        </div>
       </div>
     </div>
   </div>
-</div>
 
-<!-- Main -->
-<div class="main">
+  <div class="main">
 
-  <!-- NSFAS Banner -->
-  <div class="nsfas-banner">
-    <span class="icon">💡</span>
-    <div>
-      <div class="title">Start with NSFAS</div>
-      <p>If your household income is R350 000/year or less, apply for <strong>NSFAS</strong> first — it covers tuition, accommodation, food, and transport at all public universities and TVET colleges.
-        <a href="https://www.nsfas.org.za" target="_blank" rel="noopener">Apply at nsfas.org.za →</a>
-      </p>
+    <div class="nsfas-banner">
+      <span class="icon">💡</span>
+      <div>
+        <div class="title">Start with NSFAS</div>
+        <p>If your household income is R350 000/year or less, apply for <strong>NSFAS</strong> first — it covers tuition, accommodation, food, and transport at all public universities and TVET colleges.
+          <a href="https://www.nsfas.org.za" target="_blank" rel="noopener">Apply at nsfas.org.za →</a>
+        </p>
+      </div>
     </div>
+
+    <div class="filters">
+      <div class="search-wrap">
+        <span class="search-icon">🔍</span>
+        <input type="text" class="search-input" id="searchInput" placeholder="Search bursaries..." oninput="renderBursaries()">
+      </div>
+      <select class="filter-select" id="sectorSelect" onchange="renderBursaries()">
+        <option>All Sectors</option>
+        <option>Mining</option>
+        <option>Banking / Finance</option>
+        <option>Engineering</option>
+        <option>Education</option>
+        <option>Science &amp; Research</option>
+        <option>Social Services</option>
+        <option>Retail / Commerce</option>
+        <option>Energy / Petrochemicals</option>
+        <option>Energy</option>
+        <option>Accounting / Finance</option>
+        <option>Government</option>
+        <option>Defence / Engineering</option>
+        <option>Transport / Logistics</option>
+      </select>
+      <select class="filter-select" id="tierSelect" onchange="renderBursaries()">
+        <option>All Types</option>
+        <option>Full Bursary</option>
+        <option>Partial Bursary</option>
+        <option>Merit-based</option>
+      </select>
+    </div>
+
+    <p class="results-count" id="resultsCount"></p>
+    <div class="bursary-list" id="bursaryList"></div>
+
   </div>
 
-  <!-- Filters -->
-  <div class="filters">
-    <div class="search-wrap">
-      <span class="search-icon">🔍</span>
-      <input type="text" class="search-input" id="searchInput" placeholder="Search bursaries..." oninput="renderBursaries()">
-    </div>
-    <select class="filter-select" id="sectorSelect" onchange="renderBursaries()">
-      <option>All Sectors</option>
-      <option>Mining</option>
-      <option>Banking / Finance</option>
-      <option>Engineering</option>
-      <option>Education</option>
-      <option>Science &amp; Research</option>
-      <option>Social Services</option>
-      <option>Retail / Commerce</option>
-      <option>Energy / Petrochemicals</option>
-      <option>Energy</option>
-      <option>Accounting / Finance</option>
-      <option>Government</option>
-      <option>Defence / Engineering</option>
-      <option>Transport / Logistics</option>
-    </select>
-    <select class="filter-select" id="tierSelect" onchange="renderBursaries()">
-      <option>All Types</option>
-      <option>Full Bursary</option>
-      <option>Partial Bursary</option>
-      <option>Merit-based</option>
-    </select>
-  </div>
-
-  <p class="results-count" id="resultsCount"></p>
-
-  <div class="bursary-list" id="bursaryList"></div>
-
-</div>
+</div><!-- /pageContent -->
 
 <!-- Modal -->
 <div class="modal-overlay" id="modal" onclick="closeModal(event)">
@@ -224,6 +235,26 @@
 </div>
 
 <script>
+// ✅ FIX 3: Auth check is async and properly awaited — page only shows after confirmed
+document.addEventListener('DOMContentLoaded', async function () {
+  try {
+    var user = await Auth.requireAuth();
+    if (!user) return; // requireAuth already redirected to login.html
+
+    // Auth confirmed — hide loader, show page
+    var loader = document.getElementById('pageLoader');
+    loader.classList.add('hidden');
+    setTimeout(function () { loader.style.display = 'none'; }, 350);
+    document.getElementById('pageContent').style.display = 'block';
+
+    // Now safe to render bursaries
+    renderBursaries();
+  } catch (e) {
+    console.error('Auth error:', e);
+    window.location.href = 'login.html';
+  }
+});
+
 const BURSARIES = [
   { name:"NSFAS Bursary", provider:"National Student Financial Aid Scheme", sector:"Government", value:"Full tuition + accommodation + food + transport allowances", fieldOfStudy:["All fields at public universities and TVET colleges"], requirements:"Household income ≤ R350 000/year; SA citizen; accepted at public HEI or TVET", deadline:"November each year (apply early)", link:"https://www.nsfas.org.za", tier:"full", description:"NSFAS is government-funded financial aid for students who cannot afford higher education. It covers tuition, accommodation, meals, transport, and a personal care allowance at all public universities and TVET colleges in South Africa." },
   { name:"Funza Lushaka Bursary", provider:"Department of Basic Education", sector:"Education", value:"Full tuition + stipend", fieldOfStudy:["BEd","PGCE","Education"], requirements:"SA citizen; studying towards teaching; agree to teach at public school after graduation", deadline:"August/September (check annually)", link:"https://www.funzalushaka.doe.gov.za", tier:"full", description:"The Funza Lushaka Bursary Programme is a multi-year bursary for students who intend to become teachers at public schools. Recipients must teach at a public school for the same number of years as the bursary was received." },
@@ -295,15 +326,12 @@ function renderBursaries() {
       <div class="card-hint">Click to view full details →</div>
     </div>
   `).join("");
-
-  // Store filtered for modal
   window._filteredBursaries = filtered;
 }
 
 function openModal(idx) {
   const b = (window._filteredBursaries || [])[idx];
   if (!b) return;
-
   document.getElementById("mTitle").textContent = b.name;
   document.getElementById("mProvider").textContent = b.provider;
   document.getElementById("mBadges").innerHTML = `
@@ -319,7 +347,6 @@ function openModal(idx) {
   document.getElementById("mFields").innerHTML = b.fieldOfStudy.map(f => `<span class="field-tag">${f}</span>`).join("");
   document.getElementById("mReqs").textContent = b.requirements;
   document.getElementById("mApplyBtn").href = b.link;
-
   document.getElementById("modal").classList.add("open");
   document.body.style.overflow = "hidden";
 }
@@ -329,8 +356,6 @@ function closeModal(e) {
   document.getElementById("modal").classList.remove("open");
   document.body.style.overflow = "";
 }
-
-renderBursaries();
 </script>
 </body>
 </html>

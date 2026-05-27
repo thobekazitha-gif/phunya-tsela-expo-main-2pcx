@@ -143,7 +143,14 @@
     <div class="hero-overlay"></div>
   </div>
 
-  <div class="container-tight hero-content animate-fade-in" style="padding-top: 1rem; padding-bottom: 1rem;">
+  <div class="container-tight hero-content animate-fade-in" style="
+    padding-top: 1rem;
+    padding-bottom: 1rem;
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  ">
     <span class="hero-badge" style="font-size: 0.75rem; padding: 0.3rem 0.8rem;">Kasi Career Expo • Next Expo: 24–25 JUNE 2026</span>
     <h1 class="hero-title" style="font-size: clamp(1.8rem, 5vw, 3rem); margin-bottom: 0.4rem;">
       Phunya Tsela
@@ -152,7 +159,8 @@
     <p class="hero-tagline" style="font-size: clamp(0.95rem, 2vw, 1.15rem); margin-bottom: 0.3rem;">Opening Pathways. Building Futures.</p>
     <p class="hero-venue" style="font-size: 0.8rem; margin-bottom: 1rem;">Venue: Thabo Moorosi Multi-Purpose Centre • Kurumane, Northern Cape</p>
 
-    <div class="hero-ctas" style="gap: 0.6rem; margin-bottom: 1.2rem;">
+    <!-- Top two CTA buttons -->
+    <div class="hero-ctas" style="gap: 0.6rem; margin-bottom: 1.2rem; display: flex; justify-content: center; flex-wrap: wrap;">
       <a href="learner-registration.html" class="btn-yellow" target="_blank" rel="noopener noreferrer" data-cta="hero-learner-prereg" style="padding: 0.6rem 1.2rem; font-size: 0.875rem;">
         <svg xmlns="http://www.w3.org/2000/svg" width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
         Learner Registration
@@ -163,10 +171,18 @@
       </a>
     </div>
 
-    <!-- Hero Student Tools — Student Portal only -->
-    <div class="hero-student-tools animate-fade-in-delay" style="padding: 0.8rem 1rem;">
-      <p class="student-tools-label" style="font-size: 0.75rem; margin-bottom: 0.6rem; color: #ffffff;">Student Portal — Free for Learners</p>
-      <div class="student-tools-row" style="justify-content: center;">
+    <!-- Hero Student Tools — centered, dashboard button centered below the two above -->
+    <div class="hero-student-tools animate-fade-in-delay" style="
+      padding: 0.8rem 1rem;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      width: 100%;
+    ">
+      <p class="student-tools-label" style="font-size: 0.75rem; margin-bottom: 0.6rem; color: #ffffff; text-align: center;">Student Portal — Free for Learners</p>
+
+      <!-- Dashboard button row — centered on its own line -->
+      <div class="student-tools-row" style="display: flex; justify-content: center; width: 100%;">
         <!-- Shown when logged in -->
         <a href="dashboard.html" class="btn-student-tool hero-dashboard-btn" id="hero-dashboard-btn" style="display:none; text-decoration:none; background:#dc2626; color:#fff; font-weight:700; letter-spacing:0.04em;">
           <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg>
@@ -178,7 +194,8 @@
           LEARNER DASHBOARD
         </a>
       </div>
-      <p class="student-tools-note" style="font-size: 0.7rem; margin-top: 0.5rem;">Sign up free to access all student tools — your data is protected under POPIA</p>
+
+      <p class="student-tools-note" style="font-size: 0.7rem; margin-top: 0.5rem; text-align: center;">Sign up free to access all student tools — your data is protected under POPIA</p>
     </div>
   </div>
 </section>
@@ -549,7 +566,6 @@
       <div class="gallery-item"><img src="src/assets/gallery/gallery-6.jpg" alt="SA Army Combat Training Centre stand" loading="lazy" /></div>
       <div class="gallery-item"><img src="src/assets/gallery/gallery-7.jpg" alt="Correctional Services outdoor exhibition" loading="lazy" /></div>
       <div class="gallery-item"><img src="src/assets/gallery/gallery-8.jpg" alt="GCIS media interview at the expo" loading="lazy" /></div>
-      <!-- Extra images (hidden by default) -->
       <div class="gallery-item gallery-extra hidden"><img src="src/assets/gallery/gallery-9.jpg" alt="Aerial view of Thabo Moorosi venue" loading="lazy" /></div>
       <div class="gallery-item gallery-extra hidden"><img src="src/assets/gallery/gallery-10.jpg" alt="Podcast studio and VR experiences" loading="lazy" /></div>
       <div class="gallery-item gallery-extra hidden"><img src="src/assets/gallery/gallery-11.jpg" alt="SANDF salute and learner sessions" loading="lazy" /></div>
@@ -669,9 +685,7 @@
       <span class="section-eyebrow" style="color:#29B6F6;">Got Questions?</span>
       <h2 class="section-title">Frequently Asked Questions</h2>
     </div>
-    <div class="faq-list" id="faq-list">
-      <!-- FAQ items injected by JS -->
-    </div>
+    <div class="faq-list" id="faq-list"></div>
   </div>
 </section>
 
