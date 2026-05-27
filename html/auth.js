@@ -7,8 +7,8 @@
  */
 
 // ── CONFIG ────────────────────────────────────────────────────────────────────
-var SUPABASE_URL = 'https://lfnnglzjqszdjomjmpkw.supabase.co';
-var SUPABASE_KEY = 'sb_publishable_zfTqPTfONlZ04Of9ERrKww_2ICi7FCU';
+var SUPABASE_URL = 'https://wfmrydpieryvqeqeiieh.supabase.co';
+var SUPABASE_KEY = 'sb_publishable_iKlwCC8GAPe5Nfwx23VgBg_jP8NgULn';
 // ─────────────────────────────────────────────────────────────────────────────
 
 var _sbClient = null;
