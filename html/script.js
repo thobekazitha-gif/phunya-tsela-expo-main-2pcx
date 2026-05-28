@@ -1,6 +1,5 @@
 /* ============================================================
    PHUNYA TSELA CAREER EXPO 2026 — script.js
-   Vanilla JS replacing all React interactivity
    ============================================================ */
 
 /* ── FAQ DATA ── */
@@ -62,19 +61,14 @@ const ROUTE_MAP = {
   '/aps-calculator':    'aps-calculator.html',
 };
 
-/* ── AUTH HELPERS ──
-   Mirrors the logic in auth.js without requiring an import,
-   so index.html doesn't need auth.js loaded as a separate file.
-   ------------------------------------------------------------ */
+/* ── AUTH HELPERS ── */
 function ptIsLoggedIn() {
   try {
     var session = JSON.parse(localStorage.getItem('pt_session'));
     if (!session || !session.userId) return false;
     var users = JSON.parse(localStorage.getItem('pt_users')) || [];
     return users.some(function (u) { return u.id === session.userId; });
-  } catch (e) {
-    return false;
-  }
+  } catch (e) { return false; }
 }
 
 function ptGetUser() {
@@ -85,12 +79,9 @@ function ptGetUser() {
     var user = users.find(function (u) { return u.id === session.userId; });
     if (!user) return null;
     return { id: user.id, firstName: user.firstName, lastName: user.lastName, email: user.email };
-  } catch (e) {
-    return null;
-  }
+  } catch (e) { return null; }
 }
 
-/* Navigate to a student tool page, redirecting through login if not authenticated */
 function navigateToTool(route) {
   var page = ROUTE_MAP[route];
   if (!page) return;
@@ -99,15 +90,6 @@ function navigateToTool(route) {
   } else {
     window.location.href = 'login.html?redirect=' + encodeURIComponent(page);
   }
-}
-
-function toolLabel(route) {
-  var map = {
-    '/bursary-portal':    'Bursary Portal',
-    '/psychometric-test': 'Psychometric Test',
-    '/aps-calculator':    'APS Calculator',
-  };
-  return map[route] || 'student tools';
 }
 
 /* ── DOM READY ── */
@@ -129,16 +111,17 @@ document.addEventListener('DOMContentLoaded', function () {
 function initHeader() {
   var header = document.getElementById('site-header');
   window.addEventListener('scroll', function () {
-    if (window.scrollY > 40) {
-      header.style.boxShadow = '0 2px 16px rgba(0,0,0,0.12)';
-    } else {
-      header.style.boxShadow = '0 1px 8px rgba(0,0,0,0.08)';
-    }
+    header.style.boxShadow = window.scrollY > 40
+      ? '0 2px 16px rgba(0,0,0,0.12)'
+      : '0 1px 8px rgba(0,0,0,0.08)';
   });
 }
 
 /* ============================================================
    MOBILE MENU
+   FIX: added body scroll lock (body.nav-open) so the page
+        doesn't scroll under the open drawer.
+   FIX: close on outside tap and Escape key.
    ============================================================ */
 function initMobileMenu() {
   var btn      = document.getElementById('mobile-menu-btn');
@@ -146,24 +129,48 @@ function initMobileMenu() {
   var menuIco  = document.getElementById('menu-icon');
   var closeIco = document.getElementById('close-icon');
 
+  function openNav() {
+    nav.classList.add('open');
+    menuIco.style.display  = 'none';
+    closeIco.style.display = '';
+    btn.setAttribute('aria-expanded', 'true');
+    document.body.classList.add('nav-open');   /* lock scroll */
+  }
+
+  function closeNav() {
+    nav.classList.remove('open');
+    menuIco.style.display  = '';
+    closeIco.style.display = 'none';
+    btn.setAttribute('aria-expanded', 'false');
+    document.body.classList.remove('nav-open'); /* restore scroll */
+  }
+
   btn.addEventListener('click', function () {
-    var isOpen = nav.classList.toggle('open');
-    menuIco.style.display  = isOpen ? 'none' : '';
-    closeIco.style.display = isOpen ? ''     : 'none';
+    nav.classList.contains('open') ? closeNav() : openNav();
   });
 
-  // Close on nav link click
+  /* Close on any nav link tap */
   nav.querySelectorAll('.mobile-nav-link').forEach(function (link) {
-    link.addEventListener('click', function () {
-      nav.classList.remove('open');
-      menuIco.style.display  = '';
-      closeIco.style.display = 'none';
-    });
+    link.addEventListener('click', closeNav);
+  });
+
+  /* Close on outside tap */
+  document.addEventListener('click', function (e) {
+    if (nav.classList.contains('open') &&
+        !nav.contains(e.target) &&
+        !btn.contains(e.target)) {
+      closeNav();
+    }
+  });
+
+  /* Close on Escape */
+  document.addEventListener('keydown', function (e) {
+    if (e.key === 'Escape') closeNav();
   });
 }
 
 /* ============================================================
-   STUDENT TOOLS DROPDOWN (desktop) — toggle only, no routing
+   STUDENT TOOLS DROPDOWN (desktop)
    ============================================================ */
 function initStudentToolsDropdown() {
   var btn  = document.getElementById('student-tools-btn');
@@ -175,20 +182,16 @@ function initStudentToolsDropdown() {
     btn.setAttribute('aria-expanded', open);
   });
 
-  // Close dropdown when clicking elsewhere
   document.addEventListener('click', function () {
     menu.classList.remove('open');
     btn.setAttribute('aria-expanded', 'false');
   });
 
-  // Prevent clicks inside the menu from closing it immediately
   menu.addEventListener('click', function (e) { e.stopPropagation(); });
 }
 
 /* ============================================================
-   ALL data-route BUTTONS
-   Hero tools + desktop dropdown items + mobile tool buttons
-   → navigate to the tool page, via login if not signed in
+   data-route BUTTONS
    ============================================================ */
 function initDataRouteButtons() {
   document.querySelectorAll('[data-route]').forEach(function (el) {
@@ -199,14 +202,11 @@ function initDataRouteButtons() {
 }
 
 /* ============================================================
-   STUDENT LOGIN BUTTONS (header + mobile)
-   → go to login.html if not signed in
-   → go to index.html / a dashboard if already signed in
+   STUDENT LOGIN BUTTONS
    ============================================================ */
 function initStudentLoginButtons() {
   function handleLoginClick() {
     if (ptIsLoggedIn()) {
-      // Already logged in — could point to a dashboard; for now stays on index
       var user = ptGetUser();
       alert('You are signed in as ' + user.firstName + ' ' + user.lastName + '.');
     } else {
@@ -220,10 +220,10 @@ function initStudentLoginButtons() {
   var mobileLoginBtn = document.getElementById('mobile-login-btn');
   if (mobileLoginBtn) {
     mobileLoginBtn.addEventListener('click', function () {
-      // Close mobile nav first
       document.getElementById('mobile-nav').classList.remove('open');
       document.getElementById('menu-icon').style.display  = '';
       document.getElementById('close-icon').style.display = 'none';
+      document.body.classList.remove('nav-open');
       handleLoginClick();
     });
   }
@@ -244,7 +244,6 @@ function initGalleryToggle() {
     extras.forEach(function (el) {
       el.classList.toggle('hidden', !expanded);
     });
-    // Update button text node (first child text node)
     btn.childNodes[0].textContent = expanded ? 'Show Less ' : 'View More ';
     chevDown.style.display = expanded ? 'none' : '';
     chevUp.style.display   = expanded ? ''     : 'none';
@@ -288,7 +287,7 @@ function escapeHtml(str) {
 }
 
 /* ============================================================
-   SCROLL REVEAL (IntersectionObserver)
+   SCROLL REVEAL
    ============================================================ */
 function initScrollReveal() {
   var els = document.querySelectorAll('.reveal');
@@ -320,10 +319,11 @@ function initScrollNavLinks() {
         var headerH = document.getElementById('site-header').offsetHeight;
         var top = target.getBoundingClientRect().top + window.scrollY - headerH - 8;
         window.scrollTo({ top: top, behavior: 'smooth' });
-        // Close mobile menu if open
+        /* Close mobile menu if open */
         document.getElementById('mobile-nav').classList.remove('open');
         document.getElementById('menu-icon').style.display  = '';
         document.getElementById('close-icon').style.display = 'none';
+        document.body.classList.remove('nav-open');
       }
     });
   });
