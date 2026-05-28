@@ -23,7 +23,8 @@
 <header id="site-header" class="site-header">
   <div class="container-tight header-inner">
     <a href="/" class="logo-link">
-      <img src="src/assets/logos/29.png" alt="Phunya Tsela" class="header-logo" style="height: 80px; width: auto;" />
+      <!-- FIX 1: removed inline style="height:80px;width:auto" — CSS now controls logo size -->
+      <img src="src/assets/logos/29.png" alt="Phunya Tsela" class="header-logo" />
     </a>
 
     <nav class="desktop-nav">
@@ -137,20 +138,20 @@
 <main>
 
 <!-- ===== HERO SECTION ===== -->
-<section class="hero-section" style="min-height: 56vh; padding: 2rem 0;">
+<!--
+  FIX 2: removed inline style="min-height:56vh; padding:2rem 0" from <section>
+          — CSS .hero-section already sets padding-top via --header-h-mobile variable.
+  FIX 3: removed inline padding-top/bottom overrides from hero-content div
+          — let CSS .hero-content handle all padding.
+-->
+<section class="hero-section">
   <div class="hero-bg">
     <img src="src/assets/hero-image.jpg" alt="Phunya Tsela Career Expo" class="hero-img" />
     <div class="hero-overlay"></div>
   </div>
 
-  <div class="container-tight hero-content animate-fade-in" style="
-    padding-top: 1rem;
-    padding-bottom: 1rem;
-    text-align: center;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-  ">
+  <div class="container-tight hero-content animate-fade-in" style="text-align:center; display:flex; flex-direction:column; align-items:center;">
+    <!-- FIX 4: badge is now fully visible because hero padding-top is correct -->
     <span class="hero-badge" style="font-size: 0.75rem; padding: 0.3rem 0.8rem;">Kasi Career Expo • Next Expo: 24–25 JUNE 2026</span>
     <h1 class="hero-title" style="font-size: clamp(1.8rem, 5vw, 3rem); margin-bottom: 0.4rem;">
       Phunya Tsela
@@ -159,7 +160,6 @@
     <p class="hero-tagline" style="font-size: clamp(0.95rem, 2vw, 1.15rem); margin-bottom: 0.3rem;">Opening Pathways. Building Futures.</p>
     <p class="hero-venue" style="font-size: 0.8rem; margin-bottom: 1rem;">Venue: Thabo Moorosi Multi-Purpose Centre • Kurumane, Northern Cape</p>
 
-    <!-- Top two CTA buttons -->
     <div class="hero-ctas" style="gap: 0.6rem; margin-bottom: 1.2rem; display: flex; justify-content: center; flex-wrap: wrap;">
       <a href="learner-registration.html" class="btn-yellow" target="_blank" rel="noopener noreferrer" data-cta="hero-learner-prereg" style="padding: 0.6rem 1.2rem; font-size: 0.875rem;">
         <svg xmlns="http://www.w3.org/2000/svg" width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
@@ -171,30 +171,18 @@
       </a>
     </div>
 
-    <!-- Hero Student Tools — centered, dashboard button centered below the two above -->
-    <div class="hero-student-tools animate-fade-in-delay" style="
-      padding: 0.8rem 1rem;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      width: 100%;
-    ">
+    <div class="hero-student-tools animate-fade-in-delay" style="padding: 0.8rem 1rem; display: flex; flex-direction: column; align-items: center; width: 100%;">
       <p class="student-tools-label" style="font-size: 0.75rem; margin-bottom: 0.6rem; color: #ffffff; text-align: center;">Student Portal — Free for Learners</p>
-
-      <!-- Dashboard button row — centered on its own line -->
       <div class="student-tools-row" style="display: flex; justify-content: center; width: 100%;">
-        <!-- Shown when logged in -->
         <a href="dashboard.html" class="btn-student-tool hero-dashboard-btn" id="hero-dashboard-btn" style="display:none; text-decoration:none; background:#dc2626; color:#fff; font-weight:700; letter-spacing:0.04em;">
           <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg>
           LEARNER DASHBOARD
         </a>
-        <!-- Shown when logged out — links to login.html -->
         <a href="login.html" class="btn-student-tool hero-dashboard-gated-btn" id="hero-dashboard-gated-btn" style="background:#dc2626; color:#fff; font-weight:700; letter-spacing:0.04em; text-decoration:none;">
           <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg>
           LEARNER DASHBOARD
         </a>
       </div>
-
       <p class="student-tools-note" style="font-size: 0.7rem; margin-top: 0.5rem; text-align: center;">Sign up free to access all student tools — your data is protected under POPIA</p>
     </div>
   </div>
@@ -876,27 +864,6 @@
   border-color: hsl(var(--primary, 220 90% 50%) / 0.6);
 }
 
-.btn-dashboard-tool {
-  background: linear-gradient(135deg, #1e3a5f, #2563eb);
-  color: #fff;
-  border: none;
-  padding: 0.5rem 1.2rem;
-  border-radius: 8px;
-  font-family: 'Space Grotesk', sans-serif;
-  font-weight: 600;
-  font-size: 0.875rem;
-  display: inline-flex;
-  align-items: center;
-  gap: 0.4rem;
-  cursor: pointer;
-  transition: filter 0.2s, transform 0.15s;
-  text-decoration: none;
-}
-.btn-dashboard-tool:hover {
-  filter: brightness(1.1);
-  transform: translateY(-1px);
-}
-
 .nav-dashboard-item {
   border-bottom: 1px solid rgba(0,0,0,0.07);
   margin-bottom: 4px;
@@ -907,9 +874,7 @@
 </style>
 
 <script>
-/* ================================================================
-   AUTH STATE — reads sessionStorage set by login.html
-================================================================ */
+/* AUTH STATE */
 var SESSION_KEY = 'kce_student';
 
 function getStudentSession() {
@@ -972,9 +937,7 @@ document.addEventListener('DOMContentLoaded', function() {
 </script>
 
 <script>
-/* ================================================================
-   PROSPECTUS MODAL
-================================================================ */
+/* PROSPECTUS MODAL */
 function openProspectusModal(e) {
   e.preventDefault();
   var modal = document.getElementById('prospectus-modal');
@@ -1064,3 +1027,5 @@ function showProspErr(msg) {
 <script src="script.js"></script>
 </body>
 </html>
+HTMLEOF
+
