@@ -182,6 +182,9 @@
         <option>Government</option>
         <option>Defence / Engineering</option>
         <option>Transport / Logistics</option>
+        <option>Construction</option>
+        <option>Agriculture</option>
+        <option>Community Development</option>
       </select>
       <select class="filter-select" id="tierSelect" onchange="renderBursaries()">
         <option>All Types</option>
@@ -256,26 +259,165 @@ document.addEventListener('DOMContentLoaded', async function () {
 });
 
 const BURSARIES = [
-  { name:"NSFAS Bursary", provider:"National Student Financial Aid Scheme", sector:"Government", value:"Full tuition + accommodation + food + transport allowances", fieldOfStudy:["All fields at public universities and TVET colleges"], requirements:"Household income ≤ R350 000/year; SA citizen; accepted at public HEI or TVET", deadline:"November each year (apply early)", link:"https://www.nsfas.org.za", tier:"full", description:"NSFAS is government-funded financial aid for students who cannot afford higher education. It covers tuition, accommodation, meals, transport, and a personal care allowance at all public universities and TVET colleges in South Africa." },
-  { name:"Funza Lushaka Bursary", provider:"Department of Basic Education", sector:"Education", value:"Full tuition + stipend", fieldOfStudy:["BEd","PGCE","Education"], requirements:"SA citizen; studying towards teaching; agree to teach at public school after graduation", deadline:"August/September (check annually)", link:"https://www.funzalushaka.doe.gov.za", tier:"full", description:"The Funza Lushaka Bursary Programme is a multi-year bursary for students who intend to become teachers at public schools. Recipients must teach at a public school for the same number of years as the bursary was received." },
-  { name:"Anglo American Bursary", provider:"Anglo American Platinum", sector:"Mining", value:"Full tuition + accommodation + living allowance", fieldOfStudy:["Mining Engineering","Mechanical Engineering","Electrical Engineering","Geology","Metallurgy"], requirements:"SA citizen; Maths 70%+; Physical Sciences 60%+; from mining communities preferred", deadline:"31 August each year", link:"https://www.angloamerican.com/careers/students-and-graduates", tier:"full", description:"Anglo American offers comprehensive bursaries for students in engineering and science fields, with preference given to students from communities near their mining operations. The bursary includes vacation work opportunities and a potential job offer upon graduation." },
-  { name:"Sasol Bursary", provider:"Sasol Limited", sector:"Energy / Petrochemicals", value:"Full tuition + accommodation + laptop", fieldOfStudy:["Chemical Engineering","Mechanical Engineering","Electrical Engineering","Chemistry","IT","Finance"], requirements:"SA citizen; Maths 80%+; Physical Sciences 70%+; APS 35+", deadline:"31 August each year", link:"https://www.sasol.com/careers/student-opportunities", tier:"full", description:"Sasol's bursary programme covers full tuition, accommodation, meals, a laptop, and a book allowance. Bursary holders are expected to do vacation work at Sasol during university holidays and may be offered employment after graduation." },
-  { name:"Eskom Bursary", provider:"Eskom Holdings", sector:"Energy", value:"Full tuition + monthly allowance", fieldOfStudy:["Electrical Engineering","Mechanical Engineering","Civil Engineering","Chemistry","Finance","IT"], requirements:"SA citizen; Maths 70%+; Physical Sciences 60%+", deadline:"31 July each year", link:"https://www.eskom.co.za/career-student-opportunities/", tier:"full", description:"Eskom offers full bursaries to students in engineering and related fields. The programme includes mentorship, vacation work placements, and potential employment after graduation within Eskom's national operations." },
-  { name:"Armscor Bursary", provider:"Armscor (Armaments Corporation of SA)", sector:"Defence / Engineering", value:"Full tuition + accommodation + allowances", fieldOfStudy:["Electrical Engineering","Mechanical Engineering","Computer Science","Physics","Chemistry"], requirements:"SA citizen; Maths 70%+; Physical Sciences 65%+; security clearance required", deadline:"31 August each year", link:"https://www.armscor.co.za/careers", tier:"full", description:"Armscor provides bursaries for students in defence-related engineering and science disciplines. Recipients receive full financial support and may be required to complete vacation work and post-graduation employment with Armscor." },
-  { name:"ABSA Bank Bursary", provider:"ABSA Group", sector:"Banking / Finance", value:"Partial tuition + mentoring + vacation work", fieldOfStudy:["BCom","Finance","Accounting","IT","Economics"], requirements:"SA citizen; Maths 60%+; strong academic record", deadline:"August each year", link:"https://www.absa.co.za/careers", tier:"partial", description:"ABSA's bursary programme supports students in commerce and IT fields with financial assistance, mentoring from ABSA professionals, and vacation work opportunities. This can lead to graduate placement within the ABSA Group." },
-  { name:"Nedbank Bursary", provider:"Nedbank Group", sector:"Banking / Finance", value:"Full tuition + vacation work", fieldOfStudy:["BCom Accounting","Finance","IT","Actuarial Science","Economics"], requirements:"SA citizen; Maths 70%+; Accounting 60%+; strong academic record", deadline:"31 August each year", link:"https://www.nedbank.co.za/careers", tier:"full", description:"Nedbank's bursary programme covers full tuition fees for qualifying students in financial and technology disciplines. It includes structured vacation work exposure, mentoring, and a potential graduate recruitment pathway." },
-  { name:"FNB Bursary Programme", provider:"First National Bank (FirstRand)", sector:"Banking / Finance", value:"Full tuition + internship opportunity", fieldOfStudy:["BCom","IT","Engineering","Data Science","Finance"], requirements:"SA citizen; Maths 65%+; high academic achiever", deadline:"September each year", link:"https://www.fnb.co.za/careers", tier:"full", description:"FNB offers full bursaries to top-performing students. The programme includes access to FNB's innovative tech environment, internship placements, mentorship from senior FNB employees, and opportunities to join the FNB graduate programme." },
-  { name:"Thuthuka Bursary Fund", provider:"South African Institute of Chartered Accountants (SAICA)", sector:"Accounting / Finance", value:"Full tuition + accommodation + personal development support", fieldOfStudy:["BCom Accounting (CA pathway)"], requirements:"Black African or Coloured SA student; Maths 60%+; Accounting 50%+", deadline:"August each year", link:"https://www.saica.co.za/thuthuka", tier:"full", description:"The Thuthuka Bursary Fund supports Black African and Coloured students on the Chartered Accountancy (CA) pathway. It offers full financial support plus a structured support programme including tutoring, life skills training, and mentoring." },
-  { name:"Assmang Bursary", provider:"Assmang Proprietary Limited", sector:"Mining", value:"Full tuition + accommodation allowance", fieldOfStudy:["Mining Engineering","Metallurgy","Chemical Engineering","Mechanical Engineering","Finance"], requirements:"SA citizen; from Northern Cape or John Taolo Gaetsewe district preferred; Maths 60%+", deadline:"30 September each year", link:"https://www.assmang.co.za", tier:"full", description:"Assmang offers bursaries primarily to students from communities near their manganese and iron ore operations in the Northern Cape. The bursary covers full tuition, accommodation, and includes structured vacation work at their mines." },
-  { name:"Harmony Gold Bursary", provider:"Harmony Gold Mining", sector:"Mining", value:"Full tuition + accommodation", fieldOfStudy:["Mining Engineering","Geology","Metallurgical Engineering","Electrical Engineering"], requirements:"SA citizen; from mining communities preferred; Maths 60%+; Physical Sciences 60%+", deadline:"31 August each year", link:"https://www.harmony.co.za/careers", tier:"full", description:"Harmony Gold Mining provides bursaries for students in mining-related disciplines, with priority given to students from host communities. Recipients are expected to complete vacation work at Harmony operations." },
-  { name:"SPAR Group Bursary", provider:"SPAR South Africa", sector:"Retail / Commerce", value:"Partial tuition", fieldOfStudy:["BCom","Accounting","Supply Chain","Logistics","Marketing"], requirements:"SA citizen; Maths 50%+; from SPAR trading areas preferred", deadline:"September each year", link:"https://www.spar.co.za/careers", tier:"partial", description:"SPAR offers partial bursaries to students in commerce-related fields, particularly those from communities near SPAR distribution centres." },
-  { name:"Capitec Bank Bursary", provider:"Capitec Bank", sector:"Banking / Finance", value:"Tuition + vacation work opportunity", fieldOfStudy:["BCom","Finance","Actuarial Science","Statistics","IT"], requirements:"SA citizen; Maths 70%+; excellent academic record", deadline:"September each year", link:"https://www.capitecbank.co.za/careers", tier:"partial", description:"Capitec Bank's bursary supports students in quantitative and financial disciplines. Recipients gain exposure to Capitec's innovative banking culture through vacation work, with the possibility of joining the graduate programme." },
-  { name:"SASSA / Social Development Bursary", provider:"Department of Social Development", sector:"Social Services", value:"Full tuition", fieldOfStudy:["Social Work","Psychology","Child & Youth Care"], requirements:"SA citizen; financial need; commit to work in public sector after graduation", deadline:"September each year", link:"https://www.dsd.gov.za", tier:"full", description:"The Department of Social Development funds bursaries for students in social work and related fields. Recipients are required to work in the public sector for a period equal to the duration of the bursary upon graduation." },
-  { name:"DSI/NRF Scarce Skills Bursary", provider:"Dept of Science & Innovation / NRF", sector:"Science & Research", value:"Full tuition + research stipend", fieldOfStudy:["All STEM disciplines","Postgrad research","Honours","Masters","PhD"], requirements:"SA citizen; excellent academic record; research-focused", deadline:"Various — check NRF website", link:"https://www.nrf.ac.za", tier:"merit", description:"The NRF offers a range of bursaries and scholarships for undergraduate and postgraduate students in STEM. The programme aims to develop South Africa's research capacity." },
-  { name:"Standard Bank Bursary", provider:"Standard Bank Group", sector:"Banking / Finance", value:"Full tuition + vacation work", fieldOfStudy:["BCom","Accounting","IT","Engineering","Law","Data Science"], requirements:"SA citizen; strong academic record; Maths 65%+", deadline:"August each year", link:"https://www.standardbank.co.za/careers", tier:"full", description:"Standard Bank offers comprehensive bursaries to top students across multiple disciplines. The programme includes mentorship, structured vacation work, and potential graduate employment." },
-  { name:"De Beers Group Bursary", provider:"De Beers Group", sector:"Mining", value:"Full tuition + allowances + vacation work", fieldOfStudy:["Mining Engineering","Geology","Mechanical Engineering","Electrical Engineering","Metallurgy"], requirements:"SA citizen; from De Beers operating communities preferred; strong Maths and Science", deadline:"31 August each year", link:"https://www.debeersgroup.com/careers", tier:"full", description:"De Beers provides bursaries for students in mining and engineering disciplines, with a focus on students from communities near their diamond mining operations." },
-  { name:"Investec Bursary", provider:"Investec Bank", sector:"Banking / Finance", value:"Full tuition + vacation work + mentoring", fieldOfStudy:["BCom","Actuarial Science","Engineering","IT","Finance"], requirements:"SA citizen; strong academic record; Maths 80%+", deadline:"August each year", link:"https://www.investec.com/en_za/careers/students-and-graduates.html", tier:"merit", description:"Investec offers merit-based bursaries to exceptional students. Recipients gain exposure to Investec's distinctive culture through vacation work, mentorship programmes, and development workshops." },
-  { name:"Transnet Bursary", provider:"Transnet SOC Ltd", sector:"Transport / Logistics", value:"Full tuition + allowances", fieldOfStudy:["Civil Engineering","Electrical Engineering","Mechanical Engineering","Industrial Engineering","Logistics"], requirements:"SA citizen; Maths 65%+; Physical Sciences 60%+", deadline:"31 August each year", link:"https://www.transnet.net/careers", tier:"full", description:"Transnet bursaries are available for students in engineering and logistics disciplines. The programme includes structured vacation work at Transnet's freight rail, pipeline, port, and engineering operations nationwide." },
+  // ── PUBLIC / NATIONAL BURSARIES ──
+  {
+    name: "NSFAS Bursary",
+    provider: "National Student Financial Aid Scheme",
+    sector: "Government",
+    value: "Full tuition + accommodation + food + transport allowances",
+    fieldOfStudy: ["All fields at public universities and TVET colleges"],
+    requirements: "Household income ≤ R350 000/year; SA citizen; accepted at public HEI or TVET",
+    deadline: "November each year (apply early)",
+    link: "https://www.nsfas.org.za",
+    tier: "full",
+    description: "NSFAS is government-funded financial aid for students who cannot afford higher education. It covers tuition, accommodation, meals, transport, and a personal care allowance at all public universities and TVET colleges in South Africa."
+  },
+  {
+    name: "Funza Lushaka Bursary",
+    provider: "Department of Basic Education",
+    sector: "Education",
+    value: "Full tuition + stipend",
+    fieldOfStudy: ["BEd", "PGCE", "Education"],
+    requirements: "SA citizen; studying towards teaching; agree to teach at public school after graduation",
+    deadline: "August/September (check annually)",
+    link: "https://www.funzalushaka.doe.gov.za",
+    tier: "full",
+    description: "The Funza Lushaka Bursary Programme is a multi-year bursary for students who intend to become teachers at public schools. Recipients must teach at a public school for the same number of years as the bursary was received."
+  },
+  {
+    name: "DSI/NRF Scarce Skills Bursary",
+    provider: "Dept of Science & Innovation / NRF",
+    sector: "Science & Research",
+    value: "Full tuition + research stipend",
+    fieldOfStudy: ["All STEM disciplines", "Postgrad research", "Honours", "Masters", "PhD"],
+    requirements: "SA citizen; excellent academic record; research-focused",
+    deadline: "Various — check NRF website",
+    link: "https://www.nrf.ac.za",
+    tier: "merit",
+    description: "The NRF offers a range of bursaries and scholarships for undergraduate and postgraduate students in STEM. The programme aims to develop South Africa's research capacity."
+  },
+  {
+    name: "SASSA / Social Development Bursary",
+    provider: "Department of Social Development",
+    sector: "Social Services",
+    value: "Full tuition",
+    fieldOfStudy: ["Social Work", "Psychology", "Child & Youth Care"],
+    requirements: "SA citizen; financial need; commit to work in public sector after graduation",
+    deadline: "September each year",
+    link: "https://www.dsd.gov.za",
+    tier: "full",
+    description: "The Department of Social Development funds bursaries for students in social work and related fields. Recipients are required to work in the public sector for a period equal to the duration of the bursary upon graduation."
+  },
+  {
+    name: "Thuthuka Bursary Fund",
+    provider: "South African Institute of Chartered Accountants (SAICA)",
+    sector: "Accounting / Finance",
+    value: "Full tuition + accommodation + personal development support",
+    fieldOfStudy: ["BCom Accounting (CA pathway)"],
+    requirements: "Black African or Coloured SA student; Maths 60%+; Accounting 50%+",
+    deadline: "August each year",
+    link: "https://www.saica.co.za/thuthuka",
+    tier: "full",
+    description: "The Thuthuka Bursary Fund supports Black African and Coloured students on the Chartered Accountancy (CA) pathway. It offers full financial support plus a structured support programme including tutoring, life skills training, and mentoring."
+  },
+
+  // ── PARTNERS BURSARIES ──
+  {
+    name: "Assmang Bursary",
+    provider: "Assmang Proprietary Limited",
+    sector: "Mining",
+    value: "Full tuition + accommodation + prescribed books",
+    fieldOfStudy: ["Mining Engineering", "Metallurgy", "Chemical Engineering", "Mechanical Engineering", "Finance"],
+    requirements: "SA citizen; from Northern Cape (John Taolo Gaetsewe District) preferred; Maths 60%+",
+    deadline: "September – December each year (for following academic year)",
+    link: "https://assmang.ci.hr/applicant/index.php?controller=Listings&method=view&listingid=21594c85-204a-4d88-bc43-33426b166642",
+    tier: "full",
+    description: "Assmang offers bursaries for students at their Black Rock and Khumani Mine operations, primarily targeting candidates from the Northern Cape's John Taolo Gaetsewe District. The bursary covers tuition, accommodation, and prescribed books, with structured vacation work at their mines."
+  },
+  {
+    name: "SIOC-CDT Bursary Fund",
+    provider: "SIOC Community Development Trust",
+    sector: "Community Development",
+    value: "Full tuition + accommodation + books + stipend",
+    fieldOfStudy: ["Engineering", "Mining", "Commerce", "Science", "Education"],
+    requirements: "Must live in and originate from SIOC-CDT host communities; SA citizen; financial need",
+    deadline: "Around September each year (for following academic year)",
+    link: "https://www.sioc-cdt.co.za/2026-bursary-fund/",
+    tier: "full",
+    description: "The SIOC Community Development Trust (SIOC-CDT) bursary provides comprehensive funding for students who live in and originate from the trust's specific host communities. It covers tuition, accommodation, books, and a monthly stipend."
+  },
+  {
+    name: "JTG Developmental Trust Bursary",
+    provider: "John Taolo Gaetsewe Developmental Trust",
+    sector: "Community Development",
+    value: "Tuition support",
+    fieldOfStudy: ["Engineering", "Mining", "Commerce", "Education", "Health Sciences"],
+    requirements: "Must be from the JTG District; SA citizen; financial need",
+    deadline: "June – September each year (for following academic year)",
+    link: "https://jtgd-trust.co.za/files/2026%20Bursary%20form.pdf",
+    tier: "partial",
+    description: "The JTG Developmental Trust Bursary supports students from the John Taolo Gaetsewe District. Students can track upcoming application cycles on the JTG Developmental Trust website."
+  },
+  {
+    name: "Northern Cape Premier's Bursary",
+    provider: "Office of the Premier – Northern Cape",
+    sector: "Government",
+    value: "Tuition support",
+    fieldOfStudy: ["All fields relevant to provincial government needs"],
+    requirements: "SA citizen; from the Northern Cape; financial need; strong academic record",
+    deadline: "Opens 1 August, closes late October/early November each year",
+    link: "http://www.northern-cape.gov.za/bursaries/",
+    tier: "partial",
+    description: "The Northern Cape Premier's Bursary Programme provides financial support to Northern Cape students. Applications typically open on 1 August each year and close around late October or early November."
+  },
+  {
+    name: "Kudumane Manganese Resources (KMR) Bursary",
+    provider: "Kudumane Manganese Resources",
+    sector: "Mining",
+    value: "Full tuition + allowances",
+    fieldOfStudy: ["Mining Engineering", "Mechanical Engineering", "Electrical Engineering", "Geology", "Metallurgy"],
+    requirements: "SA citizen; from mining communities in the region; strong Maths and Science",
+    deadline: "September – December each year (for following academic year)",
+    link: "https://www.kudumane.com/sample-bursary-application-form/",
+    tier: "full",
+    description: "Kudumane Manganese Resources offers mining-related bursaries for students from communities near their operations. The 2027 application window typically opens between September and December of the preceding year."
+  },
+  {
+    name: "W&RSETA Bursary",
+    provider: "Wholesale and Retail Sector Education and Training Authority",
+    sector: "Retail / Commerce",
+    value: "Tuition support",
+    fieldOfStudy: ["Retail Management", "Supply Chain", "Logistics", "Commerce", "Business Administration"],
+    requirements: "SA citizen; studying in the wholesale and retail sector; applications submitted through participating TVET colleges or university bursary offices",
+    deadline: "Late 2026 / early 2027 for 2027 academic year (check with your institution)",
+    link: "https://www.wrseta.org.za/",
+    tier: "partial",
+    description: "The W&RSETA bursary targets students in the wholesale and retail sector. Applications are typically submitted directly through participating TVET colleges and university bursary offices, rather than by individual students online."
+  },
+  {
+    name: "CETA Thapelo Madibeng Bursary",
+    provider: "Construction Education and Training Authority (CETA)",
+    sector: "Construction",
+    value: "Tuition + support for undergraduate and postgraduate studies",
+    fieldOfStudy: ["Construction Management", "Civil Engineering", "Quantity Surveying", "Architecture", "Built Environment"],
+    requirements: "SA citizen; enrolled at a public South African institution; studying construction or built-environment qualifications",
+    deadline: "January each year",
+    link: "https://www.ceta.org.za/media/press-news/the-thapelo-madibeng-bursary-scheme",
+    tier: "partial",
+    description: "The Construction Education and Training Authority (CETA) offers the Thapelo Madibeng Bursary for undergraduate and postgraduate students pursuing construction and built-environment qualifications at public South African institutions. Applications typically open in January for the academic year."
+  },
+  {
+    name: "DALRRD Bursary",
+    provider: "Department of Agriculture, Land Reform and Rural Development",
+    sector: "Agriculture",
+    value: "Comprehensive bursary (tuition + related costs)",
+    fieldOfStudy: ["Agriculture", "Geomatics", "Urban Planning", "Land Reform", "Rural Development"],
+    requirements: "SA citizen; financial need; studying agriculture, geomatics, or urban planning at a public institution",
+    deadline: "30 September 2026 (for 2027 academic year)",
+    link: "https://www.dlrrd.gov.za/images/Vacancies/bursaries/2026/2026_dlrrd-final-bursary-advert.pdf",
+    tier: "full",
+    description: "The Department of Agriculture, Land Reform and Rural Development (DALRRD) offers comprehensive bursaries for South African students pursuing careers in agriculture, geomatics, and urban planning, in support of government's land reform and rural development mandate."
+  },
 ];
 
 function tierBadgeClass(t) { return t === "full" ? "badge-full" : t === "partial" ? "badge-partial" : "badge-merit"; }
