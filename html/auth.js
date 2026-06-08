@@ -71,7 +71,7 @@ var Auth = {
 
   // ── Auth ──────────────────────────────────────────────────────────────────
 
-  async register({ identifier, firstName, lastName, password, grade, school }) {
+  async register({ identifier, firstName, lastName, password, grade, school, recoveryEmail }) {
     try {
       var email = _buildEmail(identifier);
       var phone = _isPhone(identifier.trim()) ? identifier.trim() : null;
@@ -81,11 +81,12 @@ var Auth = {
         password,
         options: {
           data: {
-            first_name: firstName,
-            last_name:  lastName,
-            grade:      grade  || '',
-            school:     school || '',
-            phone:      phone  || '',
+            first_name:     firstName,
+            last_name:      lastName,
+            grade:          grade         || '',
+            school:         school        || '',
+            phone:          phone         || '',
+            recovery_email: recoveryEmail || '',
           }
         }
       });
@@ -94,14 +95,15 @@ var Auth = {
       if (!data.user) return { ok: false, error: 'Registration failed. Please try again.' };
 
       var { error: profileError } = await _sb().from('profiles').upsert({
-        id:         data.user.id,
-        email:      email,
-        first_name: firstName,
-        last_name:  lastName,
-        grade:      grade  || '',
-        school:     school || '',
-        phone:      phone  || '',
-        role:       'learner',
+        id:             data.user.id,
+        email:          email,
+        first_name:     firstName,
+        last_name:      lastName,
+        grade:          grade         || '',
+        school:         school        || '',
+        phone:          phone         || '',
+        recovery_email: recoveryEmail || '',
+        role:           'learner',
       }, { onConflict: 'id' });
 
       if (profileError) {
@@ -172,6 +174,39 @@ var Auth = {
 
   async logout() {
     try { await _sb().auth.signOut(); } catch (e) { /* ignore */ }
+  },
+  // ── Forgot Password ───────────────────────────────────────────────────────
+
+  async forgotPassword(identifier) {
+    try {
+      var clean = (identifier || '').trim();
+      if (!clean) return { ok: false, error: 'Please enter your email address or cell number.' };
+
+      var email = _buildEmail(clean);
+
+      // If identifier is a phone number, try to use their stored recovery email instead
+      if (_isPhone(clean)) {
+        try {
+          var { data: profileData } = await _sb()
+            .from('profiles')
+            .select('recovery_email')
+            .eq('phone', clean)
+            .single();
+          if (profileData && profileData.recovery_email) {
+            email = profileData.recovery_email;
+          }
+        } catch (e) { /* fall back to synthetic email */ }
+      }
+
+      var { error } = await _sb().auth.resetPasswordForEmail(email, {
+        redirectTo: window.location.origin + '/html/reset-password.html',
+      });
+
+      if (error) return { ok: false, error: error.message };
+      return { ok: true };
+    } catch (e) {
+      return { ok: false, error: e.message };
+    }
   },
 
   // ── History (localStorage) ────────────────────────────────────────────────

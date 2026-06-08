@@ -726,8 +726,9 @@
           <input type="date" id="dob" class="field-input" oninput="updateProgress()" />
         </div>
         <div class="field">
-          <label class="field-label">ID Number <span class="optional-tag">optional</span></label>
-          <input type="text" id="idNumber" class="field-input" placeholder="SA ID number" />
+          <label class="field-label">ID Number <span class="req">*</span></label>
+          <input type="text" id="idNumber" class="field-input" placeholder="13-digit SA ID number" maxlength="13" pattern="\d{13}" inputmode="numeric" oninput="this.value=this.value.replace(/\D/g,'').slice(0,13); updateProgress();" />
+          <div class="id-hint" style="font-size:12px;color:#6b7280;margin-top:4px;">Enter your 13-digit South African ID number — digits only.</div>
         </div>
         <div class="field">
           <label class="field-label">Gender <span class="req">*</span></label>
@@ -759,9 +760,40 @@
       </div>
       <div class="field-row-2">
         <div class="field">
-          <label class="field-label">School Name <span class="req">*</span></label>
-          <input type="text" id="schoolName" class="field-input" placeholder="Full school name" oninput="updateProgress()" />
-        </div>
+  <label class="field-label">School Name <span class="req">*</span></label>
+  <select id="schoolNameSelect" class="field-select" onchange="handleSchoolSelect()">
+    <option value="">Select your school…</option>
+    <optgroup label="John Taolo Gaetsewe District">
+      <option>Bankhara-Bodulong High School</option>
+      <option>Daniel Mogakane Secondary School</option>
+      <option>Dikgatlong Secondary School</option>
+      <option>Gasegonyana Secondary School</option>
+      <option>Galaletsang Secondary School</option>
+      <option>Ga-Segonyana Secondary School</option>
+      <option>Kathu High School</option>
+      <option>Kgomotso Secondary School</option>
+      <option>Kuruman High School</option>
+      <option>Maruping High School</option>
+      <option>Mothibistad High School</option>
+      <option>Olifantshoek High School</option>
+      <option>Postmasburg High School</option>
+      <option>Seoding Secondary School</option>
+      <option>Seodineng Secondary School</option>
+      <option>Sol Plaatje Secondary School</option>
+      <option>Tawana Secondary School</option>
+      <option>Tlhaping Senior Secondary</option>
+    </optgroup>
+    <option value="__other__">Other (type your school name)</option>
+  </select>
+  <input
+    type="text"
+    id="schoolName"
+    class="field-input"
+    placeholder="Type your school name here"
+    oninput="updateProgress()"
+    style="display:none; margin-top:8px;"
+  />
+</div>
         <div class="field">
           <label class="field-label">Grade / Level <span class="req">*</span></label>
           <select id="grade" class="field-select" onchange="updateProgress()">
@@ -795,17 +827,18 @@
       <!-- ── APS Score text input ── -->
       <div class="field">
         <label class="field-label">
-          Current APS Score <span class="optional-tag">optional</span>
-        </label>
-        <input
-          type="number"
-          id="apsScore"
-          class="field-input"
-          placeholder="e.g. 32"
-          min="0"
-          max="42"
-          style="max-width: 200px;"
-        />
+  Current APS Score <span class="req">*</span>
+</label>
+<input
+  type="number"
+  id="apsScore"
+  class="field-input"
+  placeholder="e.g. 32"
+  min="0"
+  max="42"
+  style="max-width: 200px;"
+  oninput="if(parseInt(this.value)>42)this.value=42; if(parseInt(this.value)<0)this.value=0; updateProgress();"
+/>
         <div class="aps-hint-box">
           <strong>What is an APS?</strong> Your Admission Point Score is calculated from your subject marks. Each subject % converts to points (0–7) and your best 6 subjects are added together (Life Orientation is capped at 4 pts). The maximum possible APS is 42. If you're unsure of your score, leave this blank.
         </div>
@@ -1028,6 +1061,8 @@
       </div>
     </div>
 
+    
+
     <!-- Submit -->
     <button class="submit-btn" id="submitBtn" onclick="handleSubmit()">
       Register for Free →
@@ -1190,7 +1225,7 @@ function toggleTerms() {
 }
 
 // ── Progress ──────────────────────────────────────────────────────────────────
-var REQUIRED_FIELDS = ['firstName','lastName','cellNumber','dob','gender','homeTown','schoolName','grade','guardianName','guardianPhone'];
+var REQUIRED_FIELDS = ['firstName','lastName','cellNumber','dob','gender','homeTown','idNumber','schoolName','grade','guardianName','guardianPhone'];
 
 function updateProgress() {
   var filled = REQUIRED_FIELDS.filter(function(id) {
@@ -1235,6 +1270,20 @@ function showErr(msg) {
   b.scrollIntoView({ behavior: 'smooth', block: 'center' });
 }
 function clearErr() { document.getElementById('errorBanner').classList.remove('show'); }
+function handleSchoolSelect() {
+  var sel = document.getElementById('schoolNameSelect');
+  var txt = document.getElementById('schoolName');
+  if (sel.value === '__other__') {
+    txt.style.display = 'block';
+    txt.required = true;
+    txt.focus();
+  } else {
+    txt.style.display = 'none';
+    txt.required = false;
+    txt.value = sel.value; // copy selected school into the hidden input so FormData picks it up
+  }
+  updateProgress();
+}
 
 // ── Submit ────────────────────────────────────────────────────────────────────
 function handleSubmit() {
@@ -1252,7 +1301,10 @@ function handleSubmit() {
   var guardianName  = document.getElementById('guardianName').value.trim();
   var guardianPhone = document.getElementById('guardianPhone').value.trim();
   var guardianRel   = document.getElementById('guardianRelSelect').value;
-
+  var idNum = document.getElementById('idNumber').value.trim();
+  var REQUIRED_FIELDS = ['firstName','lastName','cellNumber','dob','gender','homeTown','idNumber','schoolName','grade','apsScore','guardianName','guardianPhone'];
+  var apsVal = document.getElementById('apsScore').value.trim();
+  
   if (!firstName)     { showErr('Please enter your first name.'); return; }
   if (!lastName)      { showErr('Please enter your last name.'); return; }
   if (!cell)          { showErr('Please enter your cell number.'); return; }
@@ -1260,9 +1312,14 @@ function handleSubmit() {
   if (!dob)           { showErr('Please enter your date of birth.'); return; }
   if (!gender)        { showErr('Please select your gender.'); return; }
   if (!homeTown)      { showErr('Please enter your home town / village.'); return; }
+  if (!idNum)               { showErr('Please enter your SA ID number.'); return; }
+  if (!/^\d{13}$/.test(idNum)) { showErr('ID number must be exactly 13 digits.'); return; }
   if (!schoolName)    { showErr('Please enter your school name.'); return; }
+  if (!apsVal)                          { showErr('Please enter your APS score.'); return; }
+  if (parseInt(apsVal) < 0 || parseInt(apsVal) > 42) { showErr('APS score must be between 0 and 42.'); return; }
   if (!grade)         { showErr('Please select your grade / level.'); return; }
   if (!guardianName)  { showErr('Please enter the parent / emergency contact\'s full name.'); return; }
+  if (guardianName.trim().split(/\s+/).length < 2) { showErr('Please enter the full name (first and last name) of your parent / emergency contact.'); return; }
   if (!guardianPhone) { showErr('Please enter the parent / emergency contact\'s number.'); return; }
   if (!guardianRel)   { showErr('Please select the relationship of your emergency contact to you.'); return; }
   if (!state.termsAgreed) { showErr('Please read and accept the terms and POPIA consent to continue.'); return; }
