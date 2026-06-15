@@ -199,7 +199,7 @@ var Auth = {
       }
 
       var { error } = await _sb().auth.resetPasswordForEmail(email, {
-        redirectTo: window.location.origin + '/html/reset-password.html',
+        redirectTo: window.location.origin + '/reset-password.html',
       });
 
       if (error) return { ok: false, error: error.message };
