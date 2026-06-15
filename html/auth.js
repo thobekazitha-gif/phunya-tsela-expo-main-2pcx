@@ -209,6 +209,22 @@ var Auth = {
     }
   },
 
+
+  // ── Update Password (used on reset-password page after email link) ────────
+
+  async updatePassword(newPassword) {
+    try {
+      if (!newPassword || newPassword.length < 6) {
+        return { ok: false, error: 'Password must be at least 6 characters.' };
+      }
+      var { error } = await _sb().auth.updateUser({ password: newPassword });
+      if (error) return { ok: false, error: error.message };
+      return { ok: true };
+    } catch (e) {
+      return { ok: false, error: e.message };
+    }
+  },
+
   // ── History (localStorage) ────────────────────────────────────────────────
 
   loadHistory(uid) {
