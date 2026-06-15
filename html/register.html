@@ -252,14 +252,15 @@ h1, h2, h3 { font-family: 'Sora', sans-serif; }
           >
           <p class="id-hint">SA numbers only — we'll format it automatically (e.g. 082 123 4567 or 0821234567).</p>
           <div style="margin-top:12px;">
-            <label style="display:block;font-size:13px;font-weight:700;margin-bottom:6px;">Recovery Email <span style="color:#6b7280;font-weight:400;">(optional but recommended)</span></label>
+            <label style="display:block;font-size:13px;font-weight:700;margin-bottom:6px;">Recovery Email <span style="color:#ef4444;font-weight:600;">* required</span></label>
             <input
               type="email"
               id="recoveryEmail"
               placeholder="your@email.com"
               autocomplete="email"
+              required
             >
-            <p class="id-hint">Add an email so you can reset your password if you forget it. Without one, account recovery won't be possible.</p>
+            <p class="id-hint">Required — this is how you'll reset your password if you forget it. Without a real email, your account cannot be recovered.</p>
           </div>
         </div>
 
@@ -378,6 +379,10 @@ async function doRegister() {
   if (!firstName)                   { showError('Please enter your first name.');   return; }
   if (!lastName)                    { showError('Please enter your last name.');    return; }
   if (!identifier)                  { showError(currentTab === 'phone' ? 'Please enter your cell number.' : 'Please enter your email address.'); return; }
+  if (currentTab === 'phone' && !recoveryEmail) {
+    showError('A recovery email is required when registering with a cell number. This is the only way to reset your password if you forget it.');
+    return;
+  }
   if (recoveryEmail && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(recoveryEmail)) {
     showError('The recovery email address doesn\'t look right. Please fix it or leave it blank.');
     return;
